@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "Nuevo perfil",
+    "Projects": [
+      {
+        "Path": "cod.auth\\cod.auth.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "cod.data\\cod.data.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "cod-payment\\cod-payment.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
