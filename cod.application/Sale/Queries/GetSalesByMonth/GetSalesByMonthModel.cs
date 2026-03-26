@@ -11,6 +11,6 @@ namespace cod.application.Sale.Queries.GetSalesByMonth
         public double Total { get; set; }
         public string Month { get; set; }
         public string Day { get; set; }
-        public string Cafeteria { get; set; }
+        public string Route { get; set; }
     }
 }

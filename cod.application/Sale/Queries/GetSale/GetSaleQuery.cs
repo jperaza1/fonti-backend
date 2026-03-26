@@ -2,6 +2,7 @@
 using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.application.Sale.Common;
+using cod.domain.Operation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,46 +24,45 @@ namespace cod.application.Sale.Queries.GetSale
                 .Where(f => f.Id == id)
                 .Select(f => new
             {
-                f.Id,
-                f.CategoryId,
-                Cafeteria = f.Cafeteria.Name,
-                f.RegisterId,
-                Register = f.RegisterId.HasValue ? f.Register.Name : string.Empty,
-                f.CustomerId,
-                Customer = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
-                ServicePeriod = f.ServicePeriodId.HasValue ? f.ServicePeriod.Name : string.Empty,
-                f.ServicePeriodId,
-                f.SaleDate,
-                f.SaleType,
-                SaleTypeName = f.SaleType.GetEnumDescription(),
-                f.CafeteriaId,
-                Category = f.Category.Name,
-                f.ProductTypeId,
-                ProductType = f.ProductType.Name,
-                f.Amount,
-                f.IsActive
-            });
+                    f.Id,
+                    f.RouteId,
+                    Route = f.Route.Name,
+                    f.SaleDate,
+                    f.SaleType,
+                    f.Amount,
+                    f.IsActive,
+                    SaleDetails = f.SaleDetails.Select(g => new
+                    {
+                        g.Id,
+                        g.SaleId,
+                        g.ProductId,
+                        Product = g.Product.Name,
+                        g.Price,
+                        g.Quantity,
+                        g.Total
+                    })
+                });
 
             return await baseQuery.Select(f => new SaleModel
             {
                 Id = f.Id,
                 Amount = f.Amount,
-                CafeteriaId = f.CafeteriaId,
-                Cafeteria = f.Cafeteria,
-                Register = f.Register,
-                RegisterId = f.RegisterId,
-                Category = f.Category,
-                CategoryId = f.CategoryId,
-                ProductTypeId = f.ProductTypeId,
-                ProductType = f.ProductType,
+                Route = f.Route,
+                RouteId = f.RouteId,
                 SaleDate = f.SaleDate,
                 SaleType = f.SaleType,
-                SaleTypeName = f.SaleTypeName,
+                SaleTypeName = f.SaleType.GetEnumDescription(),
                 IsActive = f.IsActive,
-                ServicePeriod = f.ServicePeriod,
-                ServicePeriodId = f.ServicePeriodId,
-                Customer = f.Customer,
-                CustomerId = f.CustomerId
+                SaleDetails = f.SaleDetails.Select(g => new SaleDetailModel
+                {
+                    Id = g.Id,
+                    Price = g.Price,
+                    Product = g.Product,
+                    ProductId = g.ProductId,
+                    Quantity = g.Quantity,
+                    Total = g.Total,
+                    SaleId = g.SaleId,
+                }).ToList()
             }).FirstOrDefaultAsync();
         }
     }

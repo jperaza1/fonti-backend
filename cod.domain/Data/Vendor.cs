@@ -12,14 +12,5 @@ namespace cod.domain.Data
     public class Vendor : Entity
     {
         public string Name { get; set; }
-        public string Rtn { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
-        public string Seller { get; set; }
-        public bool HasCredit { get; set; }
-        public bool HasInvoice { get; set; }
-        public bool RequiresAdminApproval { get; set; }
-        public int CreditDays { get; set; }
-        public virtual ICollection<Product> Products { get; set; }
     }
 }

@@ -26,10 +26,10 @@ namespace cod.application.Sale.Queries.GetSalesByMonth
                 .Where(x => x.SaleDate.Year == today.Year);
 
             var result = await baseQuery
-                .GroupBy(x => new { x.Cafeteria.Name, x.SaleDate.Month })
+                .GroupBy(x => new { x.Route.Name, x.SaleDate.Month })
                 .Select(g => new GetSalesByMonthModel
                 {
-                    Cafeteria = g.Key.Name,
+                    Route = g.Key.Name,
                     Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key.Month),
                     Total = Math.Round(g.Sum(f => f.Amount),2 )
                 }).ToListAsync();

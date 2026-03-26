@@ -1,45 +1,87 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# Backend — API (Fonti / Buffeteleden)
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+API REST en **ASP.NET Core 5.0** para operaciones de cafeterías, ventas, productos, órdenes de compra, facturación, empleados y catálogos. Incluye un servicio separado de **autenticación** (`cod.auth`) y la API principal (`cod.data`).
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+## Requisitos
+
+- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0) (el proyecto usa `net5.0`; conviene planear migración a una versión LTS soportada).
+- **SQL Server** accesible desde la cadena de conexión configurada.
+- Windows recomendado si usas IIS Express o rutas locales de PDFs según `appsettings`.
+
+## Estructura de la solución
+
+| Proyecto | Rol |
+|----------|-----|
+| `cod.domain` | Entidades y enums de dominio |
+| `cod.persistence` | EF Core, `DbContext`, migraciones |
+| `cod.application` | Casos de uso (commands/queries), DTOs |
+| `cod.infraestructure` | Servicios transversales (p. ej. PDF, imágenes) |
+| `cod.data` | **Host web principal**: controladores, Swagger, JWT, OpenTelemetry |
+| `cod.auth` | **Host de autenticación** (JWT; despliegue compatible con variable `PORT`, p. ej. Railway) |
+
+Patrón: API → aplicación → dominio; persistencia e infraestructura inyectadas vía **StructureMap** y registro adicional en `Startup`.
+
+## Cómo ejecutar en local
+
+1. **Restaurar dependencias**
+
+   ```bash
+   dotnet restore cod.base.template.sln
+   ```
+
+2. **Configurar secretos y cadena de conexión**  
+   Copia valores de ejemplo en `cod.data/appsettings.Development.json` y `cod.auth/appsettings.Development.json` (o usa [User Secrets](https://learn.microsoft.com/es-es/aspnet/core/security/app-secrets) / variables de entorno). No subas contraseñas reales al repositorio.
+
+   Claves habituales:
+
+   - `ConnectionStrings:Default` — base de datos SQL Server  
+   - `JWT:Secret`, `JWT:ValidIssuer`, `JWT:ValidAudience` — tokens  
+   - `App:WebApplication`, `App:Pdfs` — URLs y ruta de PDFs (ajustar a tu máquina)
+
+3. **Aplicar migraciones** (si la base está vacía o desactualizada)
+
+   ```bash
+   dotnet ef database update --project cod.persistence --startup-project cod.data
+   ```
+
+4. **Levantar los servicios**
+
+   Por defecto en código, si no existe la variable de entorno `PORT`:
+
+   - **API principal** (`cod.data`): escucha en el puerto **5001** (`Program.cs`).
+   - **Auth** (`cod.auth`): escucha en el puerto **5000** (`Program.cs`).
+
+   ```bash
+   dotnet run --project cod.data/cod.data.csproj
+   dotnet run --project cod.auth/cod.auth.csproj
+   ```
+
+   En **Visual Studio**, los perfiles `sos.data` / `sos.auth` en `launchSettings.json` abren Swagger; revisa que los puertos no choquen con lo anterior.
+
+5. **Swagger**
+
+   Con el API principal en marcha: `http://localhost:5001/swagger` (o el puerto que uses en `launchSettings` / IIS Express).
+
+## Compilación
+
+```bash
+dotnet build cod.base.template.sln
+```
+
+Si falla la copia de DLLs a `bin\Debug` con errores `MSB3027` / archivo en uso, detén procesos en depuración (`cod.data`, `cod.auth`) o compila en otra configuración: `dotnet build -c Release`.
+
+## Observabilidad
+
+`cod.data` registra **OpenTelemetry** (trazas y métricas ASP.NET Core, HTTP, EF Core). Ajusta exportadores y endpoints en `Startup` según tu entorno.
+
+## Dominio funcional (resumen)
+
+Los controladores en `cod.data/Controllers` cubren entre otros: cafeterías, clientes, empleados, productos, rutas y precios por ruta, correlativos, ventas, facturas, pagos, órdenes de compra, proveedores, platos y acompañamientos, alertas, documentación y catálogos vía `EnumDefinitionController`.
+
+## Licencias de terceros
+
+- **EPPlus**: en `appsettings` aparece contexto de licencia; respeta la licencia elegida en tu despliegue.
 
 ---
 
-## Edit a file
-
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
-
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
-
----
-
-## Create a file
-
-Next, you’ll add a new file to this repository.
-
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+*Nombre interno de solución: `cod.base.template.sln`.*

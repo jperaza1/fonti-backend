@@ -12,6 +12,7 @@ namespace cod.application.PurchaseOrder.Queries.GetReportExpense
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public FilterType FilterType { get; set; }
+        public List<int> Vendors { get; set; }
     }
 
     public class ReportExpenseModel

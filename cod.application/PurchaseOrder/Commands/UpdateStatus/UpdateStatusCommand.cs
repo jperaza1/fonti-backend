@@ -67,7 +67,7 @@ namespace cod.application.PurchaseOrder.Commands.UpdateStatus
 
         public async Task ValidateModel(int id, domain.Operation.PurchaseOrder purchaseOrder)
         {
-            if(purchaseOrder.OrderStatus == domain.Features.Enums.DomainEnums.PurchaseOrderStatus.Created)
+            /*if(purchaseOrder.OrderStatus == domain.Features.Enums.DomainEnums.PurchaseOrderStatus.Created)
             {
                 var vendor = await _repository.Query<domain.Data.Vendor>().Where(f => f.Id == purchaseOrder.VendorId).FirstOrDefaultAsync();
                 var profile = await _sessionService.GetUserProfile();
@@ -166,7 +166,7 @@ namespace cod.application.PurchaseOrder.Commands.UpdateStatus
 
                 if (totalRecived != invoiceTotal)
                     throw new ApplicationException("Existe una discrepancia entre el monto recibido y las facturas registradas", "ORDEN COMPRA");
-            }
+            }*/
         }
 
     }

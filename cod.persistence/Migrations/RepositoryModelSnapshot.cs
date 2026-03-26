@@ -935,6 +935,114 @@ namespace cod.persistence.Migrations
                     b.ToTable("Cafeterias", "data");
                 });
 
+            modelBuilder.Entity("cod.domain.Data.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Correlative", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Cai")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Current")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmissionPoint")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("End")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Establishment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Start")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Correlatives", "data");
+                });
+
             modelBuilder.Entity("cod.domain.Data.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -1036,9 +1144,6 @@ namespace cod.persistence.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<double>("Cost")
-                        .HasColumnType("float");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
@@ -1050,9 +1155,6 @@ namespace cod.persistence.Migrations
 
                     b.Property<string>("DisableUser")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
 
                     b.Property<DateTime?>("EnableDateTime")
                         .HasColumnType("datetime2");
@@ -1069,34 +1171,67 @@ namespace cod.persistence.Migrations
                     b.Property<string>("LastModifiedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MeasureId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("SpecialServiceUse")
-                        .HasColumnType("bit");
-
-                    b.Property<double>("Tax")
-                        .HasColumnType("float");
-
-                    b.Property<int>("Unit")
-                        .HasColumnType("int");
-
-                    b.Property<double>("UnitCost")
-                        .HasColumnType("float");
-
-                    b.Property<int>("VendorId")
+                    b.Property<int>("ProductType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MeasureId");
-
-                    b.HasIndex("VendorId");
-
                     b.ToTable("Products", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductRoutePrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RouteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("RouteId");
+
+                    b.ToTable("ProductRoutePrices", "data");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Register", b =>
@@ -1147,6 +1282,95 @@ namespace cod.persistence.Migrations
                     b.HasIndex("CafeteriaId");
 
                     b.ToTable("Registers", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Route", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Routes", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.SubCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("SubCategories", "data");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Type", b =>
@@ -1304,17 +1528,11 @@ namespace cod.persistence.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreditDays")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
@@ -1328,12 +1546,6 @@ namespace cod.persistence.Migrations
                     b.Property<string>("EnableUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("HasCredit")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasInvoice")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -1344,18 +1556,6 @@ namespace cod.persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("RequiresAdminApproval")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Rtn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Seller")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1528,21 +1728,15 @@ namespace cod.persistence.Migrations
                     b.ToTable("Documentations", "gen");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Inventory", b =>
+            modelBuilder.Entity("cod.domain.Operation.Expense", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("CafeteriaId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("CanceledAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CanceledUser")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -1565,10 +1759,13 @@ namespace cod.persistence.Migrations
                     b.Property<string>("EnableUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InventoryType")
+                    b.Property<int?>("InvoiceId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInvoice")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -1577,107 +1774,34 @@ namespace cod.persistence.Migrations
                     b.Property<string>("LastModifiedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReasonCanceled")
+                    b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RouteId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("RegisterId")
+                    b.Property<int>("SubCategoryId")
                         .HasColumnType("int");
 
                     b.Property<double>("Total")
                         .HasColumnType("float");
 
-                    b.Property<bool>("UseInInventory")
-                        .HasColumnType("bit");
+                    b.Property<int?>("VendorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CafeteriaId");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("RegisterId");
+                    b.HasIndex("InvoiceId");
 
-                    b.ToTable("Inventories", "operation");
-                });
+                    b.HasIndex("RouteId");
 
-            modelBuilder.Entity("cod.domain.Operation.InventoryDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.HasIndex("SubCategoryId");
 
-                    b.Property<double>("Cost")
-                        .HasColumnType("float");
+                    b.HasIndex("VendorId");
 
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
-
-                    b.Property<double>("DiscountPercentage")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InventoryId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("QuantityPack")
-                        .HasColumnType("float");
-
-                    b.Property<double>("SubTotal")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Tax")
-                        .HasColumnType("float");
-
-                    b.Property<double>("TaxPercentage")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Total")
-                        .HasColumnType("float");
-
-                    b.Property<double>("UnitCost")
-                        .HasColumnType("float");
-
-                    b.Property<double>("UnitQuantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InventoryId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("InventoryDetails", "operation");
+                    b.ToTable("Expenses", "operation");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Invoice", b =>
@@ -1800,129 +1924,6 @@ namespace cod.persistence.Migrations
                     b.HasIndex("VendorId");
 
                     b.ToTable("Invoices", "operation");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.OfficeRequisition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime?>("ApprovedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ApprovedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonRejection")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RejectedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RejectedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CafeteriaId");
-
-                    b.ToTable("OfficeRequisitions", "operation");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.OfficeRequisitionDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OfficeRequisitionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OfficeRequisitionId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OfficeRequisitionDetails", "operation");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Payment", b =>
@@ -2188,20 +2189,11 @@ namespace cod.persistence.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
@@ -2224,10 +2216,7 @@ namespace cod.persistence.Migrations
                     b.Property<string>("LastModifiedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RegisterId")
+                    b.Property<int>("RouteId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SaleDate")
@@ -2236,95 +2225,14 @@ namespace cod.persistence.Migrations
                     b.Property<int>("SaleType")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ServicePeriodId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CafeteriaId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("ProductTypeId");
-
-                    b.HasIndex("RegisterId");
-
-                    b.HasIndex("ServicePeriodId");
+                    b.HasIndex("RouteId");
 
                     b.ToTable("Sales", "operation");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.SpecialService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime?>("ApprovedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ApprovedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonRejection")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RejectedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RejectedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CafeteriaId");
-
-                    b.ToTable("SpecialServices", "operation");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.SpecialServiceDetail", b =>
+            modelBuilder.Entity("cod.domain.Operation.SaleDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2357,23 +2265,29 @@ namespace cod.persistence.Migrations
 
                     b.Property<string>("LastModifiedUser")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.Property<int>("SpecialServiceId")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<int>("SaleId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("SpecialServiceId");
+                    b.HasIndex("SaleId");
 
-                    b.ToTable("SpecialServiceDetails", "operation");
+                    b.ToTable("SaleDetails", "operation");
                 });
 
             modelBuilder.Entity("cod.domain.Rrhh.Employee", b =>
@@ -3273,23 +3187,23 @@ namespace cod.persistence.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("cod.domain.Data.Product", b =>
+            modelBuilder.Entity("cod.domain.Data.ProductRoutePrice", b =>
                 {
-                    b.HasOne("cod.domain.Data.Type", "Measure")
+                    b.HasOne("cod.domain.Data.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("MeasureId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cod.domain.Data.Vendor", "Vendor")
-                        .WithMany("Products")
-                        .HasForeignKey("VendorId")
+                    b.HasOne("cod.domain.Data.Route", "Route")
+                        .WithMany("ProductRoutePrices")
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Measure");
+                    b.Navigation("Product");
 
-                    b.Navigation("Vendor");
+                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Register", b =>
@@ -3301,6 +3215,17 @@ namespace cod.persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Cafeteria");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.SubCategory", b =>
+                {
+                    b.HasOne("cod.domain.Data.Category", "Category")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Type", b =>
@@ -3347,40 +3272,43 @@ namespace cod.persistence.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Inventory", b =>
+            modelBuilder.Entity("cod.domain.Operation.Expense", b =>
                 {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
+                    b.HasOne("cod.domain.Data.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CafeteriaId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cod.domain.Data.Register", "Register")
+                    b.HasOne("cod.domain.Operation.Invoice", "Invoice")
                         .WithMany()
-                        .HasForeignKey("RegisterId");
+                        .HasForeignKey("InvoiceId");
 
-                    b.Navigation("Cafeteria");
-
-                    b.Navigation("Register");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.InventoryDetail", b =>
-                {
-                    b.HasOne("cod.domain.Operation.Inventory", "Inventory")
-                        .WithMany("InventoryDetails")
-                        .HasForeignKey("InventoryId")
+                    b.HasOne("cod.domain.Data.Route", "Routes")
+                        .WithMany()
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cod.domain.Data.Product", "Product")
+                    b.HasOne("cod.domain.Data.SubCategory", "SubCateogy")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Inventory");
+                    b.HasOne("cod.domain.Data.Vendor", "Vendors")
+                        .WithMany()
+                        .HasForeignKey("VendorId");
 
-                    b.Navigation("Product");
+                    b.Navigation("Category");
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Routes");
+
+                    b.Navigation("SubCateogy");
+
+                    b.Navigation("Vendors");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Invoice", b =>
@@ -3412,36 +3340,6 @@ namespace cod.persistence.Migrations
                     b.Navigation("PurchaseOrder");
 
                     b.Navigation("Vendor");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.OfficeRequisition", b =>
-                {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
-                        .WithMany()
-                        .HasForeignKey("CafeteriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cafeteria");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.OfficeRequisitionDetail", b =>
-                {
-                    b.HasOne("cod.domain.Operation.OfficeRequisition", "OfficeRequisition")
-                        .WithMany("OfficeRequisitionDetails")
-                        .HasForeignKey("OfficeRequisitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.Data.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OfficeRequisition");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Payment", b =>
@@ -3495,61 +3393,16 @@ namespace cod.persistence.Migrations
 
             modelBuilder.Entity("cod.domain.Operation.Sale", b =>
                 {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
+                    b.HasOne("cod.domain.Data.Route", "Route")
                         .WithMany()
-                        .HasForeignKey("CafeteriaId")
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cod.domain.Data.Type", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.Data.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
-
-                    b.HasOne("cod.domain.Data.Type", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.Data.Register", "Register")
-                        .WithMany()
-                        .HasForeignKey("RegisterId");
-
-                    b.HasOne("cod.domain.Data.Type", "ServicePeriod")
-                        .WithMany()
-                        .HasForeignKey("ServicePeriodId");
-
-                    b.Navigation("Cafeteria");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("ProductType");
-
-                    b.Navigation("Register");
-
-                    b.Navigation("ServicePeriod");
+                    b.Navigation("Route");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.SpecialService", b =>
-                {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
-                        .WithMany()
-                        .HasForeignKey("CafeteriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cafeteria");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.SpecialServiceDetail", b =>
+            modelBuilder.Entity("cod.domain.Operation.SaleDetail", b =>
                 {
                     b.HasOne("cod.domain.Data.Product", "Product")
                         .WithMany()
@@ -3557,15 +3410,15 @@ namespace cod.persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cod.domain.Operation.SpecialService", "SpecialService")
-                        .WithMany("SpecialServiceDetails")
-                        .HasForeignKey("SpecialServiceId")
+                    b.HasOne("cod.domain.Operation.Sale", "Sale")
+                        .WithMany("SaleDetails")
+                        .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("SpecialService");
+                    b.Navigation("Sale");
                 });
 
             modelBuilder.Entity("cod.domain.Rrhh.Employee", b =>
@@ -3714,9 +3567,19 @@ namespace cod.persistence.Migrations
                     b.Navigation("Registers");
                 });
 
+            modelBuilder.Entity("cod.domain.Data.Category", b =>
+                {
+                    b.Navigation("SubCategories");
+                });
+
             modelBuilder.Entity("cod.domain.Data.Customer", b =>
                 {
                     b.Navigation("CustomerCafeterias");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Route", b =>
+                {
+                    b.Navigation("ProductRoutePrices");
                 });
 
             modelBuilder.Entity("cod.domain.Data.TypeGroup", b =>
@@ -3724,24 +3587,9 @@ namespace cod.persistence.Migrations
                     b.Navigation("Types");
                 });
 
-            modelBuilder.Entity("cod.domain.Data.Vendor", b =>
-                {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.Inventory", b =>
-                {
-                    b.Navigation("InventoryDetails");
-                });
-
             modelBuilder.Entity("cod.domain.Operation.Invoice", b =>
                 {
                     b.Navigation("Payments");
-                });
-
-            modelBuilder.Entity("cod.domain.Operation.OfficeRequisition", b =>
-                {
-                    b.Navigation("OfficeRequisitionDetails");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.PurchaseOrder", b =>
@@ -3751,9 +3599,9 @@ namespace cod.persistence.Migrations
                     b.Navigation("PurchaseOrderDetails");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.SpecialService", b =>
+            modelBuilder.Entity("cod.domain.Operation.Sale", b =>
                 {
-                    b.Navigation("SpecialServiceDetails");
+                    b.Navigation("SaleDetails");
                 });
 
             modelBuilder.Entity("cod.domain.Rrhh.Employee", b =>

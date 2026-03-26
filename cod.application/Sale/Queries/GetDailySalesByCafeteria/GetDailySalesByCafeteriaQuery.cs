@@ -27,10 +27,10 @@ namespace cod.application.Sale.Queries.GetDailySalesByCafeteria
                 .Where(x => x.SaleDate.Date >= monday.Date && x.SaleDate.Date <= today.Date);
 
             var result = await baseQuery
-                .GroupBy(x => new { x.Cafeteria.Name, x.SaleDate.Date })
+                .GroupBy(x => new { x.Route.Name, x.SaleDate.Date })
                 .Select(g => new GetSalesByMonthModel
                 {
-                    Cafeteria = g.Key.Name,
+                    Route = g.Key.Name,
                     Day = g.Key.Date.ToString("dddd"),
                     Total = Math.Round(g.Sum(f => f.Amount),2),
                 }).ToListAsync();

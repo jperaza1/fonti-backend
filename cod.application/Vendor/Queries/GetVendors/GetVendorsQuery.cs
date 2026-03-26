@@ -22,10 +22,6 @@ namespace cod.application.Vendor.Queries.GetVendors
             {
                 Id = f.Id,
                 Name = f.Name,
-                Address = f.Address,
-                Phone = f.Phone,
-                Rtn = f.Rtn,
-                Seller = f.Seller,
                 IsActive = f.IsActive
             }).OrderBy(f => f.Name).ToListAsync();
 

@@ -33,14 +33,6 @@ namespace cod.application.Vendor.Commands.CreateVendor
             var newVendor = new domain.Data.Vendor
             {
                 Name = model.Name,
-                Phone = model.Phone,
-                Seller = model.Seller,
-                Address = model.Address,
-                Rtn = model.Rtn,
-                HasCredit = model.HasCredit,
-                CreditDays = model.CreditDays,
-                HasInvoice = model.HasInvoice,
-                RequiresAdminApproval = model.RequiresAdminApproval,
             };
 
             _repository.InsertAsync(newVendor);
@@ -52,21 +44,6 @@ namespace cod.application.Vendor.Commands.CreateVendor
         {
             if (model.Name.NullOrEmpty())
                 this._exceptionFactory.Add("name", this._exceptionFactory.GetMessage("proveedor", ExceptionEnums.ExceptionCode.Required));
-
-            if (model.Rtn.NullOrEmpty())
-                this._exceptionFactory.Add("rtn", this._exceptionFactory.GetMessage("rtn", ExceptionEnums.ExceptionCode.Required));
-
-            if (model.Address.NullOrEmpty())
-                this._exceptionFactory.Add("address", this._exceptionFactory.GetMessage("Direccion", ExceptionEnums.ExceptionCode.Required));
-
-            if (model.Phone.NullOrEmpty())
-                this._exceptionFactory.Add("phone", this._exceptionFactory.GetMessage("Telefono", ExceptionEnums.ExceptionCode.Required));
-
-            if (model.Seller.NullOrEmpty())
-                this._exceptionFactory.Add("seller", this._exceptionFactory.GetMessage("Vendedor", ExceptionEnums.ExceptionCode.Required));
-
-            if(model.HasCredit && model.CreditDays <= 0)
-                this._exceptionFactory.Add("creditDays", this._exceptionFactory.GetMessage("Días de crédito", ExceptionEnums.ExceptionCode.Required));
 
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "PROVEEDORES", this._exceptionFactory.Exceptions);

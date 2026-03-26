@@ -82,7 +82,7 @@ namespace cod.application.Invoice.Commands.CreateInvoice
                 }
             }
 
-            if (model.PaymentType == PaymentType.Credit)
+            /*if (model.PaymentType == PaymentType.Credit)
             {
                 if (!vendor.HasCredit)
                     throw new ApplicationException("Este proveedor no otorga crédito. No se puede adjuntar una factura al credito", "CANCELED");
@@ -109,7 +109,7 @@ namespace cod.application.Invoice.Commands.CreateInvoice
                 };
                 invoice.Payments = new List<domain.Operation.Payment> { payment };
                 invoice.CategoryId = type.Id;
-            }
+            }*/
 
             /*bool duplicateName = await _repository
                 .AnyAsync<domain.Operation.Invoice>(f => f.InvoiceNumber.ToUpper() == model.InvoiceNumber.ToUpper() && f.VendorId == invoice.VendorId);

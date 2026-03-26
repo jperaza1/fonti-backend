@@ -34,35 +34,19 @@ namespace cod.application.Sale.Queries.GetSales
 
             Expression<Func<domain.Operation.Sale, bool>> GetSaleBySaleDateFilter = GetSaleBySaleDate(filterSale, timezone);
             Expression<Func<domain.Operation.Sale, bool>> GetSaleBySaleTypeFilter = GetSaleBySaleType(filterSale);
-            Expression<Func<domain.Operation.Sale, bool>> GetProductTypeFilter = GetProductType(filterSale);
-            Expression<Func<domain.Operation.Sale, bool>> GetCategoryFilter = GetCategory(filterSale);
-            Expression<Func<domain.Operation.Sale, bool>> GetSaleByCafeteriaFilter = GetSaleByCafeteria(filterSale);
-
+            
             var baseQuery = _repository.Query<domain.Operation.Sale>()
-                .Where(GetSaleByCafeteriaFilter)
                 .Where(GetSaleBySaleDateFilter)
-                .Where(GetProductTypeFilter)
-                .Where(GetCategoryFilter)
                 .Where(GetSaleBySaleTypeFilter)
                 .Select(f => new
             {
                 f.Id,
-                f.CategoryId,
-                Cafeteria = f.Cafeteria.Name,
+                f.RouteId,
+                Route = f.Route.Name,
                 f.SaleDate,
                 f.SaleType,
                 SaleTypeName = f.SaleType.GetEnumDescription(),
-                f.CafeteriaId,
-                Category = f.Category.Name,
-                f.ProductTypeId,
-                ProductType = f.ProductType.Name,
                 f.Amount,
-                f.RegisterId,
-                Register = f.RegisterId.HasValue ? f.Register.Name : string.Empty,
-                f.CustomerId,
-                Customer = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
-                ServicePeriod = f.ServicePeriodId.HasValue ? f.ServicePeriod.Name : string.Empty,
-                f.ServicePeriodId,
                 f.IsActive
             });
 
@@ -70,29 +54,19 @@ namespace cod.application.Sale.Queries.GetSales
             {
                 Id = f.Id,
                 Amount = f.Amount,
-                CafeteriaId = f.CafeteriaId,
-                Cafeteria = f.Cafeteria,
-                RegisterId = f.RegisterId,
-                Register = f.Register,
-                Category = f.Category,
-                CategoryId = f.CategoryId,
-                ProductTypeId = f.ProductTypeId,
-                ProductType = f.ProductType,
+                Route = f.Route,
+                RouteId = f.RouteId,
                 SaleDate = f.SaleDate.Date,
                 SaleType = f.SaleType,
                 SaleTypeName = f.SaleTypeName,
                 IsActive = f.IsActive,
-                ServicePeriod = f.ServicePeriod,
-                ServicePeriodId = f.ServicePeriodId,
-                Customer = f.Customer,
-                CustomerId = f.CustomerId
             }).ToListAsync();
         }
 
-        public static Expression<Func<domain.Operation.Sale, bool>> GetSaleByCafeteria(FilterSaleDto filterSale)
+        public static Expression<Func<domain.Operation.Sale, bool>> GetSaleByRoute(FilterSaleDto filterSale)
         {
-            if (filterSale.Cafeterias.Any())
-                return sale => filterSale.Cafeterias.Any(g => g == sale.CafeteriaId);
+            if (filterSale.RouteId > 0)
+                return sale => sale.RouteId == filterSale.RouteId;
             return sale => true;
         }
 
@@ -110,20 +84,6 @@ namespace cod.application.Sale.Queries.GetSales
         {
             if (filterSale.SaleType.IsValid())
                 return sale => sale.SaleType == filterSale.SaleType;
-            return sale => true;
-        }
-
-        public static Expression<Func<domain.Operation.Sale, bool>> GetProductType(FilterSaleDto filterSale)
-        {
-            if (filterSale.ProductTypeId > 0)
-                return sale => sale.ProductTypeId == filterSale.ProductTypeId;
-            return sale => true;
-        }
-
-        public static Expression<Func<domain.Operation.Sale, bool>> GetCategory(FilterSaleDto filterSale)
-        {
-            if (filterSale.CategoryId > 0)
-                return sale => sale.CategoryId == filterSale.CategoryId;
             return sale => true;
         }
     }

@@ -8,6 +8,7 @@ using cod.application.EnumDefinition.Queries.GetInvoiceType;
 using cod.application.EnumDefinition.Queries.GetPayFrequencyType;
 using cod.application.EnumDefinition.Queries.GetPaymentMethod;
 using cod.application.EnumDefinition.Queries.GetPaymentType;
+using cod.application.EnumDefinition.Queries.GetProductType;
 using cod.application.EnumDefinition.Queries.GetPurchaseOrderStatus;
 using cod.application.EnumDefinition.Queries.GetRequestType;
 using cod.application.EnumDefinition.Queries.GetSaleType;
@@ -70,6 +71,7 @@ namespace cod.data
             services.AddScoped<IGetEnumDefinitionValuesQuery<DishType>, GetDishTypeQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<SaleTypeDish>, GetSaleTypeDishQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<VacationRequestType>, GetRequestTypeQuery>();
+            services.AddScoped<IGetEnumDefinitionValuesQuery<ProductType>, GetProductTypeQuery>();
 
             CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
 

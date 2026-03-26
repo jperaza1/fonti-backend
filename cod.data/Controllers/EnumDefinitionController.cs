@@ -79,6 +79,7 @@ namespace cod.data.Controllers
         private readonly IGetEnumDefinitionValuesQuery<DishType> _getDishTypeQuery;
         private readonly IGetEnumDefinitionValuesQuery<SaleTypeDish> _getSaleTypeDishQuery;
         private readonly IGetEnumDefinitionValuesQuery<VacationRequestType> _getRequestTypeQuery;
+        private readonly IGetEnumDefinitionValuesQuery<ProductType> _getProductTypeQuery;
         public EnumDefinitionController(
             IGetUserTypeQuery getUserTypeQuery,
             IGetPersonTypeQuery getPersonTypeQuery,
@@ -121,7 +122,8 @@ namespace cod.data.Controllers
             IGetEnumDefinitionValuesQuery<PayFrequencyType> getPayFrequencyQuery,
             IGetEnumDefinitionValuesQuery<DishType> getDishTypeQuery,
             IGetEnumDefinitionValuesQuery<SaleTypeDish> getSaleTypeDishQuery,
-            IGetEnumDefinitionValuesQuery<VacationRequestType> getRequestTypeQuery)
+            IGetEnumDefinitionValuesQuery<VacationRequestType> getRequestTypeQuery,
+            IGetEnumDefinitionValuesQuery<ProductType> getProductTypeQuery)
         {
             _getUserTypeQuery = getUserTypeQuery;
             _getPersonTypeQuery = getPersonTypeQuery;
@@ -165,6 +167,13 @@ namespace cod.data.Controllers
             _getDishTypeQuery = getDishTypeQuery;
             _getSaleTypeDishQuery = getSaleTypeDishQuery;
             _getRequestTypeQuery = getRequestTypeQuery;
+            _getProductTypeQuery = getProductTypeQuery;
+        }
+
+        [HttpGet]
+        public List<GetEnumDefinitionValuesModel<int>> GetProductType()
+        {
+            return _getProductTypeQuery.Execute<int>();
         }
 
         [HttpGet]

@@ -11,10 +11,7 @@ namespace cod.application.Sale.Common
     {
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
-        public int CafeteriaId { get; set; }
-        public List<int> Cafeterias { get; set; }
+        public int RouteId { get; set; }
         public SaleType SaleType { get; set; }
-        public int ProductTypeId { get; set; }
-        public int CategoryId { get; set; }
     }
 }

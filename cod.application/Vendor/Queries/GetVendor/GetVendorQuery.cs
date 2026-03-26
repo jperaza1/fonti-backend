@@ -29,15 +29,7 @@ namespace cod.application.Vendor.Queries.GetVendor
             {
                 Id = id,
                 Name = vendor.Name,
-                Rtn = vendor.Rtn,
-                Address = vendor.Address,
-                Seller = vendor.Seller,
-                Phone = vendor.Phone,
-                CreditDays = vendor.CreditDays,
-                HasCredit = vendor.HasCredit,
                 IsActive = vendor.IsActive,
-                HasInvoice = vendor.HasInvoice,
-                RequiresAdminApproval = vendor.RequiresAdminApproval,
             };
         }
     }

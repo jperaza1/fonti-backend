@@ -3,6 +3,7 @@ using cod.application.Common.Extensions;
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
+using cod.application.Route.Common;
 using cod.application.Sale.Common;
 using cod.domain.Features;
 using cod.domain.Operation;
@@ -31,15 +32,11 @@ namespace cod.application.Sale.Commands.CreateSale
 
             var newSale = new domain.Operation.Sale
             {
-                CafeteriaId = model.CafeteriaId,
-                CategoryId = model.CategoryId,
-                CustomerId = model.CustomerId,
+                RouteId = model.RouteId,
                 Amount = model.Amount,
-                ProductTypeId = model.ProductTypeId,
                 SaleDate = model.SaleDate,
                 SaleType = model.SaleType,
-                RegisterId = model.RegisterId,
-                ServicePeriodId = model.ServicePeriodId,
+                SaleDetails = GenerateDetails(model)
             };
 
             _repository.InsertAsync(newSale);
@@ -47,31 +44,36 @@ namespace cod.application.Sale.Commands.CreateSale
             await _repository.CommitAsync();
         }
 
+        public List<domain.Operation.SaleDetail> GenerateDetails(SaleModel model)
+        {
+            var lst = new List<domain.Operation.SaleDetail>();
+            foreach (var item in model.SaleDetails)
+            {
+                var detail = new domain.Operation.SaleDetail
+                {
+                    ProductId = item.ProductId,
+                    Price = item.Price,
+                    Quantity = item.Quantity,
+                    Total = item.Total,
+                    IsActive = true,
+                    CreationTime = Clock.Now,
+                    CreatorUser = _authService.User,
+                };
+                lst.Add(detail);
+            }
+            return lst;
+        }
+
         public void ValidateModel(SaleModel model) 
         {
-            if(model.CafeteriaId <= 0)
-                this._exceptionFactory.Add("cafeteria", this._exceptionFactory.GetMessage("Cafeteria", ExceptionEnums.ExceptionCode.Required));
+            if(model.RouteId <= 0)
+                this._exceptionFactory.Add("route", this._exceptionFactory.GetMessage("Ruta", ExceptionEnums.ExceptionCode.Required));
 
             if(!model.SaleType.IsValid())
                 this._exceptionFactory.Add("saleType", this._exceptionFactory.GetMessage("Tipo de Venta", ExceptionEnums.ExceptionCode.Required));
 
-            if(model.CategoryId <= 0)
-                this._exceptionFactory.Add("category", this._exceptionFactory.GetMessage("Categoria", ExceptionEnums.ExceptionCode.Required));
-
-            if (model.ProductTypeId <= 0)
-                this._exceptionFactory.Add("product", this._exceptionFactory.GetMessage("Producto", ExceptionEnums.ExceptionCode.Required));
-
             if (model.Amount <= 0)
                 this._exceptionFactory.Add("amount", this._exceptionFactory.GetMessage("Monto", ExceptionEnums.ExceptionCode.Required));
-
-            if(!model.RegisterId.HasValue || model.RegisterId.Value <= 0)
-                this._exceptionFactory.Add("register", this._exceptionFactory.GetMessage("Caja", ExceptionEnums.ExceptionCode.Required));
-
-            if (!model.ServicePeriodId.HasValue || model.ServicePeriodId.Value <= 0)
-                this._exceptionFactory.Add("servicePeriod", this._exceptionFactory.GetMessage("Período de servicio", ExceptionEnums.ExceptionCode.Required));
-
-            if (!model.CustomerId.HasValue || model.CustomerId.Value <= 0)
-                this._exceptionFactory.Add("customer", this._exceptionFactory.GetMessage("Cliente", ExceptionEnums.ExceptionCode.Required));
 
             if (model.SaleDate == DateTime.MinValue)
                 this._exceptionFactory.Add("saleDate", this._exceptionFactory.GetMessage("Fecha de Venta", ExceptionEnums.ExceptionCode.Required));

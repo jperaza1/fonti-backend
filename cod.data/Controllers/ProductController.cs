@@ -5,11 +5,10 @@ using cod.application.Product.Commands.DisableProduct;
 using cod.application.Product.Commands.EnableProduct;
 using cod.application.Product.Commands.UpdateProduct;
 using cod.application.Product.Common;
-using cod.application.Product.Queries.GetActiveProducts;
+using cod.application.Product.Queries.GetActiveProductsByType;
 using cod.application.Product.Queries.GetProducts;
-using cod.application.Product.Queries.GetProductsBySpecialService;
-using cod.application.Product.Queries.GetProductsByVendor;
 using cod.application.Product.Queries.GetProdut;
+using cod.domain.Features.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,9 +22,7 @@ namespace cod.data.Controllers
     {
         private readonly IGetProductsQuery _getProductsQuery;
         private readonly IGetProdutQuery _getprodutQuery;
-        private readonly IGetActiveProductsQuery _getActiveProductsQuery;
-        private readonly IGetProductsByVendorQuery _getProductsByVendorQuery;
-        private readonly IGetProductsBySpecialServiceQuery _getProductsBySpecialServiceQuery;
+        private readonly IGetActiveProductsByTypeQuery _getActiveProductsByTypeQuery;
         private readonly ICreateProductCommand _createProductCommand;
         private readonly IUpdateProductCommand _updateProductCommand;
         private readonly IEnableProductCommand _enableProductCommand;
@@ -34,9 +31,7 @@ namespace cod.data.Controllers
         public ProductController(
             IGetProductsQuery getProductsQuery,
             IGetProdutQuery getprodutQuery,
-            IGetActiveProductsQuery getActiveProductsQuery,
-            IGetProductsByVendorQuery getProductsByVendorQuery,
-            IGetProductsBySpecialServiceQuery getProductsBySpecialServiceQuery,
+            IGetActiveProductsByTypeQuery getActiveProductsByTypeQuery,
             ICreateProductCommand createProductCommand,
             IUpdateProductCommand updateProductCommand,
             IEnableProductCommand enableProductCommand,
@@ -44,9 +39,7 @@ namespace cod.data.Controllers
         {
             _getProductsQuery = getProductsQuery;
             _getprodutQuery = getprodutQuery;
-            _getActiveProductsQuery = getActiveProductsQuery;
-            _getProductsByVendorQuery = getProductsByVendorQuery;
-            _getProductsBySpecialServiceQuery = getProductsBySpecialServiceQuery;
+            _getActiveProductsByTypeQuery = getActiveProductsByTypeQuery;
             _createProductCommand = createProductCommand;
             _updateProductCommand = updateProductCommand;
             _enableProductCommand = enableProductCommand;
@@ -66,21 +59,9 @@ namespace cod.data.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ProductModel>> GetAllActive()
+        public async Task<List<ProductModel>> GetAllActive(ProductType productType)
         {
-            return await _getActiveProductsQuery.Execute();
-        }
-
-        [HttpGet]
-        public async Task<List<ProductModel>> GetBySpecialService()
-        {
-            return await _getProductsBySpecialServiceQuery.Execute();
-        }
-
-        [HttpGet]
-        public async Task<List<ProductModel>> GetByVendor(int vendorId)
-        {
-            return await _getProductsByVendorQuery.Execute(vendorId);
+            return await _getActiveProductsByTypeQuery.Execute(productType);
         }
 
         [HttpPost]

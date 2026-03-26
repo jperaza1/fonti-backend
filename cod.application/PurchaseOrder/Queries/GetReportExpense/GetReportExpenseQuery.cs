@@ -33,11 +33,12 @@ namespace cod.application.PurchaseOrder.Queries.GetReportExpense
 
             Expression<Func<domain.Operation.PurchaseOrder, bool>> GetPurchaseOrderByCafeteriaFilter = GetPurchaseOrderByCafeteria(model);
             Expression<Func<domain.Operation.PurchaseOrder, bool>> GetPurchaseOrderByDateFilter = GetPurchaseOrderByDate(model, timezone);
+            Expression<Func<domain.Operation.PurchaseOrder, bool>> GetPurchaseOrderByVendorsFilter = GetPurchaseOrderByVendors(model);
 
             var response = new List<ReportExpenseModel>();
 
             var listPurchaseOrder = await _repository.Query<domain.Operation.PurchaseOrder>()
-                //.Where(GetPurchaseOrderBystatusFilter)
+                .Where(GetPurchaseOrderByVendorsFilter)
                 .Where(GetPurchaseOrderByCafeteriaFilter)
                 .Where(GetPurchaseOrderByDateFilter)
                 .Where(f => 
@@ -90,6 +91,13 @@ namespace cod.application.PurchaseOrder.Queries.GetReportExpense
         {
             if (filterModel.CafeteriaId >= 0)
                 return detail => detail.CafeteriaId == filterModel.CafeteriaId;
+            return detail => true;
+        }
+
+        public static Expression<Func<domain.Operation.PurchaseOrder, bool>> GetPurchaseOrderByVendors(ReportExpenseFilterModel filterModel)
+        {
+            if (filterModel.Vendors.Any())
+                return detail => filterModel.Vendors.Any(g => g == detail.VendorId);
             return detail => true;
         }
 
