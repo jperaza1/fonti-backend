@@ -23,10 +23,10 @@ namespace cod.application.Invoice.Commands.UpdateDocumentId
                 .Where(f => f.Id == model.Id).FirstOrDefaultAsync();
 
 
-            invoice.HasFile = true;
+            /*invoice.HasFile = true;
             invoice.DocumentId = model.DocumentId;
             invoice.FileUploadedUser = model.User;
-            invoice.FileUploadedAt = Clock.Now;
+            invoice.FileUploadedAt = Clock.Now;*/
 
             _repository.UpdateSync(invoice);
 

@@ -15,5 +15,6 @@ namespace cod.domain.Data
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
         public string Name { get; set; }
+        public bool InvoiceRequired { get; set; }
     }
 }

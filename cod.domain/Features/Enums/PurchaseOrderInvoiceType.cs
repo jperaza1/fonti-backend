@@ -32,9 +32,7 @@ namespace cod.domain.Features.Enums
             [Description("Parcialmente pagado")]
             PartiallyPaid,
             [Description("Pagado")]
-            Paid,
-            [Description("Expirado")]
-            Expired
+            Paid
         }
     }
 }

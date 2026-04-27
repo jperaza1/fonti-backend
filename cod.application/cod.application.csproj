@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Factory\UserAlertData\Implementatios\" />
     <Folder Include="Templates\" />
   </ItemGroup>
 

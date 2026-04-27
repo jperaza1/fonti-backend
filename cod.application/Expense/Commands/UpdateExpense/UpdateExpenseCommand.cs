@@ -28,9 +28,7 @@ namespace cod.application.Expense.Commands.UpdateExpense
             expense.SubCategoryId = model.SubCategoryId;
             expense.Notes = model.Notes;
             expense.Date = model.Date;
-            expense.IsInvoice = model.IsInvoice;
             expense.Total = model.Total;
-            expense.RouteId = model.RouteId;
 
             _repository.UpdateSync(expense);
 
@@ -41,9 +39,6 @@ namespace cod.application.Expense.Commands.UpdateExpense
         {
             if (model.CategoryId <= 0)
                 this._exceptionFactory.Add("categoryId", this._exceptionFactory.GetMessage("Categoría", ExceptionEnums.ExceptionCode.Required));
-
-            if (model.RouteId <= 0)
-                this._exceptionFactory.Add("routeId", this._exceptionFactory.GetMessage("Ruta", ExceptionEnums.ExceptionCode.Required));
 
             if (model.SubCategoryId <= 0)
                 this._exceptionFactory.Add("subCategoryId", this._exceptionFactory.GetMessage("Subcategoría", ExceptionEnums.ExceptionCode.Required));

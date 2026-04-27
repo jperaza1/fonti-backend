@@ -13,6 +13,5 @@ namespace cod.domain.Data
     {
         public string Name { get; set; }
         public string Rtn { get; set; }
-        public virtual ICollection<CustomerCafeteria> CustomerCafeterias { get; set; }
     }
 }

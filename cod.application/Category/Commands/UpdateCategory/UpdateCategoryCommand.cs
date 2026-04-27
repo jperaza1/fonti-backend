@@ -71,7 +71,8 @@ namespace cod.application.Category.Commands.UpdateCategory
                 _repository.InsertAsync(new domain.Data.SubCategory
                 {
                     CategoryId = id,
-                    Name = item.Name
+                    Name = item.Name,
+                    InvoiceRequired = item.InvoiceRequired,
                 });
             }
 

@@ -2,7 +2,6 @@
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
-using cod.application.Register.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -49,12 +49,9 @@ namespace cod.application.Users.Commands.UpdateUser
                 .UpdateAsync<ApplicationUserProfile>(profile => profile.Id == id,
                     newValues => new ApplicationUserProfile
                     {
-                        Email = model.Email,
                         UserType = model.UserType,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
-                        PhoneNumber = model.Phone,
-                        CafeteriaId = model.CafeteriaId
                     });
 
             if (model.ChangeUsername)

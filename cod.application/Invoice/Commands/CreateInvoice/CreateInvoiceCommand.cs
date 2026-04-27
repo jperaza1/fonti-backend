@@ -3,7 +3,6 @@ using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
 using cod.application.Invoice.Common;
-using cod.application.PurchaseOrder.Common;
 using cod.domain.Data;
 using cod.domain.Features;
 using cod.domain.Operation;
@@ -40,13 +39,10 @@ namespace cod.application.Invoice.Commands.CreateInvoice
 
             var invoice = new domain.Operation.Invoice
             {
-                PurchaseOrderId = model.PurchaseOrderId,
                 InvoiceNumber = model.InvoiceNumber,
                 Description = model.Description,
                 InvoiceDate = model.InvoiceDate,
-                InvoiceType = InvoiceType.Expense,
-                PaymentType = model.PaymentType,
-                PaymentStatus = model.PaymentType == PaymentType.Cash ? PaymentStatus.Paid : PaymentStatus.Pending,
+                PaymentStatus = model.PaymentStatus,
                 TaxableAmount = Math.Round(model.TaxableAmount, 2),
 
                 TaxAmount = Math.Round(model.TaxAmount, 2),
@@ -54,33 +50,7 @@ namespace cod.application.Invoice.Commands.CreateInvoice
                 Total = Math.Round(model.Total, 2),
                 SubTotal = Math.Round(model.SubTotal, 2),
                 Discount = Math.Round(model.Discount, 2),
-                CategoryId = model.CategoryId
             };
-
-            if (model.PurchaseOrderId.HasValue)
-            {
-                var purchaseOrder = await _repository.AllActive<domain.Operation.PurchaseOrder>()
-                    .Where(f => f.Id == model.PurchaseOrderId).FirstOrDefaultAsync();
-
-                if (purchaseOrder != null)
-                {
-                    invoice.CafeteriaId = purchaseOrder.CafeteriaId;
-                    invoice.VendorId = purchaseOrder.VendorId;
-                    vendor = purchaseOrder.Vendor;
-                }
-
-            }
-            else
-            {
-                vendor = await _repository.Query<domain.Data.Vendor>()
-                        .Where(f => f.Id == model.VendorId).FirstOrDefaultAsync();
-
-                if (vendor != null)
-                {
-                    invoice.CafeteriaId = model.CafeteriaId;
-                    invoice.VendorId = model.VendorId;
-                }
-            }
 
             /*if (model.PaymentType == PaymentType.Credit)
             {

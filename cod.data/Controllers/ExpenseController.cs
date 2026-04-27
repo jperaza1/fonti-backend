@@ -6,6 +6,7 @@ using cod.application.Expense.Common;
 using cod.application.Expense.Queries.GetExpense;
 using cod.application.Expense.Queries.GetExpenses;
 using cod.application.Features.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -52,11 +53,12 @@ namespace cod.data.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ExpenseModel model)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm] ExpenseModel model, IFormFile invoiceFile)
         {
             try
             {
-                await _createExpenseCommand.Execute(model);
+                await _createExpenseCommand.Execute(model, invoiceFile);
                 return Ok(new ResponseModel { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
             }
             catch (Exception exception)

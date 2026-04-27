@@ -30,9 +30,9 @@ namespace cod.application.Invoice.Commands.UpdateInvoiceFile
 
             if(invoice != null)
             {
-                invoice.HasFile = status;
+                /*invoice.HasFile = status;
                 invoice.FileUploadedAt = status ? DateTime.Now : null;
-                invoice.FileUploadedUser = status ? _authService.User : string.Empty;
+                invoice.FileUploadedUser = status ? _authService.User : string.Empty;*/
 
                 _repository.UpdateSync(invoice);
 

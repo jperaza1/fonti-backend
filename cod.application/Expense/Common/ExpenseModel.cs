@@ -1,3 +1,4 @@
+using cod.application.ExpenseInvoice.Common;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,12 +13,10 @@ namespace cod.application.Expense.Common
         public string SubCategoryName { get; set; }
         public int? VendorId { get; set; }
         public string VendorName { get; set; }
-        public int RouteId { get; set; }
-        public string Route { get; set; }
         public string Notes { get; set; }
         public DateTime Date { get; set; }
-        public bool IsInvoice { get; set; }
         public double Total { get; set; }
         public bool IsActive { get; set; }
+        public ExpenseInvoiceModel ExpenseInvoice { get; set; }
     }
 }

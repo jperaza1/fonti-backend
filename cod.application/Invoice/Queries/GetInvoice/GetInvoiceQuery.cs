@@ -3,7 +3,6 @@ using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.application.Invoice.Common;
 using cod.application.Payment.Common;
-using cod.application.PurchaseOrder.Common;
 using cod.domain.Features;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,18 +28,8 @@ namespace cod.application.Invoice.Queries.GetInvoice
                     f.Id,
                     f.InvoiceDate,
                     f.InvoiceNumber,
-                    f.InvoiceType,
                     f.PaymentStatus,
-                    f.PaymentType,
-                    f.PurchaseOrderId,
-                    f.CategoryId,
-                    Category = f.Category.Name,
-                    PurchaseOrder = f.PurchaseOrderId.HasValue ? f.PurchaseOrder.Reference : string.Empty,
-                    Vendor = f.VendorId.HasValue ? f.Vendor.Name : string.Empty,
-                    f.VendorId,
                     f.Description,
-                    Cafeteria = f.Cafeteria.Name,
-                    f.CafeteriaId,
                     f.TaxableAmount,
                     f.ExemptAmount,
                     f.Discount,
@@ -52,10 +41,6 @@ namespace cod.application.Invoice.Queries.GetInvoice
                     f.PaidAt,
                     f.PaidUser,
                     f.Balance,
-                    f.HasFile,
-                    f.FileUploadedAt,
-                    f.FileUploadedUser,
-                    f.DocumentId,
                     RemainingDays = f.Balance == 0 ? 0 : f.DueDate.HasValue ? (f.DueDate.Value.Date - Clock.Now.Date).TotalDays : 0,
                     Payments = f.Payments.Select(x => new
                     {
@@ -69,9 +54,6 @@ namespace cod.application.Invoice.Queries.GetInvoice
             return await baseQuery.Select(f => new InvoiceModel
             {
                 Id = f.Id,
-                PurchaseOrderId = f.PurchaseOrderId,
-                PurchaseOrder = f.PurchaseOrder,
-                Vendor = f.Vendor,
                 InvoiceNumber = f.InvoiceNumber,
                 Description = f.Description,
                 InvoiceDate = f.InvoiceDate,
@@ -81,27 +63,14 @@ namespace cod.application.Invoice.Queries.GetInvoice
                 SubTotal = f.SubTotal,
                 TaxAmount = f.TaxAmount,
                 Total = f.Total,
-                CategoryId = f.CategoryId,
-                Category = f.Category,
                 Balance = f.Balance,
                 DueDate = f.DueDate,
                 Paid = f.Paid,
                 PaidAt = f.PaidAt,
                 PaidUser = f.PaidUser,
-                PaymentType = f.PaymentType,
-                PaymentTypeName = f.PaymentType.GetEnumDescription(),
-                InvoiceType = f.InvoiceType,
-                InvoiceTypeName = f.InvoiceType.GetEnumDescription(),
                 PaymentStatus = f.PaymentStatus,
                 PaymentStatusName = f.PaymentStatus.GetEnumDescription(),
                 RemainingDays = f.RemainingDays,
-                Cafeteria = f.Cafeteria,
-                CafeteriaId = f.CafeteriaId,
-                VendorId = f.VendorId,
-                HasFile = f.HasFile,
-                DocumentId = f.DocumentId,
-                FileUploadedUser = f.FileUploadedUser,
-                FileUploadedAt = f.FileUploadedAt,
                 Payments = f.Payments.Select(x => new PaymentModel
                 {
                     InvoiceId = x.Id,

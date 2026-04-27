@@ -31,14 +31,6 @@ namespace cod.application.Customer.Commands.DisableCustomer
                     IsActive = false
                 });
 
-            var customerCafeteria = await _repository.Query<domain.Data.CustomerCafeteria>()
-                .Where(x => x.CustomerId == id).ToListAsync();
-
-            foreach (var customer in customerCafeteria)
-            {
-                _repository.DeleteSync(customer);
-            }
-
             await _repository.CommitAsync();
         }
     }

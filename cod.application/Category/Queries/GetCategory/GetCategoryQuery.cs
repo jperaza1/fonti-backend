@@ -27,7 +27,8 @@ namespace cod.application.Category.Queries.GetCategory
                     {
                         Id = g.Id,
                         CategoryId = g.CategoryId,
-                        Name = g.Name
+                        Name = g.Name,
+                        InvoiceRequired = g.InvoiceRequired,
                     }).ToList()
                 }).FirstOrDefaultAsync();
 

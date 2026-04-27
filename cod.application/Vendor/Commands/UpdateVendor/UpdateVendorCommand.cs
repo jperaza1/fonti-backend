@@ -1,5 +1,4 @@
-﻿using cod.application.Cafeteria.Commands;
-using cod.application.Common.Extensions;
+﻿using cod.application.Common.Extensions;
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;

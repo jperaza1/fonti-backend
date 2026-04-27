@@ -60,12 +60,9 @@ namespace cod.application.Users.Commands.CreateUser
                 ApplicationUserProfile userProfile = new ApplicationUserProfile
                 {
                     UserId = user.Id,
-                    Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    PhoneNumber = model.Phone,
                     UserType = model.UserType,
-                    CafeteriaId = model.CafeteriaId
                 };
 
                 _repository.InsertAsync(userProfile);
