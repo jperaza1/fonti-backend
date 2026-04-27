@@ -83,10 +83,8 @@ namespace cod.application.Tenant.Commands.CreateTenant
                 ApplicationUserProfile applicationUserProfile = new ApplicationUserProfile
                 {
                     UserId = user.Id,
-                    Email = tenantUser.Email,
                     UserType = DomainEnums.UserType.General,
                     FirstName = createTenantModel.Name,
-                    PhoneNumber = createTenantModel.PhoneNumber,
                     TenantId = tenant.Id
                 };
 

@@ -763,9 +763,6 @@ namespace cod.persistence.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("CafeteriaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
@@ -776,9 +773,6 @@ namespace cod.persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EnableDateTime")
@@ -802,9 +796,6 @@ namespace cod.persistence.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("TenantId")
                         .HasColumnType("int");
 
@@ -816,8 +807,6 @@ namespace cod.persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CafeteriaId");
 
                     b.HasIndex("TenantId");
 
@@ -3132,10 +3121,6 @@ namespace cod.persistence.Migrations
 
             modelBuilder.Entity("cod.domain.Authorization.ApplicationUserProfile", b =>
                 {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
-                        .WithMany()
-                        .HasForeignKey("CafeteriaId");
-
                     b.HasOne("cod.domain.Authorization.ApplicationTenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId");
@@ -3145,8 +3130,6 @@ namespace cod.persistence.Migrations
                         .HasForeignKey("cod.domain.Authorization.ApplicationUserProfile", "UserId");
 
                     b.Navigation("ApplicationUser");
-
-                    b.Navigation("Cafeteria");
 
                     b.Navigation("Tenant");
                 });
