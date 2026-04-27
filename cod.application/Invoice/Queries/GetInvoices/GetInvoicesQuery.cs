@@ -3,7 +3,6 @@ using cod.application.Common.Extensions;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.application.Invoice.Common;
-using cod.application.PurchaseOrder.Queries.GetPurchasesOrder;
 using cod.domain.Data;
 using cod.domain.Features;
 using cod.domain.Features.Enums;

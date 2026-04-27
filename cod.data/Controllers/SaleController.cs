@@ -1,6 +1,4 @@
 ﻿using cod.application.Features.Models;
-using cod.application.PurchaseOrder.Common;
-using cod.application.PurchaseOrder.Queries.GetPurchasesOrder;
 using cod.application.Sale.Commands.CreateSale;
 using cod.application.Sale.Commands.DisableSale;
 using cod.application.Sale.Commands.EnableSale;

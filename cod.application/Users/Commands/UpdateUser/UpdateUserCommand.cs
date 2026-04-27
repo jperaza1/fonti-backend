@@ -49,12 +49,9 @@ namespace cod.application.Users.Commands.UpdateUser
                 .UpdateAsync<ApplicationUserProfile>(profile => profile.Id == id,
                     newValues => new ApplicationUserProfile
                     {
-                        Email = model.Email,
                         UserType = model.UserType,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
-                        PhoneNumber = model.Phone,
-                        CafeteriaId = model.CafeteriaId
                     });
 
             if (model.ChangeUsername)
@@ -177,8 +174,6 @@ namespace cod.application.Users.Commands.UpdateUser
                 this._exceptionFactory.Add("firstName", this._exceptionFactory.GetMessage("firstName", ExceptionEnums.ExceptionCode.Required));
             if (model.LastName.NullOrEmpty())
                 this._exceptionFactory.Add("lastName", this._exceptionFactory.GetMessage("lastName", ExceptionEnums.ExceptionCode.Required));
-            if (model.Email.NullOrEmpty())
-                this._exceptionFactory.Add("email", this._exceptionFactory.GetMessage("email", ExceptionEnums.ExceptionCode.Required));
             if (model.ChangeUsername && model.NewUserName.NullOrEmpty())
                 this._exceptionFactory.Add("newUserName", this._exceptionFactory.GetMessage("New Username", ExceptionEnums.ExceptionCode.Required));
             if (model.ChangePassword && model.NewPassword.NullOrEmpty())

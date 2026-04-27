@@ -6,8 +6,6 @@ using cod.application.Invoice.Common;
 using cod.application.Invoice.Queries.GetInvoice;
 using cod.application.Invoice.Queries.GetInvoices;
 using cod.application.Invoice.Queries.GetInvoicesByPurchaseOrder;
-using cod.application.PurchaseOrder.Common;
-using cod.application.PurchaseOrder.Queries.GetPurchasesOrder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

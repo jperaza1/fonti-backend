@@ -34,7 +34,6 @@ namespace cod.application.Users.Commands.CreateUser
 
             ApplicationUser user = new ApplicationUser
             {
-                Email = model.Email,
                 TenantId = _authService.TenantId,
                 UserName = model.Username,
                 SecurityStamp = Guid.NewGuid().ToString()
@@ -60,12 +59,9 @@ namespace cod.application.Users.Commands.CreateUser
                 ApplicationUserProfile userProfile = new ApplicationUserProfile
                 {
                     UserId = user.Id,
-                    Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    PhoneNumber = model.Phone,
                     UserType = model.UserType,
-                    CafeteriaId = model.CafeteriaId
                 };
 
                 _repository.InsertAsync(userProfile);
@@ -117,20 +113,12 @@ namespace cod.application.Users.Commands.CreateUser
                 this._exceptionFactory.Add("firstName", this._exceptionFactory.GetMessage("firstName", ExceptionEnums.ExceptionCode.Required));
             if (model.LastName.NullOrEmpty())
                 this._exceptionFactory.Add("lastName", this._exceptionFactory.GetMessage("lastName", ExceptionEnums.ExceptionCode.Required));
-            if (model.Email.NullOrEmpty())
-                this._exceptionFactory.Add("email", this._exceptionFactory.GetMessage("email", ExceptionEnums.ExceptionCode.Required));
-
-            if(model.UserType == DomainEnums.UserType.Supervisor && (!model.CafeteriaId.HasValue || model.CafeteriaId <= 0))
-                this._exceptionFactory.Add("cafeteria", this._exceptionFactory.GetMessage("Cafeteria", ExceptionEnums.ExceptionCode.Required));
+            
 
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "USER", this._exceptionFactory.Exceptions);
 
-            ApplicationUser sosUser = await _userManager.FindByEmailAsync(model.Email);
-            if (sosUser != null)
-                this._exceptionFactory.Add("email", this._exceptionFactory.GetMessage("email", ExceptionEnums.ExceptionCode.EmailDuplicate));
-
-            sosUser = await _userManager.FindByNameAsync(model.Username);
+            ApplicationUser sosUser = await _userManager.FindByNameAsync(model.Username);
             if (sosUser != null)
                 this._exceptionFactory.Add("username", this._exceptionFactory.GetMessage("username", ExceptionEnums.ExceptionCode.Duplicate));
 

@@ -1,7 +1,6 @@
 ﻿using cod.application.Cafeteria.Commands;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
-using cod.application.PurchaseOrder.Queries.GetPurchasesOrder;
 using cod.application.Register.Common;
 using cod.domain.Features.Enums;
 using DocuSign.eSign.Model;

@@ -6,8 +6,6 @@ using cod.application.Employee.Queries.GetEmployee;
 using cod.application.Employee.Queries.GetEmployees;
 using cod.application.Employee.Queries.GetVacationRequestPdf;
 using cod.application.Features.Models;
-using cod.application.PurchaseOrder.Common;
-using cod.application.PurchaseOrder.Queries.GetPurchasesOrder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;

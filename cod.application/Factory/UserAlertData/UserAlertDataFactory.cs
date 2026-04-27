@@ -30,28 +30,10 @@ namespace cod.application.Factory.UserAlertData
             {
                 case DomainEnums.UserAlertOption.PendingInvoice:
                     return new PendingInvoiceDataQuery(_repository);
-                case DomainEnums.UserAlertOption.PendingPurchaseOrder:
-                    return new PendingPurchaseOrderDataQuery(_repository, _sessionService);
-                case DomainEnums.UserAlertOption.PendingPurchaseOrderAdmin:
-                    return new PendingPurchaseOrderAdminDataQuery(_repository);
-                case DomainEnums.UserAlertOption.ApprovedPurchaseOrder:
-                    return new ApprovedPurchaseOrderDataQuery(_repository, _sessionService);
-                case DomainEnums.UserAlertOption.ApprovedPurchaseOrderAdmin:
-                    return new ApprovedPurchaseOrderAdminDataQuery(_repository);
-                case DomainEnums.UserAlertOption.ProcessingPurchaseOrder:
-                    return new ProcessingPurchaseOrderDataQuery(_repository, _sessionService);
-                case DomainEnums.UserAlertOption.ProcessingPurchaseOrderAdmin:
-                    return new ProcessingPurchaseOrderAdminDataQuery(_repository);
-                case DomainEnums.UserAlertOption.PendingReviewPurchaseOrder:
-                    return new PendingReviewPurchaseOrderDataQuery(_repository,_sessionService);
-                case DomainEnums.UserAlertOption.PendingReviewPurchaseOrderAdmin:
-                    return new PendingReviewPurchaseOrderAdminDataQuery(_repository);
                 case DomainEnums.UserAlertOption.BirthdaysOfTheWeek:
                     return new BirthdaysOfTheWeekDataQuery(_repository);
                 case DomainEnums.UserAlertOption.ContractsDueToExpire:
                     return new ContractsDueToExpireDataQuery(_repository);
-                case DomainEnums.UserAlertOption.TrailPeriodExpire:
-                    return new TrailPeriodExpireDataQuery(_repository);
             }
             return null;
         }
