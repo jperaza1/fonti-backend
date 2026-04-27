@@ -1,6 +1,7 @@
 ﻿using cod.application.Customer.Common;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
+using cod.application.Register.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

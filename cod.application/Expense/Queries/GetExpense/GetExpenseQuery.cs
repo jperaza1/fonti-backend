@@ -25,8 +25,10 @@ namespace cod.application.Expense.Queries.GetExpense
                     CategoryName = f.Category.Name,
                     SubCategoryId = f.SubCategoryId,
                     SubCategoryName = f.SubCateogy.Name,
+                    RouteId = f.RouteId,
                     Notes = f.Notes,
                     Date = f.Date,
+                    IsInvoice = f.IsInvoice,
                     Total = f.Total,
                     IsActive = f.IsActive,
                     VendorId = f.VendorId

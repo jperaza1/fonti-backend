@@ -19,7 +19,7 @@ namespace cod.application.Customer.Commands.EnableCustomer
 
         public async Task Execute(int id)
         {
-            var exist = await _repository.AnyAsync<domain.Data.Customer>(x => x.Id == id);
+            var exist = await _repository.AnyAsync<domain.Data.Register>(x => x.Id == id);
 
             if (!exist)
                 throw new ApplicationException("CLIENTE NO EXISTE", "CLIENTE");

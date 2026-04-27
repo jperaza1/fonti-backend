@@ -25,6 +25,7 @@ namespace cod.application.Users.Queries.GetActiveUsers
                 .Select(user => new GetUsersModel
                 {
                     Id = user.Id,
+                    Email = user.Email,
                     IsActive = user.IsActive,
                     LastName = user.LastName,
                     FirstName = user.FirstName,

@@ -5,6 +5,9 @@ using cod.application.Invoice.Commands.UpdateInvoiceFile;
 using cod.application.Invoice.Common;
 using cod.application.Invoice.Queries.GetInvoice;
 using cod.application.Invoice.Queries.GetInvoices;
+using cod.application.Invoice.Queries.GetInvoicesByPurchaseOrder;
+using cod.application.PurchaseOrder.Common;
+using cod.application.PurchaseOrder.Queries.GetPurchasesOrder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +21,14 @@ namespace cod.data.Controllers
     public class InvoiceController : BaseController
     {
         private readonly IGetInvoiceQuery _getInvoiceQuery;
+        private readonly IGetInvoicesByPurchaseOrderQuery _getInvoicesByPurchaseOrderQuery;
         private readonly IGetInvoicesQuery _getInvoicesQuery;
         private readonly ICreateInvoiceCommand _createInvoiceCommand;
         private readonly IUpdateDocumentIdCommand _updateDocumentIdCommand;
         private readonly IUpdateInvoiceFileCommand _updateInvoiceFileCommand;
         public InvoiceController(
             IGetInvoiceQuery invoiceQuery,
+            IGetInvoicesByPurchaseOrderQuery getInvoicesByPurchaseOrderQuery,
             IGetInvoicesQuery getInvoicesQuery,
             ICreateInvoiceCommand createInvoiceCommand,
             IUpdateDocumentIdCommand updateDocumentIdCommand,
@@ -31,6 +36,7 @@ namespace cod.data.Controllers
         {
             _getInvoiceQuery = invoiceQuery;
             _getInvoicesQuery = getInvoicesQuery;
+            _getInvoicesByPurchaseOrderQuery = getInvoicesByPurchaseOrderQuery;
             _createInvoiceCommand = createInvoiceCommand;
             _updateDocumentIdCommand = updateDocumentIdCommand;
             _updateInvoiceFileCommand = updateInvoiceFileCommand;
@@ -61,6 +67,12 @@ namespace cod.data.Controllers
         public async Task<InvoiceModel> GetById(int id)
         {
             return await _getInvoiceQuery.Execute(id);
+        }
+
+        [HttpGet]
+        public async Task<List<InvoiceModel>> GetByPurchaseOrder(int id)
+        {
+            return await _getInvoicesByPurchaseOrderQuery.Execute(id);
         }
 
         [HttpPost]

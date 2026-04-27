@@ -32,12 +32,15 @@ namespace cod.application.Users.Queries.GetUserById
             return new GetUserByIdModel
             {
                 Id = profile.Id,
+                Email = profile.Email,
                 LastName = profile.LastName,
                 FirstName = profile.FirstName,
+                Phone = profile.PhoneNumber,
                 UserType = profile.UserType,
                 IsActive = profile.IsActive,
                 UserAlerts = userAlerts,
                 RoleIds = userRoles,
+                CafeteriaId = profile.CafeteriaId
             };
         }
     }

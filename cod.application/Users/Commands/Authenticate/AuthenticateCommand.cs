@@ -107,6 +107,7 @@ namespace cod.application.Users.Commands.Authenticate
                     TenantId = userTenant.Id,
                     Expiration = userTenant.DemoTerminationDate,
                     UserType = userProfile.IsNull() ? DomainEnums.UserType.General : userProfile.UserType,
+                    CafeteriaId = userProfile.CafeteriaId
                 },
             };
 

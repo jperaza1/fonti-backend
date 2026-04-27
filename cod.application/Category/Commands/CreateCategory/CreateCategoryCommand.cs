@@ -48,7 +48,6 @@ namespace cod.application.Category.Commands.CreateCategory
                 list.Add(new domain.Data.SubCategory
                 {
                     Name = item.Name,
-                    InvoiceRequired = item.InvoiceRequired,
                     IsActive = true,
                     CreationTime = Clock.Now,
                     CreatorUser = _authService.User,

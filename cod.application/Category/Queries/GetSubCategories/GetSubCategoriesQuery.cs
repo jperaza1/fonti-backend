@@ -23,7 +23,6 @@ namespace cod.application.Category.Queries.GetSubCategories
                     Id = g.Id,
                     CategoryId = g.CategoryId,
                     Name = g.Name,
-                    InvoiceRequired = g.InvoiceRequired
                 }).ToListAsync();
         }
     }

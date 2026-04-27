@@ -29,6 +29,7 @@ namespace cod.application.Expense.Queries.GetExpenses
             Expression<Func<domain.Operation.Expense, bool>> byDate = GetExpenseByDate(filterModel, timezone);
             Expression<Func<domain.Operation.Expense, bool>> byCategory = GetExpenseByCategory(filterModel);
             Expression<Func<domain.Operation.Expense, bool>> bySubCategory = GetExpenseBySubCategory(filterModel);
+            Expression<Func<domain.Operation.Expense, bool>> byRoute = GetExpenseByRoute(filterModel);
 
             return await _repository.Query<domain.Operation.Expense>()
                 .Where(byDate)
@@ -42,9 +43,12 @@ namespace cod.application.Expense.Queries.GetExpenses
                     SubCategoryId = f.SubCategoryId,
                     SubCategoryName = f.SubCateogy.Name,
                     VendorId = f.VendorId,
+                    RouteId = f.RouteId,
+                    Route = f.Routes.Name,
                     VendorName = f.VendorId.HasValue ? f.Vendors.Name : string.Empty,
                     Notes = f.Notes,
                     Date = f.Date,
+                    IsInvoice = f.IsInvoice,
                     Total = f.Total,
                     IsActive = f.IsActive,
                 }).ToListAsync();
@@ -54,6 +58,13 @@ namespace cod.application.Expense.Queries.GetExpenses
         {
             if (filterModel.CategoryId > 0)
                 return e => e.CategoryId == filterModel.CategoryId;
+            return e => true;
+        }
+
+        public static Expression<Func<domain.Operation.Expense, bool>> GetExpenseByRoute(ExpenseFilterModel filterModel)
+        {
+            if (filterModel.RouteId > 0)
+                return e => e.RouteId == filterModel.RouteId;
             return e => true;
         }
 

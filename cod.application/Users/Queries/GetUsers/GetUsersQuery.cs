@@ -19,12 +19,14 @@ namespace cod.application.Users.Queries.GetUsers
             return _repository.Query<ApplicationUserProfile>().Select(user => new GetUsersModel
             {
                 Id = user.Id,
+                Email = user.Email,
                 IsActive = user.IsActive,
                 LastName = user.LastName,
                 FirstName = user.FirstName,
                 UserTypeText = user.UserType.ToString(),
                 Carrier = string.Empty,
                 UserId = user.UserId,
+                Cafeteria = user.CafeteriaId.HasValue ? user.Cafeteria.Name : string.Empty
             }).ToListAsync();
         }
     }

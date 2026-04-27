@@ -1,37 +1,21 @@
-using cod.application.Expense.Common;
-using cod.application.ExpenseInvoice.Common;
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
-using cod.domain.Features;
-using Microsoft.AspNetCore.Http;
+using cod.application.Expense.Common;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using static cod.domain.Features.Enums.DomainEnums;
 using ApplicationException = cod.application.Features.Exception.ApplicationException;
 
 namespace cod.application.Expense.Commands.CreateExpense
 {
     public class CreateExpenseCommand : BaseCommand, ICreateExpenseCommand
     {
-        private readonly AuthService _authService;
-        private readonly IConfigurationService _configurationService;
-        public CreateExpenseCommand(
-            IRepository repository, 
-            IExceptionFactory exceptionFactory,
-            AuthService authService,
-            IConfigurationService configurationService) : base(repository, exceptionFactory)
+        public CreateExpenseCommand(IRepository repository, IExceptionFactory exceptionFactory) : base(repository, exceptionFactory)
         {
-            _authService = authService;
-            _configurationService = configurationService;
         }
 
-        public async Task Execute(ExpenseModel model, IFormFile invoiceFile = null)
+        public async Task Execute(ExpenseModel model)
         {
             await ValidateModel(model);
 
@@ -41,66 +25,15 @@ namespace cod.application.Expense.Commands.CreateExpense
                 SubCategoryId = model.SubCategoryId,
                 Notes = model.Notes,
                 Date = model.Date,
+                IsInvoice = model.IsInvoice,
                 Total = model.Total,
                 VendorId = model.VendorId,
+                RouteId = model.RouteId,
             };
-
-            if (model.ExpenseInvoice != null)
-            {
-                entity.Invoice = CreateInvoice(model, _authService);
-            }
 
             _repository.InsertAsync(entity);
 
             await _repository.CommitAsync();
-
-            var documentBaseUrl = await _configurationService.Get<string>("BASE_URL_DOCUMENT");
-
-            if (invoiceFile != null)
-            {
-                using var httpClient = new HttpClient();
-
-                var attachementType = "EXPENSE";
-                var key = entity.Id;
-
-                var url = $"{documentBaseUrl}Attachment/Upload" +
-                          $"?attachmentType={attachementType}" +
-                          $"&tenantId={_authService.TenantId}" +
-                          $"&key={key}" +
-                          $"&entity={attachementType}" +
-                          $"&user={_authService.User}";
-
-                using var content = new MultipartFormDataContent();
-
-                using var stream = invoiceFile.OpenReadStream();
-                using var fileContent = new StreamContent(stream);
-
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue(invoiceFile.ContentType ?? "application/octet-stream");
-
-                content.Add(fileContent, "file", invoiceFile.FileName);
-
-                var response = await httpClient.PostAsync(url, content);
-            }
-        }
-
-        public static domain.Operation.ExpenseInvoice CreateInvoice(ExpenseModel model, AuthService _authService)
-        {
-            var invoice = new domain.Operation.ExpenseInvoice
-            {
-                InvoiceNumber = model.ExpenseInvoice.InvoiceNumber,
-                InvoiceDate = model.ExpenseInvoice.InvoiceDate,
-                TaxableAmount = Math.Round(model.ExpenseInvoice.TaxableAmount, 2),
-                TaxAmount = Math.Round(model.ExpenseInvoice.TaxAmount, 2),
-                ExemptAmount = Math.Round(model.ExpenseInvoice.ExemptAmount, 2),
-                Total = Math.Round(model.Total, 2),
-                SubTotal = Math.Round(model.ExpenseInvoice.SubTotal, 2),
-                Discount = Math.Round(model.ExpenseInvoice.Discount, 2),
-                CreationTime = Clock.Now,
-                CreatorUser = _authService.User,
-                IsActive = true,
-            };
-
-            return invoice;
         }
 
         public async Task ValidateModel(ExpenseModel model)

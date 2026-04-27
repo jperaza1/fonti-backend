@@ -6,7 +6,9 @@ using cod.application.Customer.Common;
 using cod.application.Customer.Queries.GetActiveCustomers;
 using cod.application.Customer.Queries.GetCustomer;
 using cod.application.Customer.Queries.GetCustomers;
+using cod.application.Customer.Queries.GetCustomersByCafeteria;
 using cod.application.Features.Models;
+using cod.application.Register.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,6 +20,7 @@ namespace cod.data.Controllers
     [ApiController]
     public class CustomerController : BaseController
     {
+        private readonly IGetCustomersByCafeteriaQuery _getCustomersByCafeteriaQuery;
         private readonly IGetCustomerQuery _getCustomerQuery;
         private readonly IGetCustomersQuery _getCustomersQuery;
         private readonly IGetActiveCustomersQuery _getActiveCustomersQuery;
@@ -26,7 +29,7 @@ namespace cod.data.Controllers
         private readonly IEnableCustomerCommand _enableCustomerCommand;
         private readonly IDisableCustomerCommand _disableCustomerCommand;
 
-        public CustomerController(
+        public CustomerController(IGetCustomersByCafeteriaQuery getCustomersByCafeteriaQuery,
             IGetCustomerQuery getCustomerQuery,
             IGetCustomersQuery getCustomersQuery,
             IGetActiveCustomersQuery getActiveCustomersQuery,
@@ -38,6 +41,7 @@ namespace cod.data.Controllers
             _getCustomerQuery = getCustomerQuery;
             _getCustomersQuery = getCustomersQuery;
             _getActiveCustomersQuery = getActiveCustomersQuery;
+            _getCustomersByCafeteriaQuery = getCustomersByCafeteriaQuery;
             _createCustomerCommand = createCustomerCommand;
             _updateCustomerCommand = updateCustomerCommand;
             _enableCustomerCommand = enableCustomerCommand;
@@ -60,6 +64,12 @@ namespace cod.data.Controllers
         public async Task<List<CustomerModel>> GetAllActive()
         {
             return await _getActiveCustomersQuery.Execute();
+        }
+
+        [HttpGet]
+        public async Task<List<CustomerModel>> GetByCafeteria(int cafeteriaId)
+        {
+            return await _getCustomersByCafeteriaQuery.Execute(cafeteriaId);
         }
 
         [HttpPost]
