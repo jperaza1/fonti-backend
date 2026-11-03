@@ -40,6 +40,8 @@ namespace cod.application.Route.Commands.UpdateRoute
             if (route == null) throw new ApplicationException("Ruta no existe", "RUTA", this._exceptionFactory.Exceptions);
 
             route.Name = model.Name;
+            route.Order = model.Order;
+            route.DeliversRegalia = model.DeliversRegalia;
 
             _repository.UpdateSync(route);
 
@@ -84,6 +86,14 @@ namespace cod.application.Route.Commands.UpdateRoute
         {
             if (model.Name.NullOrEmpty())
                 this._exceptionFactory.Add("name", this._exceptionFactory.GetMessage("Nombre", ExceptionEnums.ExceptionCode.Required));
+
+            if (model.ProductRoutePrices != null &&
+                model.ProductRoutePrices.Any(item => item.Price < 0 || (!model.DeliversRegalia && item.Price <= 0)))
+            {
+                this._exceptionFactory.Add("price", model.DeliversRegalia
+                    ? "El precio no puede ser negativo"
+                    : "El precio debe ser mayor a 0");
+            }
 
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "RUTA", this._exceptionFactory.Exceptions);

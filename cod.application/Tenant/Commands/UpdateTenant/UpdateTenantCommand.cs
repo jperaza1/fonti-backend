@@ -29,6 +29,8 @@ namespace cod.application.Tenant.Commands.UpdateTenant
                 newValuesTenants => new ApplicationTenant
                 {
                     Name = model.Name,
+                    CompanyName = model.CompanyName,
+                    Rtn = model.Rtn,
                     Address = model.Address,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,

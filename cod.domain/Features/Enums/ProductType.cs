@@ -12,6 +12,8 @@ namespace cod.domain.Features.Enums
         [Description("Venta")]
         Sale = 1,
         [Description("Compra")]
-        Purchase
+        Purchase = 2,
+        [Description("Materia prima")]
+        RawMaterial = 3
     }
 }

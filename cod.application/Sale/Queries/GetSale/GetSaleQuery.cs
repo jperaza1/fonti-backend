@@ -31,6 +31,8 @@ namespace cod.application.Sale.Queries.GetSale
                     f.SaleType,
                     f.Amount,
                     f.IsActive,
+                    f.CustomerId,
+                    CustomerName = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
                     SaleDetails = f.SaleDetails.Select(g => new
                     {
                         g.Id,
@@ -53,6 +55,8 @@ namespace cod.application.Sale.Queries.GetSale
                 SaleType = f.SaleType,
                 SaleTypeName = f.SaleType.GetEnumDescription(),
                 IsActive = f.IsActive,
+                CustomerId = f.CustomerId,
+                CustomerName = f.CustomerName,
                 SaleDetails = f.SaleDetails.Select(g => new SaleDetailModel
                 {
                     Id = g.Id,

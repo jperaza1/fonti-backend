@@ -26,6 +26,8 @@ namespace cod.application.Route.Queries.GetRoute
                     Id = f.Id,
                     Name = f.Name,
                     IsActive = f.IsActive,
+                    Order = f.Order,
+                    DeliversRegalia = f.DeliversRegalia,
                     ProductRoutePrices = f.ProductRoutePrices.Select(g => new ProductRoutePricesModel
                     {
                         Id = g.Id,

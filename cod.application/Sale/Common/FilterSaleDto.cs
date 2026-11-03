@@ -11,7 +11,7 @@ namespace cod.application.Sale.Common
     {
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
-        public int RouteId { get; set; }
+        public int? RouteId { get; set; }
         public SaleType SaleType { get; set; }
     }
 }

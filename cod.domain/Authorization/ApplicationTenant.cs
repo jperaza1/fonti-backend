@@ -11,6 +11,8 @@ namespace cod.domain.Authorization
     public class ApplicationTenant : Entity
     {
         public string Name { get; set; }
+        public string CompanyName { get; set; }
+        public string Rtn { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Address { get; set; }

@@ -32,7 +32,7 @@ namespace cod.application.Vendor.Commands.CreateVendor
             await ValidateModel(model);
             var newVendor = new domain.Data.Vendor
             {
-                Name = model.Name,
+                Name = model.Name.ToUpper(),
             };
 
             _repository.InsertAsync(newVendor);

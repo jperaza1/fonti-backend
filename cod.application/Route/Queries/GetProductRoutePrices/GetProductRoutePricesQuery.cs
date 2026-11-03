@@ -27,7 +27,10 @@ namespace cod.application.Route.Queries.GetProductRoutePrices
                 ProductId = g.ProductId,
                 ProductName = g.Product.Name,
                 Price = g.Price,
-            }).ToListAsync();
+            })
+                .OrderBy(f => f.ProductName)
+                .OrderByDescending(f => f.Price)
+                .ToListAsync();
         }
     }
 }

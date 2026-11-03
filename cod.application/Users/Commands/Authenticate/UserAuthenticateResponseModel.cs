@@ -14,6 +14,7 @@ namespace cod.application.Users.Commands.Authenticate
         public int? TenantId { get; set; }
         public int? CafeteriaId { get; set; }
         public DomainEnums.UserType UserType { get; set; }
+        public List<int> Routes { get; set; }
         public DateTime? Expiration { get; set; }
         public IList<string> Permissions { get; set; }
     }

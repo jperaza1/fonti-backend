@@ -52,6 +52,7 @@ namespace cod.application.Users.Commands.UpdateUser
                         UserType = model.UserType,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
+                        Routes = UserRoutes.Serialize(model.UserType, model.Routes),
                     });
 
             if (model.ChangeUsername)
@@ -178,6 +179,9 @@ namespace cod.application.Users.Commands.UpdateUser
                 this._exceptionFactory.Add("newUserName", this._exceptionFactory.GetMessage("New Username", ExceptionEnums.ExceptionCode.Required));
             if (model.ChangePassword && model.NewPassword.NullOrEmpty())
                 this._exceptionFactory.Add("newPassword", this._exceptionFactory.GetMessage("New Password", ExceptionEnums.ExceptionCode.Required));
+
+            await UserRoutes.Validate(_repository, _exceptionFactory, model.UserType, model.Routes);
+
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "USER", this._exceptionFactory.Exceptions);
 

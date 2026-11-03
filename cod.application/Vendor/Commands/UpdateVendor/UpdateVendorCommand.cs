@@ -27,7 +27,15 @@ namespace cod.application.Vendor.Commands.UpdateVendor
                 product => product.Id == vendorId,
                 product => new domain.Data.Vendor
                 {
-                    Name = model.Name,
+                    Name = model.Name.ToUpper(),
+                    Email = model.Email,
+                    BankId = model.BankId,
+                    BankAccount = model.BankAccount,
+                    TypeAccountId = model.TypeAccountId,
+                    C1 = model.C1,
+                    C2 = model.C2,
+                    BankAccountHolder = model.BankAccountHolder,
+                    IdentificationHolder = model.IdentificationHolder
                 });
 
             await _repository.CommitAsync();
@@ -52,6 +60,36 @@ namespace cod.application.Vendor.Commands.UpdateVendor
 
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("Transacción cancelada", "CAFETERIA", this._exceptionFactory.Exceptions);
+
+            if (model.BankId.HasValue || !string.IsNullOrEmpty(model.BankAccount) || model.TypeAccountId.HasValue)
+            {
+                if (string.IsNullOrEmpty(model.BankAccountHolder))
+                    this._exceptionFactory.Add("bankAccountHolder", this._exceptionFactory.GetMessage("Titular de la cuenta bancaria", ExceptionEnums.ExceptionCode.Required));
+
+                if (!model.BankId.HasValue || model.BankId.Value <= 0)
+                    this._exceptionFactory.Add("bank", this._exceptionFactory.GetMessage("Banco", ExceptionEnums.ExceptionCode.Required));
+
+                if (string.IsNullOrEmpty(model.BankAccount))
+                    this._exceptionFactory.Add("bankAccount", this._exceptionFactory.GetMessage("Cuenta de Banco", ExceptionEnums.ExceptionCode.Required));
+
+                if (!model.TypeAccountId.HasValue || model.TypeAccountId.Value <= 0)
+                    this._exceptionFactory.Add("typeAccount", this._exceptionFactory.GetMessage("Tipo de Cuenta", ExceptionEnums.ExceptionCode.Required));
+
+                if (!this._exceptionFactory.IsValid())
+                    throw new ApplicationException("Transacción cancelada", "VENDEDORES", this._exceptionFactory.Exceptions);
+
+                if (model.Bank == "BANCO FICOHSA" && model.TypeAccount == "CC")
+                {
+                    if (string.IsNullOrEmpty(model.C1))
+                        this._exceptionFactory.Add("c1", this._exceptionFactory.GetMessage("Correlativo #1", ExceptionEnums.ExceptionCode.Required));
+
+                    if (string.IsNullOrEmpty(model.C2))
+                        this._exceptionFactory.Add("c2", this._exceptionFactory.GetMessage("Correlativo #2", ExceptionEnums.ExceptionCode.Required));
+                }
+
+                if (!this._exceptionFactory.IsValid())
+                    throw new ApplicationException("Transacción cancelada", "CAFETERIA", this._exceptionFactory.Exceptions);
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ namespace cod.domain.Authorization
         public virtual ApplicationUser ApplicationUser { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Routes { get; set; }
 
         [DefaultValue(1)]
         public DomainEnums.UserType UserType { get; set; }

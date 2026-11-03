@@ -29,6 +29,15 @@ namespace cod.application.Vendor.Queries.GetVendor
             {
                 Id = id,
                 Name = vendor.Name,
+                Email = vendor.Email,
+                Bank = vendor.BankId.HasValue ? vendor.Bank.Name : string.Empty,
+                TypeAccountId = vendor.TypeAccountId,
+                TypeAccount = vendor.TypeAccountId.HasValue ? vendor.TypeAccount.Name : string.Empty,
+                BankAccount = vendor.BankAccount,
+                C2 = vendor.C2,
+                C1 = vendor.C1,
+                BankAccountHolder = vendor.BankAccountHolder,
+                IdentificationHolder = vendor.IdentificationHolder,
                 IsActive = vendor.IsActive,
             };
         }

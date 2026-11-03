@@ -31,35 +31,29 @@ namespace cod.application.Invoice.Queries.GetInvoices
             var timezone = _authService.ClientTimezone;
             var now = DateService.GetCLientLocalTime(Clock.Now, timezone);
 
-            Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByInvoiceDateFilter = GetInvoiceByInvoiceDate(filterModel, timezone);
-            Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByInvoiceTypeFilter = GetInvoiceByInvoiceType(filterModel);
-            Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByPaymentTypeFilter = GetInvoiceByPaymentType(filterModel);
-            Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByPaymentStatusFilter = GetInvoiceByPaymentStatus(filterModel);
-            Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByCafeteriaFilter = GetInvoiceByCafeteria(filterModel);
-            Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByVendorFilter = GetInvoiceByVendor(filterModel);
+            Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByInvoiceDateFilter = GetInvoiceByInvoiceDate(filterModel, timezone);
+            Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByPaymentTypeFilter = GetInvoiceByPaymentType(filterModel);
+            Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByPaymentStatusFilter = GetInvoiceByPaymentStatus(filterModel);
+            Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByRouteFilter = GetInvoiceByRoute(filterModel);
+            Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByVendorFilter = GetInvoiceByVendor(filterModel);
 
-            var baseQuery = _repository.Query<domain.Operation.Invoice>()
+            var baseQuery = _repository.Query<domain.Operation.ExpenseInvoice>()
                 .Where(GetInvoiceByInvoiceDateFilter)
-                .Where(GetInvoiceByInvoiceTypeFilter)
                 .Where(GetInvoiceByPaymentTypeFilter)
                 .Where(GetInvoiceByPaymentStatusFilter)
-                .Where(GetInvoiceByCafeteriaFilter)
+                .Where(GetInvoiceByRouteFilter)
                 .Where(GetInvoiceByVendorFilter)
                 .Select(f => new
                 {
                     f.Id,
                     f.InvoiceDate,
                     f.InvoiceNumber,
-                    f.InvoiceType,
                     f.PaymentStatus,
                     f.PaymentType,
-                    f.PurchaseOrderId,
-                    PurchaseOrder = f.PurchaseOrderId.HasValue ? f.PurchaseOrder.Reference : string.Empty,
-                    Vendor = f.VendorId.HasValue ? f.Vendor.Name : string.Empty,
-                    f.VendorId,
-                    f.Description,
-                    Cafeteria = f.Cafeteria.Name,
-                    f.CafeteriaId,
+                    f.Expense.RouteId,
+                    RouteName = f.Expense.Routes.Name,
+                    VendorName = f.Expense.VendorId.HasValue ? f.Expense.Vendors.Name : string.Empty,
+                    f.Expense.VendorId,
                     f.TaxableAmount,
                     f.ExemptAmount,
                     f.Discount,
@@ -71,17 +65,20 @@ namespace cod.application.Invoice.Queries.GetInvoices
                     f.PaidAt,
                     f.PaidUser,
                     f.Balance,
+                    ExpenseId = f.Expense.Id,
+                    f.Expense.CategoryId,
+                    Category = f.Expense.Category.Name,
                     RemainingDays = f.DueDate.HasValue ? (f.DueDate.Value.Date - now.Date).TotalDays : 0,
+                    TruckName = f.Expense.TruckId.HasValue ? f.Expense.Truck.Plate : string.Empty,
+                    f.Expense.TruckId,
                 });
 
             return await baseQuery.Select(f => new InvoiceModel
             {
                 Id = f.Id,
-                PurchaseOrderId = f.PurchaseOrderId,
-                PurchaseOrder = f.PurchaseOrder,
-                Vendor = f.Vendor,
+                ExpenseId = f.ExpenseId,
+                VendorName = f.VendorName,
                 InvoiceNumber = f.InvoiceNumber,
-                Description = f.Description,
                 InvoiceDate = f.InvoiceDate.Date,
                 TaxableAmount = f.TaxableAmount,
                 ExemptAmount = f.ExemptAmount,
@@ -96,53 +93,48 @@ namespace cod.application.Invoice.Queries.GetInvoices
                 PaidUser = f.PaidUser,
                 PaymentType = f.PaymentType,
                 PaymentTypeName = f.PaymentType.GetEnumDescription(),
-                InvoiceType = f.InvoiceType,
-                InvoiceTypeName = f.InvoiceType.GetEnumDescription(),
                 PaymentStatus = f.PaymentStatus,
                 PaymentStatusName = f.PaymentStatus.GetEnumDescription(),
                 RemainingDays = f.RemainingDays,
-                Cafeteria = f.Cafeteria,
-                CafeteriaId = f.CafeteriaId,
-                VendorId = f.VendorId
+                VendorId = f.VendorId,
+                Category = f.Category,
+                CategoryId = f.CategoryId,
+                RouteId = f.RouteId,
+                Route = f.RouteName,
+                TruckId = f.TruckId,
+                TruckName = f.TruckName
             }).ToListAsync();
         }
 
-        public static Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByInvoiceType(FilterInvoiceModel filterModel)
-        {
-            if(filterModel.InvoiceType.IsValid())
-                return invoice => invoice.InvoiceType == filterModel.InvoiceType;
-            return invoice => true;
-        }
-
-        public static Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByPaymentType(FilterInvoiceModel filterModel)
+        public static Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByPaymentType(FilterInvoiceModel filterModel)
         {
             if (filterModel.PaymentType.IsValid())
                 return invoice => invoice.PaymentType == filterModel.PaymentType;
             return invoice => true;
         }
 
-        public static Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByPaymentStatus(FilterInvoiceModel filterModel)
+        public static Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByPaymentStatus(FilterInvoiceModel filterModel)
         {
             if (filterModel.PaymentStatus.IsValid())
                 return invoice => invoice.PaymentStatus == filterModel.PaymentStatus;
             return invoice => true;
         }
 
-        public static Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByCafeteria(FilterInvoiceModel filterModel)
+        public static Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByRoute(FilterInvoiceModel filterModel)
         {
-            if (filterModel.CafeteriaId > 0)
-                return invoice => invoice.CafeteriaId == filterModel.CafeteriaId;
+            if (filterModel.RouteId > 0)
+                return invoice => invoice.Expense.RouteId == filterModel.RouteId;
             return invoice => true;
         }
 
-        public static Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByVendor(FilterInvoiceModel filterModel)
+        public static Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByVendor(FilterInvoiceModel filterModel)
         {
             if (filterModel.VendorId > 0)
-                return invoice => invoice.VendorId == filterModel.VendorId;
+                return invoice => invoice.Expense.VendorId == filterModel.VendorId;
             return invoice => true;
         }
 
-        public static Expression<Func<domain.Operation.Invoice, bool>> GetInvoiceByInvoiceDate(FilterInvoiceModel filterModel, string timeZone)
+        public static Expression<Func<domain.Operation.ExpenseInvoice, bool>> GetInvoiceByInvoiceDate(FilterInvoiceModel filterModel, string timeZone)
         {
             filterModel.DateFrom = DateService.GetCLientLocalTime(filterModel.DateFrom.Value, timeZone);
             filterModel.DateTo = DateService.GetCLientLocalTime(filterModel.DateTo.Value, timeZone);

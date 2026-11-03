@@ -24,7 +24,7 @@ namespace cod.application.Customer.Commands.CreateCustomer
 
             var newRegister = new domain.Data.Customer
             {
-                Name = model.Name,
+                Name = model.Name.ToUpper(),
                 Rtn = model.Rtn,
             };
 

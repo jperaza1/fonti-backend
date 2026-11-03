@@ -31,7 +31,14 @@ namespace cod.application.Expense.Queries.GetExpense
                     IsInvoice = f.IsInvoice,
                     Total = f.Total,
                     IsActive = f.IsActive,
-                    VendorId = f.VendorId
+                    VendorId = f.VendorId,
+                    DocumentId = f.DocumentId,
+                    DocumentUploadedAt = f.DocumentUploadedAt,
+                    DocumentUploadedUser = f.DocumentUploadedUser,
+                    InvoiceId = f.InvoiceId,
+                    InvoiceNumber = f.InvoiceId.HasValue ? f.Invoice.InvoiceNumber : string.Empty,
+                    TruckId = f.TruckId,
+                    TruckName = f.TruckId.HasValue ? f.Truck.Plate : string.Empty, 
                 })
                 .FirstOrDefaultAsync();
 

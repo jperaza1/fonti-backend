@@ -36,6 +36,7 @@ namespace cod.application.Sale.Commands.CreateSale
                 Amount = model.Amount,
                 SaleDate = model.SaleDate,
                 SaleType = model.SaleType,
+                CustomerId = model.CustomerId,
                 SaleDetails = GenerateDetails(model)
             };
 
@@ -47,7 +48,7 @@ namespace cod.application.Sale.Commands.CreateSale
         public List<domain.Operation.SaleDetail> GenerateDetails(SaleModel model)
         {
             var lst = new List<domain.Operation.SaleDetail>();
-            foreach (var item in model.SaleDetails)
+            foreach (var item in model.SaleDetails.Where(f => f.Quantity > 0).ToList())
             {
                 var detail = new domain.Operation.SaleDetail
                 {
@@ -72,7 +73,10 @@ namespace cod.application.Sale.Commands.CreateSale
             if(!model.SaleType.IsValid())
                 this._exceptionFactory.Add("saleType", this._exceptionFactory.GetMessage("Tipo de Venta", ExceptionEnums.ExceptionCode.Required));
 
-            if (model.Amount <= 0)
+            var regaliaWithQuantity = model.SaleDetails != null &&
+                model.SaleDetails.Any(detail => detail.Quantity > 0 && detail.Price == 0);
+
+            if (model.Amount < 0 || (model.Amount <= 0 && !regaliaWithQuantity))
                 this._exceptionFactory.Add("amount", this._exceptionFactory.GetMessage("Monto", ExceptionEnums.ExceptionCode.Required));
 
             if (model.SaleDate == DateTime.MinValue)
@@ -81,7 +85,11 @@ namespace cod.application.Sale.Commands.CreateSale
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "VENTAS", this._exceptionFactory.Exceptions);
 
+            if(model.SaleType == domain.Features.Enums.DomainEnums.SaleType.Credit && (!model.CustomerId.HasValue || model.CustomerId.Value <= 0))
+                this._exceptionFactory.Add("customerId", this._exceptionFactory.GetMessage("Cliente", ExceptionEnums.ExceptionCode.Required));
 
+            if (!this._exceptionFactory.IsValid())
+                throw new ApplicationException("CANCELED", "VENTAS", this._exceptionFactory.Exceptions);
         }    
     }
 }

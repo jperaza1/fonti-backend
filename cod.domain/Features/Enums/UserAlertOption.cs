@@ -9,8 +9,6 @@ namespace cod.domain.Features.Enums
         public enum UserAlertOption
         {
             PendingInvoice = 1,
-            BirthdaysOfTheWeek,
-            ContractsDueToExpire,
         }
     }
 }

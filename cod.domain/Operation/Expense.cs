@@ -14,13 +14,16 @@ namespace cod.domain.Operation
     {
         public int? InvoiceId { get; set; }
         [ForeignKey("InvoiceId")]
-        public virtual Invoice Invoice { get; set; }
+        public virtual ExpenseInvoice Invoice { get; set; }
         public int? VendorId { get; set; }
         [ForeignKey("VendorId")]
         public virtual Vendor Vendors { get; set; }
         public int RouteId { get; set; }
         [ForeignKey("RouteId")]
         public virtual Route Routes { get; set; }
+        public int? TruckId { get; set; }
+        [ForeignKey("TruckId")]
+        public virtual Truck Truck { get; set; }
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
@@ -29,7 +32,10 @@ namespace cod.domain.Operation
         public virtual SubCategory SubCateogy { get; set; }
         public string Notes { get; set; }
         public DateTime Date { get; set; }
-        public bool IsInvoice { get; set; }
         public double Total { get; set; }
+        public bool IsInvoice { get; set; }
+        public string DocumentUploadedUser { get; set; }
+        public DateTime? DocumentUploadedAt { get; set; }
+        public int? DocumentId { get; set; }
     }
 }

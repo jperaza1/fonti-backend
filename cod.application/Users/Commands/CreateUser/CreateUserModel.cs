@@ -11,6 +11,7 @@ namespace cod.application.Users.Commands.CreateUser
         public string LastName { get; set; }
         public DomainEnums.UserType UserType { get; set; }
         public List<int> RoleIds { get; set; }
+        public List<int> Routes { get; set; }
         public List<DomainEnums.UserAlertOption> UserAlerts { get; set; }
     }
 }

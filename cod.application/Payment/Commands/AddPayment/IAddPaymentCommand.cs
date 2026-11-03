@@ -1,4 +1,5 @@
-﻿using cod.application.Payment.Common;
+﻿using cod.application.Invoice.Common;
+using cod.application.Payment.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace cod.application.Payment.Commands.AddPayment
 {
     public interface IAddPaymentCommand
     {
-        Task Execute(PaymentModel model);
+        Task Execute(InvoicePaymentModel model);
     }
 }

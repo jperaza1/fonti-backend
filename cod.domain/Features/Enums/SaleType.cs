@@ -17,6 +17,24 @@ namespace cod.domain.Features.Enums
             Credit,
         }
 
+        public enum DispatchControlType
+        {
+            [Description("Contado")]
+            Exit = 1,
+            [Description("Contado")]
+            Reload,
+            [Description("Contado")]
+            Return
+        }
+
+        public enum DispatchControlStatus
+        {
+            [Description("Abierto")]
+            Open = 1,
+            [Description("Terminado")]
+            Close
+        }
+
         public enum SaleTypeDish
         {
             [Description("Ambos")]

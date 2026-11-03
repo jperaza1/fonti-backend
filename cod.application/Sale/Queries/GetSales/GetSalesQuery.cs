@@ -46,9 +46,13 @@ namespace cod.application.Sale.Queries.GetSales
                 f.SaleDate,
                 f.SaleType,
                 SaleTypeName = f.SaleType.GetEnumDescription(),
+                f.CustomerId,
+                CustomerName = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
                 f.Amount,
-                f.IsActive
-            });
+                f.IsActive,
+                InvoiceNumber = f.SaleInvoiceId.HasValue ? f.SaleInvoice.InvoiceNumber : string.Empty,
+                f.SaleInvoiceId
+                });
 
             return await baseQuery.Select(f => new SaleModel
             {
@@ -59,7 +63,11 @@ namespace cod.application.Sale.Queries.GetSales
                 SaleDate = f.SaleDate.Date,
                 SaleType = f.SaleType,
                 SaleTypeName = f.SaleTypeName,
+                CustomerName = f.CustomerName,
+                CustomerId = f.CustomerId,
                 IsActive = f.IsActive,
+                SaleInvoiceId = f.SaleInvoiceId,
+                InvoiceNumber = f.InvoiceNumber
             }).ToListAsync();
         }
 

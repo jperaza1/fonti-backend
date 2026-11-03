@@ -14,5 +14,11 @@ namespace cod.domain.Data
     {
         public string Name { get; set; }
         public ProductType ProductType { get; set; }
+        public bool Tax { get; set; }
+        public decimal? Cost { get; set; }
+        public int? UnitOfMeasureId { get; set; }
+        [ForeignKey("UnitOfMeasureId")]
+        public virtual UnitOfMeasure UnitOfMeasure { get; set; }
+        public virtual ICollection<ProductVendor> ProductVendors { get; set; }
     }
 }

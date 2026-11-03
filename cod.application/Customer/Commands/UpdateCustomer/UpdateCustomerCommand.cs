@@ -25,7 +25,7 @@ namespace cod.application.Customer.Commands.UpdateCustomer
                 product => product.Id == id,
                 product => new domain.Data.Customer
                 {
-                    Name = model.Name,
+                    Name = model.Name.ToUpper(),
                     Rtn = model.Rtn
                 });
 

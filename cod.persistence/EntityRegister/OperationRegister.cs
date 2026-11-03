@@ -13,9 +13,18 @@ namespace cod.persistence.Implementations
     {
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<PriceApproval> PriceApprovals { get; set; }
+        public DbSet<PriceApprovalDetail> PriceApprovalDetails { get; set; }
+        public DbSet<InvoicePayment> InvoicePayments { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<Expense> Expenses { get; set; }
+        public DbSet<ExpenseInvoice> ExpenseInvoices { get; set; }
+        public DbSet<DispatchControl> DispatchControl { get; set; }
+        public DbSet<DispatchControlDetail> DispatchControlDetail { get; set; }
+        public DbSet<ProductMovement> ProductMovements { get; set; }
+        public DbSet<ProductStock> ProductStocks { get; set; }
+        public DbSet<InventoryKardex> InventoryKardex { get; set; }
+        public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<ProductionShift> ProductionShifts { get; set; }
     }
 }

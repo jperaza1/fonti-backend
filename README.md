@@ -1,6 +1,10 @@
 # Backend — API (Fonti / Buffeteleden)
 
-API REST en **ASP.NET Core 5.0** para operaciones de cafeterías, ventas, productos, órdenes de compra, facturación, empleados y catálogos. Incluye un servicio separado de **autenticación** (`cod.auth`) y la API principal (`cod.data`).
+API REST en **ASP.NET Core 5.0** para operaciones de cafeterías, ventas, productos, inventario, producción, órdenes de compra, facturación, empleados y catálogos. Incluye un servicio separado de **autenticación** (`cod.auth`) y la API principal (`cod.data`).
+
+Cómo está armado el sistema (capas, request, commands/queries, tenant, cómo agregar un feature): **[INIT.md](INIT.md)**.
+
+El frontend Angular está en otro repo. Ruta y cómo se conecta: **[FRONTEND.md](FRONTEND.md)**.
 
 ## Requisitos
 
@@ -76,7 +80,9 @@ Si falla la copia de DLLs a `bin\Debug` con errores `MSB3027` / archivo en uso, 
 
 ## Dominio funcional (resumen)
 
-Los controladores en `cod.data/Controllers` cubren entre otros: cafeterías, clientes, empleados, productos, rutas y precios por ruta, correlativos, ventas, facturas, pagos, órdenes de compra, proveedores, platos y acompañamientos, alertas, documentación y catálogos vía `EnumDefinitionController`.
+Los controladores en `cod.data/Controllers` cubren entre otros: cafeterías, clientes, empleados, productos, rutas y precios por ruta (una ruta con regalía admite precio 0), correlativos, ventas, facturas, pagos, órdenes de compra, proveedores, inventario y kardex, producción (un solo turno abierto; `CloseShift` lo cierra sin revertir stock), control de salidas (solo productos de venta), platos y acompañamientos, alertas, documentación y catálogos vía `EnumDefinitionController`. El detalle de recetas, turnos, regalía y permisos de Inventario y Camiones está en [INIT.md](INIT.md).
+
+Usuarios y login viven en `cod.auth`. El tipo `Vendor` (Vendedor) guarda una o más rutas en el perfil y el login las devuelve en `userAuth.routes`.
 
 ## Licencias de terceros
 

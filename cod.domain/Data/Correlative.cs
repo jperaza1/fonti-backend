@@ -16,7 +16,7 @@ namespace cod.domain.Data
         public int End { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public ulong Current { get; set; }
+        public int Current { get; set; }
         public string EmissionPoint { get; set; }
         public string Establishment { get; set; }
         public string DocumentType { get; set; }

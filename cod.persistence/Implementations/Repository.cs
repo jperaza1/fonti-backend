@@ -10,7 +10,9 @@ using cod.application.Interfaces;
 using cod.domain.Alerts;
 using cod.domain.Authorization;
 using cod.domain.Common;
+using cod.domain.Data;
 using cod.domain.Features;
+using cod.domain.Operation;
 using Z.EntityFramework.Plus;
 using static cod.domain.Features.Enums.DomainEnums;
 
@@ -33,6 +35,66 @@ namespace cod.persistence.Implementations
              arr => string.Join(',', arr),
              str => str.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Cost)
+                .HasColumnType("decimal(18,4)");
+
+            modelBuilder.Entity<ProductVendor>()
+                .Property(p => p.Cost)
+                .HasColumnType("decimal(18,4)");
+            modelBuilder.Entity<ProductVendor>()
+                .Property(p => p.UnitCost)
+                .HasColumnType("decimal(18,4)");
+            modelBuilder.Entity<ProductVendor>()
+                .Property(p => p.Discount)
+                .HasColumnType("decimal(18,4)");
+
+            modelBuilder.Entity<PriceApprovalDetail>()
+                .Property(p => p.OldCost)
+                .HasColumnType("decimal(18,4)");
+            modelBuilder.Entity<PriceApprovalDetail>()
+                .Property(p => p.NewCost)
+                .HasColumnType("decimal(18,4)");
+
+            modelBuilder.Entity<ProductRecipe>()
+                .Property(p => p.UnitsPerPackage)
+                .HasColumnType("decimal(18,6)");
+
+            modelBuilder.Entity<ProductRecipeDetail>()
+                .Property(p => p.Quantity)
+                .HasColumnType("decimal(18,6)");
+            modelBuilder.Entity<ProductRecipeDetail>()
+                .Property(p => p.ProducedUnits)
+                .HasColumnType("decimal(18,6)");
+
+            modelBuilder.Entity<ProductStock>()
+                .Property(p => p.Quantity)
+                .HasColumnType("decimal(18,6)");
+            modelBuilder.Entity<ProductStock>()
+                .HasIndex(p => p.ProductId)
+                .IsUnique();
+
+            modelBuilder.Entity<InventoryKardex>()
+                .Property(p => p.Quantity)
+                .HasColumnType("decimal(18,6)");
+            modelBuilder.Entity<InventoryKardex>()
+                .Property(p => p.Balance)
+                .HasColumnType("decimal(18,6)");
+            modelBuilder.Entity<InventoryKardex>()
+                .Property(p => p.UnitCost)
+                .HasColumnType("decimal(18,4)");
+
+            modelBuilder.Entity<ProductionOrder>()
+                .Property(p => p.Quantity)
+                .HasColumnType("decimal(18,6)");
+
+            modelBuilder.Entity<ProductionShift>()
+                .HasIndex(p => new { p.ProductionDate, p.ShiftTypeId })
+                .IsUnique();
+
+            modelBuilder.Entity<Route>()
+                .Property(r => r.DeliversRegalia)
+                .HasDefaultValue(false);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

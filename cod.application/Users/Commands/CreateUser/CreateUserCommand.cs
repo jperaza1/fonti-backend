@@ -62,6 +62,7 @@ namespace cod.application.Users.Commands.CreateUser
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     UserType = model.UserType,
+                    Routes = UserRoutes.Serialize(model.UserType, model.Routes),
                 };
 
                 _repository.InsertAsync(userProfile);
@@ -113,7 +114,8 @@ namespace cod.application.Users.Commands.CreateUser
                 this._exceptionFactory.Add("firstName", this._exceptionFactory.GetMessage("firstName", ExceptionEnums.ExceptionCode.Required));
             if (model.LastName.NullOrEmpty())
                 this._exceptionFactory.Add("lastName", this._exceptionFactory.GetMessage("lastName", ExceptionEnums.ExceptionCode.Required));
-            
+
+            await UserRoutes.Validate(_repository, _exceptionFactory, model.UserType, model.Routes);
 
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "USER", this._exceptionFactory.Exceptions);

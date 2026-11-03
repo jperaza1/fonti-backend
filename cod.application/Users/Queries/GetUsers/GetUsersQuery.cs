@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using cod.application.Common.Extensions;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.domain.Authorization;
+using cod.domain.Features.Enums;
 
 namespace cod.application.Users.Queries.GetUsers
 {
@@ -14,9 +17,9 @@ namespace cod.application.Users.Queries.GetUsers
         {
         }
 
-        public Task<List<GetUsersModel>> Execute()
+        public async Task<List<GetUsersModel>> Execute()
         {
-            return _repository.Query<ApplicationUserProfile>().Select(user => new GetUsersModel
+            List<GetUsersModel> users = await _repository.Query<ApplicationUserProfile>().Select(user => new GetUsersModel
             {
                 Id = user.Id,
                 IsActive = user.IsActive,
@@ -26,6 +29,14 @@ namespace cod.application.Users.Queries.GetUsers
                 Carrier = string.Empty,
                 UserId = user.UserId,
             }).ToListAsync();
+
+            foreach (GetUsersModel user in users)
+            {
+                if (Enum.TryParse(user.UserTypeText, out DomainEnums.UserType userType))
+                    user.UserTypeText = userType.GetEnumDescription();
+            }
+
+            return users;
         }
     }
 }

@@ -2,6 +2,7 @@
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
+using cod.application.Invoice.Common;
 using cod.application.Payment.Common;
 using cod.domain.Features;
 using cod.domain.Operation;
@@ -26,9 +27,9 @@ namespace cod.application.Payment.Commands.AddPayment
             _authService = authService;
         }
 
-        public async Task Execute(PaymentModel model)
+        public async Task Execute(InvoicePaymentModel model)
         {
-            var invoice = await _repository.WhereActive<domain.Operation.Invoice>(f => f.Id == model.InvoiceId).FirstOrDefaultAsync();
+            var invoice = await _repository.WhereActive<domain.Operation.ExpenseInvoice>(f => f.Id == model.InvoiceId).FirstOrDefaultAsync();
 
             var balance = invoice.Balance - model.Amount;
 
@@ -47,7 +48,7 @@ namespace cod.application.Payment.Commands.AddPayment
             
             _repository.UpdateSync(invoice);
 
-            var newPayment = new domain.Operation.Payment
+            var newPayment = new domain.Operation.InvoicePayment
             {
                 PaymentDate = model.PaymentDate,
                 PaymentMethod = model.PaymentMethod,
@@ -60,7 +61,7 @@ namespace cod.application.Payment.Commands.AddPayment
             await _repository.CommitAsync();
         }
 
-        public async Task ValidateModel(PaymentModel model)
+        public async Task ValidateModel(InvoicePaymentModel model)
         {
             if(model.PaymentMethod.IsValid())
                 this._exceptionFactory.Add("paymentMethod", this._exceptionFactory.GetMessage("Metodo de Pago", ExceptionEnums.ExceptionCode.Required));
@@ -74,7 +75,7 @@ namespace cod.application.Payment.Commands.AddPayment
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "PAGOS", this._exceptionFactory.Exceptions);
 
-            var invoice = await _repository.WhereActive<domain.Operation.Invoice>(f => f.Id == model.InvoiceId).FirstOrDefaultAsync();
+            var invoice = await _repository.WhereActive<domain.Operation.ExpenseInvoice>(f => f.Id == model.InvoiceId).FirstOrDefaultAsync();
 
             var balance = invoice.Balance - model.Amount;
 

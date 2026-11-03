@@ -16,9 +16,12 @@ namespace cod.domain.Operation
         public int PurchaseOrderId { get; set; }
         [ForeignKey("PurchaseOrderId")]
         public virtual PurchaseOrder PurchaseOrder { get; set; }
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }
+        public int? ProductVendorId { get; set; }
+        [ForeignKey("ProductVendorId")]
+        public virtual ProductVendor ProductVendor { get; set; }
         public double Cost { get; set; }
         public double Quantity { get; set; }
         public double SubTotal { get; set; }

@@ -21,6 +21,8 @@ namespace cod.application.Tenant.Queries.GetTenantById
             return new GetTenantByIdModel
             {
                 Name = tenant.Name,
+                CompanyName = tenant.CompanyName,
+                Rtn = tenant.Rtn,
                 Address = tenant.Address,
                 Email = tenant.Email,
                 PhoneNumber = tenant.PhoneNumber,

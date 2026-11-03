@@ -12,6 +12,7 @@ using cod.application.EnumDefinition.Queries.GetEscrowBy;
 using cod.application.EnumDefinition.Queries.GetFilterDriverApplicationReport;
 using cod.application.EnumDefinition.Queries.GetFuelType;
 using cod.application.EnumDefinition.Queries.GetIdentificationType;
+using cod.application.EnumDefinition.Queries.GetKardexMovementType;
 using cod.application.EnumDefinition.Queries.GetLanguageType;
 using cod.application.EnumDefinition.Queries.GetPayBy;
 using cod.application.EnumDefinition.Queries.GetPaymentFilterDate;
@@ -67,7 +68,6 @@ namespace cod.data.Controllers
         private readonly IGetEnumDefinitionValuesQuery<PurchaseOrderStatus> _getPurchaseOrderStatusQuery;
         private readonly IGetEnumDefinitionValuesQuery<DetailStatus> _getDetailStatusQuery;
         private readonly IGetEnumDefinitionValuesQuery<PaymentType> _getPaymentTypeQuery;
-        private readonly IGetEnumDefinitionValuesQuery<InvoiceType> _getInvoiceTypeQuery;
         private readonly IGetEnumDefinitionValuesQuery<PaymentMethod> _getPaymentMethodQuery;
         private readonly IGetEnumDefinitionValuesQuery<SaleType> _getSaleTypeQuery;
         private readonly IGetEnumDefinitionValuesQuery<SpecialServiceStatus> _getSpecialServiceStatusQuery;
@@ -80,6 +80,8 @@ namespace cod.data.Controllers
         private readonly IGetEnumDefinitionValuesQuery<SaleTypeDish> _getSaleTypeDishQuery;
         private readonly IGetEnumDefinitionValuesQuery<VacationRequestType> _getRequestTypeQuery;
         private readonly IGetEnumDefinitionValuesQuery<ProductType> _getProductTypeQuery;
+        private readonly IGetEnumDefinitionValuesQuery<TruckStatus> _getTruckStatusQuery;
+        private readonly IGetEnumDefinitionValuesQuery<KardexMovementType> _getKardexMovementTypeQuery;
         public EnumDefinitionController(
             IGetUserTypeQuery getUserTypeQuery,
             IGetPersonTypeQuery getPersonTypeQuery,
@@ -111,7 +113,6 @@ namespace cod.data.Controllers
             IGetEnumDefinitionValuesQuery<PurchaseOrderStatus> getPurchaseOrderStatusQuery,
             IGetEnumDefinitionValuesQuery<DetailStatus> getDetailStatusQuery,
             IGetEnumDefinitionValuesQuery<PaymentType> getPaymentTypeQuery,
-            IGetEnumDefinitionValuesQuery<InvoiceType> getInvoiceTypeQuery,
             IGetEnumDefinitionValuesQuery<PaymentMethod> getPaymentMethodQuery,
             IGetEnumDefinitionValuesQuery<SaleType> getSaleTypeQuery,
             IGetEnumDefinitionValuesQuery<SpecialServiceStatus> getSpecialServiceStatusQuery,
@@ -123,7 +124,9 @@ namespace cod.data.Controllers
             IGetEnumDefinitionValuesQuery<DishType> getDishTypeQuery,
             IGetEnumDefinitionValuesQuery<SaleTypeDish> getSaleTypeDishQuery,
             IGetEnumDefinitionValuesQuery<VacationRequestType> getRequestTypeQuery,
-            IGetEnumDefinitionValuesQuery<ProductType> getProductTypeQuery)
+            IGetEnumDefinitionValuesQuery<ProductType> getProductTypeQuery,
+            IGetEnumDefinitionValuesQuery<TruckStatus> getTruckStatusQuery,
+            IGetEnumDefinitionValuesQuery<KardexMovementType> getKardexMovementTypeQuery)
         {
             _getUserTypeQuery = getUserTypeQuery;
             _getPersonTypeQuery = getPersonTypeQuery;
@@ -155,7 +158,6 @@ namespace cod.data.Controllers
             _getPurchaseOrderStatusQuery = getPurchaseOrderStatusQuery;
             _getDetailStatusQuery = getDetailStatusQuery;
             _getPaymentTypeQuery = getPaymentTypeQuery;
-            _getInvoiceTypeQuery = getInvoiceTypeQuery;
             _getPaymentMethodQuery = getPaymentMethodQuery;
             _getSaleTypeQuery = getSaleTypeQuery;
             _getSpecialServiceStatusQuery = getSpecialServiceStatusQuery;
@@ -168,6 +170,8 @@ namespace cod.data.Controllers
             _getSaleTypeDishQuery = getSaleTypeDishQuery;
             _getRequestTypeQuery = getRequestTypeQuery;
             _getProductTypeQuery = getProductTypeQuery;
+            _getTruckStatusQuery = getTruckStatusQuery;
+            _getKardexMovementTypeQuery = getKardexMovementTypeQuery;
         }
 
         [HttpGet]
@@ -192,12 +196,6 @@ namespace cod.data.Controllers
         public List<GetEnumDefinitionValuesModel<int>> GetPaymentType()
         {
             return _getPaymentTypeQuery.Execute<int>();
-        }
-
-        [HttpGet]
-        public List<GetEnumDefinitionValuesModel<int>> GetInvoiceType()
-        {
-            return _getInvoiceTypeQuery.Execute<int>();
         }
 
         [HttpGet]
@@ -421,6 +419,19 @@ namespace cod.data.Controllers
         {
             return _getRequestTypeQuery.Execute<int>();
         }
+
+        [HttpGet]
+        public List<GetEnumDefinitionValuesModel<int>> GetTruckStatus()
+        {
+            return _getTruckStatusQuery.Execute<int>();
+        }
+
+        [HttpGet]
+        public List<GetEnumDefinitionValuesModel<int>> GetKardexMovementType()
+        {
+            return _getKardexMovementTypeQuery.Execute<int>();
+        }
+        
     }
 }
 

@@ -1,4 +1,6 @@
-﻿namespace cod.domain.Features.Enums
+﻿using System.ComponentModel;
+
+namespace cod.domain.Features.Enums
 {
     public partial class DomainEnums
     {
@@ -6,7 +8,9 @@
         {
             SuperAdmin = 1,
             Administrativo = 2,
-            General
+            General = 3,
+            [Description("Vendedor")]
+            Vendor = 4
         }
     }
 }

@@ -4,6 +4,7 @@ using cod.application.Sale.Commands.DisableSale;
 using cod.application.Sale.Commands.EnableSale;
 using cod.application.Sale.Common;
 using cod.application.Sale.Queries.GetDailySalesByCafeteria;
+using cod.application.Sale.Queries.GetPendingBillingReport;
 using cod.application.Sale.Queries.GetSale;
 using cod.application.Sale.Queries.GetSales;
 using cod.application.Sale.Queries.GetSalesByMonth;
@@ -21,6 +22,7 @@ namespace cod.data.Controllers
         private readonly IGetSaleQuery _getSaleQuery;
         private readonly IGetSalesQuery _getSalesQuery;
         private readonly IGetSaleByMonthQuery _getSaleByMonthQuery;
+        private readonly IGetPendingBillingReportQuery _getPendingBillingReportQuery;
         private readonly IGetDailySalesByCafeteriaQuery _getDailySalesByCafeteriaQuery;
         private readonly ICreateSaleCommand _createSaleCommand;
         private readonly IEnableSaleCommand _enableSaleCommand;
@@ -29,6 +31,7 @@ namespace cod.data.Controllers
         public SaleController(
             IGetSaleQuery getSaleQuery, 
             IGetSalesQuery getSalesQuery,
+            IGetPendingBillingReportQuery getPendingBillingReportQuery,
             IGetSaleByMonthQuery getSaleByMonthQuery,
             ICreateSaleCommand createSaleCommand,
             IEnableSaleCommand enableSaleCommand,
@@ -42,6 +45,13 @@ namespace cod.data.Controllers
             _enableSaleCommand = enableSaleCommand;
             _disableSaleCommand = disableSaleCommand;
             _getDailySalesByCafeteriaQuery = getDailySalesByCafeteriaQuery;
+            _getPendingBillingReportQuery = getPendingBillingReportQuery;
+        }
+
+        [HttpPost]
+        public async Task<List<SaleModel>> GetPendingBillingReport([FromBody] FilterSaleDto filterSale)
+        {
+            return await _getPendingBillingReportQuery.Execute(filterSale);
         }
 
         [HttpPost]

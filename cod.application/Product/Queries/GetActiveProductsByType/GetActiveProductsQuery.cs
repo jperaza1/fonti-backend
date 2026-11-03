@@ -28,6 +28,11 @@ namespace cod.application.Product.Queries.GetActiveProductsByType
                 f.Id,
                 f.Name,
                 f.ProductType,
+                f.Tax,
+                f.Cost,
+                f.UnitOfMeasureId,
+                UnitOfMeasureName = f.UnitOfMeasure.Name,
+                f.IsActive
             });
 
             return await baseQuery.Select(f => new ProductModel
@@ -35,7 +40,12 @@ namespace cod.application.Product.Queries.GetActiveProductsByType
                 Id = f.Id,
                 Name = f.Name,
                 ProductType = f.ProductType,
-                ProductTypeName = f.ProductType.GetEnumDescription()
+                ProductTypeName = f.ProductType.GetEnumDescription(),
+                Tax = f.Tax,
+                Cost = f.Cost,
+                UnitOfMeasureId = f.UnitOfMeasureId,
+                UnitOfMeasureName = f.UnitOfMeasureName,
+                IsActive = f.IsActive
             }).ToListAsync();
         }
     }

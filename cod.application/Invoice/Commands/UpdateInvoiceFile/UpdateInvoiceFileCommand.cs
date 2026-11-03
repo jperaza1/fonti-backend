@@ -25,12 +25,11 @@ namespace cod.application.Invoice.Commands.UpdateInvoiceFile
 
         public async Task Execute(int id, bool status)
         {
-            var invoice = await _repository.Query<domain.Operation.Invoice>()
+            var invoice = await _repository.Query<domain.Operation.ExpenseInvoice>()
                 .Where(f => f.Id == id).FirstOrDefaultAsync();
 
             if(invoice != null)
             {
-                invoice.HasFile = status;
                 invoice.FileUploadedAt = status ? DateTime.Now : null;
                 invoice.FileUploadedUser = status ? _authService.User : string.Empty;
 

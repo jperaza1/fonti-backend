@@ -38,6 +38,7 @@ namespace cod.application.Users.Queries.GetUserById
                 IsActive = profile.IsActive,
                 UserAlerts = userAlerts,
                 RoleIds = userRoles,
+                Routes = UserRoutes.Parse(profile.Routes),
             };
         }
     }

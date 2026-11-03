@@ -15,6 +15,10 @@ namespace cod.application.Sale.Common
         public int Id { get; set; }
         public int RouteId { get; set; }
         public string Route { get; set; }
+        public int? CustomerId { get; set; }
+        public int? SaleInvoiceId { get; set; }
+        public string InvoiceNumber { get; set; }
+        public string CustomerName { get; set; }
         public SaleType SaleType { get; set; }
         public string SaleTypeName { get; set; }
         public DateTime SaleDate { get; set; }

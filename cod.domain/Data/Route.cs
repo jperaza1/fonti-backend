@@ -12,6 +12,9 @@ namespace cod.domain.Data
     public class Route : Entity
     {
         public string Name { get; set; }
+        public int Order { get; set; }
+        public bool DeliversRegalia { get; set; }
         public virtual ICollection<ProductRoutePrice> ProductRoutePrices { get; set; }
+        public virtual Truck Truck { get; set; }
     }
 }

@@ -1,23 +1,46 @@
+using cod.application.Common.Clases;
+using cod.application.Expense.Common;
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
-using cod.application.Expense.Common;
+using cod.domain.Features;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using static cod.domain.Features.Enums.DomainEnums;
 using ApplicationException = cod.application.Features.Exception.ApplicationException;
 
 namespace cod.application.Expense.Commands.CreateExpense
 {
     public class CreateExpenseCommand : BaseCommand, ICreateExpenseCommand
     {
-        public CreateExpenseCommand(IRepository repository, IExceptionFactory exceptionFactory) : base(repository, exceptionFactory)
+        private readonly AuthService _authService;
+        private readonly IConfigurationService _configurationService;
+        public CreateExpenseCommand(
+            IRepository repository, 
+            IExceptionFactory exceptionFactory,
+            AuthService authService,
+            IConfigurationService configurationService) : base(repository, exceptionFactory)
         {
+            _authService = authService;
+            _configurationService = configurationService;
         }
 
-        public async Task Execute(ExpenseModel model)
+        public async Task Execute(ExpenseModel model, IFormFile invoiceFile)
         {
             await ValidateModel(model);
+
+            if (invoiceFile == null)
+                throw new ApplicationException("SE REQUIERE UN ARCHIVO", "GASTO / FACTURA");
+
+            var timezone = _authService.ClientTimezone;
+
+            model.Date = DateService.GetCLientLocalTime(model.Date, timezone);
+            model.Date = model.Date.Date.AddHours(12);
 
             var entity = new domain.Operation.Expense
             {
@@ -29,11 +52,85 @@ namespace cod.application.Expense.Commands.CreateExpense
                 Total = model.Total,
                 VendorId = model.VendorId,
                 RouteId = model.RouteId,
+                TruckId = model.TruckId,
             };
+
+            if (model.ExpenseInvoice != null)
+            {
+                entity.Invoice = CreateInvoice(model, _authService);
+            }
 
             _repository.InsertAsync(entity);
 
             await _repository.CommitAsync();
+
+            var documentBaseUrl = await _configurationService.Get<string>("BASE_URL_DOCUMENT");
+
+            if (invoiceFile != null)
+            {
+                using var httpClient = new HttpClient();
+
+                var attachementType = model.ExpenseInvoice != null ? "INVOICE" : "EXPENSE";
+                var key = model.ExpenseInvoice != null ? entity.InvoiceId : entity.Id;
+
+                var url = $"{documentBaseUrl}Attachment/Upload" +
+                          $"?attachmentType={attachementType}" +
+                          $"&tenantId={_authService.TenantId}" +
+                          $"&key={key}" +
+                          $"&entity={attachementType}" +
+                          $"&user={_authService.User}";
+
+                using var content = new MultipartFormDataContent();
+
+                using var stream = invoiceFile.OpenReadStream();
+                using var fileContent = new StreamContent(stream);
+
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(invoiceFile.ContentType ?? "application/octet-stream");
+
+                content.Add(fileContent, "file", invoiceFile.FileName);
+
+                var response = await httpClient.PostAsync(url, content);
+            }
+        }
+
+        public static domain.Operation.ExpenseInvoice CreateInvoice(ExpenseModel model, AuthService _authService)
+        {
+            DateTime? dueDate = null;
+            var balance = Math.Round(model.Total, 2);
+
+            var invoice = new domain.Operation.ExpenseInvoice
+            {
+                InvoiceNumber = model.ExpenseInvoice.InvoiceNumber,
+                InvoiceDate = model.ExpenseInvoice.InvoiceDate,
+                TaxableAmount = Math.Round(model.ExpenseInvoice.TaxableAmount, 2),
+                TaxAmount = Math.Round(model.ExpenseInvoice.TaxAmount, 2),
+                ExemptAmount = Math.Round(model.ExpenseInvoice.ExemptAmount, 2),
+                Total = Math.Round(model.Total, 2),
+                SubTotal = Math.Round(model.ExpenseInvoice.SubTotal, 2),
+                Discount = Math.Round(model.ExpenseInvoice.Discount, 2),
+                CreationTime = Clock.Now,
+                CreatorUser = _authService.User,
+                IsActive = true,
+                PaymentStatus = model.PaymentType == PaymentType.Cash ? PaymentStatus.Paid : PaymentStatus.Pending,
+                PaymentType = model.PaymentType,
+                IsRefund = model.IsRefund,
+                Balance = balance,
+            };
+
+            if(model.PaymentType == PaymentType.Cash)
+            {
+                balance = 0.00;
+                invoice.Paid = true;
+                invoice.PaidAt = Clock.Now;
+                invoice.PaidUser = _authService.User;
+                invoice.PaymentStatus = PaymentStatus.Paid;
+            } else
+            {
+                dueDate = model.Date.AddDays(30);
+                invoice.DueDate = dueDate;
+            }
+            
+            return invoice;
         }
 
         public async Task ValidateModel(ExpenseModel model)

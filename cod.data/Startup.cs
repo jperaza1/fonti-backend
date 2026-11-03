@@ -4,7 +4,7 @@ using cod.application.EnumDefinition.Queries.GetDishType;
 using cod.application.EnumDefinition.Queries.GetEmploymentStatusType;
 using cod.application.EnumDefinition.Queries.GetEmploymentType;
 using cod.application.EnumDefinition.Queries.GetGenderType;
-using cod.application.EnumDefinition.Queries.GetInvoiceType;
+using cod.application.EnumDefinition.Queries.GetKardexMovementType;
 using cod.application.EnumDefinition.Queries.GetPayFrequencyType;
 using cod.application.EnumDefinition.Queries.GetPaymentMethod;
 using cod.application.EnumDefinition.Queries.GetPaymentType;
@@ -15,6 +15,7 @@ using cod.application.EnumDefinition.Queries.GetSaleType;
 using cod.application.EnumDefinition.Queries.GetSaleTypeDish;
 using cod.application.EnumDefinition.Queries.GetShiftType;
 using cod.application.EnumDefinition.Queries.GetSpecialServiceStatus;
+using cod.application.EnumDefinition.Queries.GetTruckStatus;
 using cod.data.DependencyInjection;
 using cod.data.Utility;
 using cod.domain.Features;
@@ -59,7 +60,6 @@ namespace cod.data
             services.AddScoped<IGetEnumDefinitionValuesQuery<PurchaseOrderStatus>, GetPurchaseOrderStatusQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<DetailStatus>, GetDetailStatusQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<PaymentType>, GetPaymentTypeQuery>();
-            services.AddScoped<IGetEnumDefinitionValuesQuery<InvoiceType>, GetInvoiceTypeQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<PaymentMethod>, GetPaymentMethodQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<SaleType>, GetSaleTypeQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<SpecialServiceStatus>, GetSpecialServiceStatusQuery>();
@@ -72,6 +72,8 @@ namespace cod.data
             services.AddScoped<IGetEnumDefinitionValuesQuery<SaleTypeDish>, GetSaleTypeDishQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<VacationRequestType>, GetRequestTypeQuery>();
             services.AddScoped<IGetEnumDefinitionValuesQuery<ProductType>, GetProductTypeQuery>();
+            services.AddScoped<IGetEnumDefinitionValuesQuery<TruckStatus>, GetTruckStatusQuery>();
+            services.AddScoped<IGetEnumDefinitionValuesQuery<KardexMovementType>, GetKardexMovementTypeQuery>();
 
             CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
 

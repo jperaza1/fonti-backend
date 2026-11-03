@@ -6,6 +6,7 @@ using cod.application.Product.Commands.EnableProduct;
 using cod.application.Product.Commands.UpdateProduct;
 using cod.application.Product.Common;
 using cod.application.Product.Queries.GetActiveProductsByType;
+using cod.application.Product.Queries.GetProductsByVendor;
 using cod.application.Product.Queries.GetProducts;
 using cod.application.Product.Queries.GetProdut;
 using cod.domain.Features.Enums;
@@ -23,6 +24,7 @@ namespace cod.data.Controllers
         private readonly IGetProductsQuery _getProductsQuery;
         private readonly IGetProdutQuery _getprodutQuery;
         private readonly IGetActiveProductsByTypeQuery _getActiveProductsByTypeQuery;
+        private readonly IGetProductsByVendorQuery _getProductsByVendorQuery;
         private readonly ICreateProductCommand _createProductCommand;
         private readonly IUpdateProductCommand _updateProductCommand;
         private readonly IEnableProductCommand _enableProductCommand;
@@ -32,6 +34,7 @@ namespace cod.data.Controllers
             IGetProductsQuery getProductsQuery,
             IGetProdutQuery getprodutQuery,
             IGetActiveProductsByTypeQuery getActiveProductsByTypeQuery,
+            IGetProductsByVendorQuery getProductsByVendorQuery,
             ICreateProductCommand createProductCommand,
             IUpdateProductCommand updateProductCommand,
             IEnableProductCommand enableProductCommand,
@@ -40,6 +43,7 @@ namespace cod.data.Controllers
             _getProductsQuery = getProductsQuery;
             _getprodutQuery = getprodutQuery;
             _getActiveProductsByTypeQuery = getActiveProductsByTypeQuery;
+            _getProductsByVendorQuery = getProductsByVendorQuery;
             _createProductCommand = createProductCommand;
             _updateProductCommand = updateProductCommand;
             _enableProductCommand = enableProductCommand;
@@ -56,6 +60,12 @@ namespace cod.data.Controllers
         public async Task<ProductModel> GetById(int id)
         {
             return await _getprodutQuery.Execute(id);
+        }
+
+        [HttpGet]
+        public async Task<List<VendorProductModel>> GetByVendor(int vendorId)
+        {
+            return await _getProductsByVendorQuery.Execute(vendorId);
         }
 
         [HttpGet]

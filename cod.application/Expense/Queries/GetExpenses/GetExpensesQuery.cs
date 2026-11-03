@@ -51,6 +51,9 @@ namespace cod.application.Expense.Queries.GetExpenses
                     IsInvoice = f.IsInvoice,
                     Total = f.Total,
                     IsActive = f.IsActive,
+                    InvoiceNumber = f.InvoiceId.HasValue ? f.Invoice.InvoiceNumber : string.Empty,
+                    TruckId = f.TruckId,
+                    TruckName = f.TruckId.HasValue ? f.Truck.Plate : string.Empty,
                 }).ToListAsync();
         }
 

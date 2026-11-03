@@ -21,9 +21,8 @@ namespace cod.application.Factory.UserAlertData.Implementatios
         }
         public async Task<int> GetCount()
         {
-            var result = await _repository.QueryActive<domain.Operation.Invoice>().Where(f =>
+            var result = await _repository.QueryActive<domain.Operation.ExpenseInvoice>().Where(f =>
                 !f.Paid &&
-                f.InvoiceType == DomainEnums.InvoiceType.Expense &&
                 f.PaymentType == DomainEnums.PaymentType.Credit &&
                 f.PaymentStatus != DomainEnums.PaymentStatus.Paid
             ).CountAsync();
@@ -32,9 +31,8 @@ namespace cod.application.Factory.UserAlertData.Implementatios
 
         public async Task<AlertPreviewModel> GetPreview()
         {
-            var baseQuery = _repository.QueryActive<domain.Operation.Invoice>().Where(f =>
+            var baseQuery = _repository.QueryActive<domain.Operation.ExpenseInvoice>().Where(f =>
                 !f.Paid &&
-                f.InvoiceType == DomainEnums.InvoiceType.Expense &&
                 f.PaymentType == DomainEnums.PaymentType.Credit &&
                 f.PaymentStatus != DomainEnums.PaymentStatus.Paid
             ).Select(f => new
@@ -43,13 +41,8 @@ namespace cod.application.Factory.UserAlertData.Implementatios
                 f.InvoiceDate,
                 f.InvoiceNumber,
                 f.PaymentStatus,
-                f.PurchaseOrderId,
-                PurchaseOrder = f.PurchaseOrderId.HasValue ? f.PurchaseOrder.Reference : string.Empty,
-                Vendor = f.VendorId.HasValue ? f.Vendor.Name : string.Empty,
-                f.VendorId,
-                f.Description,
-                Cafeteria = f.Cafeteria.Name,
-                f.CafeteriaId,
+                Vendor = f.Expense.VendorId.HasValue ? f.Expense.Vendors.Name : string.Empty,
+                f.Expense.VendorId,
                 f.TaxableAmount,
                 f.ExemptAmount,
                 f.Discount,

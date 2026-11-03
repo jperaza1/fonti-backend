@@ -19,11 +19,9 @@ namespace cod.application.Invoice.Commands.UpdateDocumentId
 
         public async Task Execute(UpdateDocumentIdModel model)
         {
-            var invoice = await _repository.Query<domain.Operation.Invoice>()
+            var invoice = await _repository.Query<domain.Operation.ExpenseInvoice>()
                 .Where(f => f.Id == model.Id).FirstOrDefaultAsync();
 
-
-            invoice.HasFile = true;
             invoice.DocumentId = model.DocumentId;
             invoice.FileUploadedUser = model.User;
             invoice.FileUploadedAt = Clock.Now;

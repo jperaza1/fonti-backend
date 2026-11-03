@@ -541,6 +541,9 @@ namespace cod.persistence.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
@@ -578,6 +581,9 @@ namespace cod.persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rtn")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -796,6 +802,9 @@ namespace cod.persistence.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Routes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("TenantId")
                         .HasColumnType("int");
 
@@ -865,6 +874,54 @@ namespace cod.persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ApplicationUserRoles", "auth");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Bank", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Alias")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Banks", "data");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Cafeteria", b =>
@@ -982,8 +1039,8 @@ namespace cod.persistence.Migrations
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Current")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<int>("Current")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
@@ -1126,7 +1183,7 @@ namespace cod.persistence.Migrations
                     b.ToTable("CustomerCafeterias", "data");
                 });
 
-            modelBuilder.Entity("cod.domain.Data.Product", b =>
+            modelBuilder.Entity("cod.domain.Data.Distributor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1163,12 +1220,222 @@ namespace cod.persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Distributors", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<decimal?>("Cost")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProductType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Tax")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("UnitOfMeasureId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UnitOfMeasureId");
+
                     b.ToTable("Products", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductDistributorPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DistributorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductDistributorPrices", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductRecipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitsPerPackage")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductRecipes", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductRecipeDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PerPackage")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("ProducedUnits")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int>("ProductRecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int>("RawMaterialProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductRecipeId");
+
+                    b.HasIndex("RawMaterialProductId");
+
+                    b.ToTable("ProductRecipeDetails", "data");
                 });
 
             modelBuilder.Entity("cod.domain.Data.ProductRoutePrice", b =>
@@ -1221,6 +1488,72 @@ namespace cod.persistence.Migrations
                     b.HasIndex("RouteId");
 
                     b.ToTable("ProductRoutePrices", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductVendor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Unit")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<int>("UnitOfMeasureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VendorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UnitOfMeasureId");
+
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("ProductVendors", "data");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Register", b =>
@@ -1286,6 +1619,11 @@ namespace cod.persistence.Migrations
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("DeliversRegalia")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
 
@@ -1309,6 +1647,9 @@ namespace cod.persistence.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1360,6 +1701,61 @@ namespace cod.persistence.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("SubCategories", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Truck", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Plate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RouteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TruckStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RouteId")
+                        .IsUnique()
+                        .HasFilter("[RouteId] IS NOT NULL");
+
+                    b.ToTable("Trucks", "data");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Type", b =>
@@ -1462,6 +1858,48 @@ namespace cod.persistence.Migrations
                     b.ToTable("TypeGroups", "data");
                 });
 
+            modelBuilder.Entity("cod.domain.Data.UnitOfMeasure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UnitOfMeasures", "data");
+                });
+
             modelBuilder.Entity("cod.domain.Data.VacationPolicy", b =>
                 {
                     b.Property<int>("Id")
@@ -1517,6 +1955,82 @@ namespace cod.persistence.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<string>("BankAccount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankAccountHolder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("BankId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("C1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("C2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentificationHolder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TypeAccountId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BankId");
+
+                    b.HasIndex("TypeAccountId");
+
+                    b.ToTable("Vendors", "data");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.BankAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
@@ -1549,7 +2063,278 @@ namespace cod.persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vendors", "data");
+                    b.HasIndex("BankId");
+
+                    b.ToTable("BankAccounts", "finance");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("BankAccountId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BankReference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("InvoiceCount")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BankAccountId");
+
+                    b.ToTable("Payments", "finance");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.PaymentDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.ToTable("PaymentDetails", "finance");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.SaleInvoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CorrelativeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("ExemptAmount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("InvoiceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaidUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<double>("SubTotal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Tax18Amount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TaxAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TaxableAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TaxableAmount18")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorrelativeId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("saleInvoices", "finance");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.SaleInvoiceDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SaleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SaleInvoiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SaleId");
+
+                    b.HasIndex("SaleInvoiceId");
+
+                    b.ToTable("saleInvoiceDetails", "finance");
                 });
 
             modelBuilder.Entity("cod.domain.General.Configuration", b =>
@@ -1717,6 +2502,120 @@ namespace cod.persistence.Migrations
                     b.ToTable("Documentations", "gen");
                 });
 
+            modelBuilder.Entity("cod.domain.Operation.DispatchControl", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DispatchControlDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RouteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TruckId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Vendor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RouteId");
+
+                    b.HasIndex("TruckId");
+
+                    b.ToTable("DispatchControl", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.DispatchControlDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("BottleQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CrateQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DispatchControlId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DispatchControlType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MissingBottleQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispatchControlId");
+
+                    b.ToTable("DispatchControlDetail", "operation");
+                });
+
             modelBuilder.Entity("cod.domain.Operation.Expense", b =>
                 {
                     b.Property<int>("Id")
@@ -1740,6 +2639,15 @@ namespace cod.persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DocumentUploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentUploadedUser")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EnableDateTime")
@@ -1775,6 +2683,9 @@ namespace cod.persistence.Migrations
                     b.Property<double>("Total")
                         .HasColumnType("float");
 
+                    b.Property<int?>("TruckId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("VendorId")
                         .HasColumnType("int");
 
@@ -1782,18 +2693,22 @@ namespace cod.persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("InvoiceId");
+                    b.HasIndex("InvoiceId")
+                        .IsUnique()
+                        .HasFilter("[InvoiceId] IS NOT NULL");
 
                     b.HasIndex("RouteId");
 
                     b.HasIndex("SubCategoryId");
+
+                    b.HasIndex("TruckId");
 
                     b.HasIndex("VendorId");
 
                     b.ToTable("Expenses", "operation");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Invoice", b =>
+            modelBuilder.Entity("cod.domain.Operation.ExpenseInvoice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1803,19 +2718,10 @@ namespace cod.persistence.Migrations
                     b.Property<double>("Balance")
                         .HasColumnType("float");
 
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DisableDateTime")
@@ -1848,19 +2754,16 @@ namespace cod.persistence.Migrations
                     b.Property<string>("FileUploadedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("HasFile")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InvoiceNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InvoiceType")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRefund")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -1878,13 +2781,13 @@ namespace cod.persistence.Migrations
                     b.Property<string>("PaidUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
 
                     b.Property<int>("PaymentType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PurchaseOrderId")
                         .HasColumnType("int");
 
                     b.Property<double>("SubTotal")
@@ -1899,23 +2802,91 @@ namespace cod.persistence.Migrations
                     b.Property<double>("Total")
                         .HasColumnType("float");
 
-                    b.Property<int?>("VendorId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentId");
+
+                    b.ToTable("ExpenseInvoices", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.InventoryKardex", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DispatchControlId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("MovementDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovementType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductionOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int?>("SourceProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("UnitCost")
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CafeteriaId");
+                    b.HasIndex("DispatchControlId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("ProductId");
 
-                    b.HasIndex("PurchaseOrderId");
+                    b.HasIndex("ProductionOrderId");
 
-                    b.HasIndex("VendorId");
+                    b.HasIndex("SourceProductId");
 
-                    b.ToTable("Invoices", "operation");
+                    b.ToTable("InventoryKardex", "operation");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Payment", b =>
+            modelBuilder.Entity("cod.domain.Operation.InvoicePayment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1965,7 +2936,346 @@ namespace cod.persistence.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("Payments", "operation");
+                    b.ToTable("InvoicePayments", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.PriceApproval", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime?>("ApprovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ApprovedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DatePriceApproval")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PurchaseOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RejectedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RejectedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseOrderId");
+
+                    b.ToTable("PriceApproval", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.PriceApprovalDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("NewCost")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("OldCost")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<int>("PriceApprovalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductVendorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PriceApprovalId");
+
+                    b.HasIndex("ProductVendorId");
+
+                    b.ToTable("PriceApprovalDetails", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductMovement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DispatchControlDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DispatchControlDetailId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductMovement", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductStock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductStock", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductionOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ProductionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ProductionShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int>("ShiftTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductionShiftId");
+
+                    b.HasIndex("ShiftTypeId");
+
+                    b.ToTable("ProductionOrders", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductionShift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ProductionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ShiftTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShiftTypeId");
+
+                    b.HasIndex("ProductionDate", "ShiftTypeId")
+                        .IsUnique();
+
+                    b.ToTable("ProductionShifts", "operation");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.PurchaseOrder", b =>
@@ -1980,9 +3290,6 @@ namespace cod.persistence.Migrations
 
                     b.Property<string>("ApprovedUser")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CanceledAt")
                         .HasColumnType("datetime2");
@@ -2067,8 +3374,6 @@ namespace cod.persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CafeteriaId");
-
                     b.HasIndex("VendorId");
 
                     b.ToTable("PurchaseOrders", "operation");
@@ -2126,7 +3431,10 @@ namespace cod.persistence.Migrations
                     b.Property<string>("LastModifiedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductVendorId")
                         .HasColumnType("int");
 
                     b.Property<int>("PurchaseOrderId")
@@ -2163,6 +3471,8 @@ namespace cod.persistence.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("ProductVendorId");
+
                     b.HasIndex("PurchaseOrderId");
 
                     b.ToTable("PurchaseOrderDetails", "operation");
@@ -2183,6 +3493,9 @@ namespace cod.persistence.Migrations
 
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
@@ -2211,12 +3524,19 @@ namespace cod.persistence.Migrations
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("SaleInvoiceId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SaleType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.HasIndex("RouteId");
+
+                    b.HasIndex("SaleInvoiceId");
 
                     b.ToTable("Sales", "operation");
                 });
@@ -2277,670 +3597,6 @@ namespace cod.persistence.Migrations
                     b.HasIndex("SaleId");
 
                     b.ToTable("SaleDetails", "operation");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("BirthDay")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("BirthPlace")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ChronicConditionDetails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CurrentStudyInstitution")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EducationField")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EducationInstitution")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EducationLevel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EmergencyContactAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmergencyContactName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmergencyContactPhone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmergencyContactRelationship")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmploymentStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmploymentType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FatherBirthDay")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FatherFullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FatherProfession")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("HasChildren")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("HasChronicCondition")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasFamilyAtCompany")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("HealthDisclosureDetails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("HousingType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Identification")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsCurrentlyStudying")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaritalStatus")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("MotherBirthDay")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MotherFullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MotherProfession")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PayFrequency")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("PermanentStartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PositionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Profession")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Salary")
-                        .HasColumnType("float");
-
-                    b.Property<int>("Shift")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("SpouseBirthDay")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SpouseFullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TerminationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalVacation")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("TrialPeriodDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UniformSizeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("YearsAtResidence")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CafeteriaId");
-
-                    b.HasIndex("PositionId");
-
-                    b.HasIndex("UniformSizeId");
-
-                    b.ToTable("Employees", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.EmployeeChildren", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("EmployeeChildren", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.EmployeeContractBeneficiary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Percentage")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Relationship")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("EmployeeContractBeneficiaries", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.EmployeePersonalReference", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("EmployeePersonalReferences", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.VacationPeriod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EntitledDays")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PeriodEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("PeriodStart")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ServiceYear")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("VacationPeriod", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.VacationRequested", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RequestType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalDays")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("VacationRequested", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.WorkExperience", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Company")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Duration")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonForLeaving")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("WorkExperience", "rrhh");
-                });
-
-            modelBuilder.Entity("cod.domain.SalePoint.Dish", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DishType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Dishes", "salepoint");
-                });
-
-            modelBuilder.Entity("cod.domain.SalePoint.DishCafeteria", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("CafeteriaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DishId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FreeAddOnsQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("NoAddOns")
-                        .HasColumnType("bit");
-
-                    b.Property<double>("PriceWithCarnet")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PriceWithOutCarnet")
-                        .HasColumnType("float");
-
-                    b.Property<int>("SaleTypeDish")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CafeteriaId");
-
-                    b.HasIndex("DishId");
-
-                    b.ToTable("DishesCafeteria", "salepoint");
-                });
-
-            modelBuilder.Entity("cod.domain.SalePoint.SideItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DisableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DisableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EnableDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EnableUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SideItems", "salepoint");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -3170,6 +3826,64 @@ namespace cod.persistence.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("cod.domain.Data.Product", b =>
+                {
+                    b.HasOne("cod.domain.Data.UnitOfMeasure", "UnitOfMeasure")
+                        .WithMany()
+                        .HasForeignKey("UnitOfMeasureId");
+
+                    b.Navigation("UnitOfMeasure");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductDistributorPrice", b =>
+                {
+                    b.HasOne("cod.domain.Data.Distributor", "Distributor")
+                        .WithMany("ProductDistributorPrices")
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Distributor");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductRecipe", b =>
+                {
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductRecipeDetail", b =>
+                {
+                    b.HasOne("cod.domain.Data.ProductRecipe", "ProductRecipe")
+                        .WithMany("Details")
+                        .HasForeignKey("ProductRecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.Product", "RawMaterialProduct")
+                        .WithMany()
+                        .HasForeignKey("RawMaterialProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductRecipe");
+
+                    b.Navigation("RawMaterialProduct");
+                });
+
             modelBuilder.Entity("cod.domain.Data.ProductRoutePrice", b =>
                 {
                     b.HasOne("cod.domain.Data.Product", "Product")
@@ -3187,6 +3901,33 @@ namespace cod.persistence.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Route");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductVendor", b =>
+                {
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany("ProductVendors")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.UnitOfMeasure", "UnitOfMeasure")
+                        .WithMany()
+                        .HasForeignKey("UnitOfMeasureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.Vendor", "Vendor")
+                        .WithMany()
+                        .HasForeignKey("VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UnitOfMeasure");
+
+                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("cod.domain.Data.Register", b =>
@@ -3211,6 +3952,15 @@ namespace cod.persistence.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("cod.domain.Data.Truck", b =>
+                {
+                    b.HasOne("cod.domain.Data.Route", "Route")
+                        .WithOne("Truck")
+                        .HasForeignKey("cod.domain.Data.Truck", "RouteId");
+
+                    b.Navigation("Route");
+                });
+
             modelBuilder.Entity("cod.domain.Data.Type", b =>
                 {
                     b.HasOne("cod.domain.Authorization.ApplicationTenant", "Tenant")
@@ -3226,6 +3976,100 @@ namespace cod.persistence.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("TypeGroup");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Vendor", b =>
+                {
+                    b.HasOne("cod.domain.Data.Bank", "Bank")
+                        .WithMany()
+                        .HasForeignKey("BankId");
+
+                    b.HasOne("cod.domain.Data.Type", "TypeAccount")
+                        .WithMany()
+                        .HasForeignKey("TypeAccountId");
+
+                    b.Navigation("Bank");
+
+                    b.Navigation("TypeAccount");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.BankAccount", b =>
+                {
+                    b.HasOne("cod.domain.Data.Bank", "Bank")
+                        .WithMany()
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bank");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.Payment", b =>
+                {
+                    b.HasOne("cod.domain.Finance.BankAccount", "BankAccount")
+                        .WithMany()
+                        .HasForeignKey("BankAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BankAccount");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.PaymentDetail", b =>
+                {
+                    b.HasOne("cod.domain.Operation.ExpenseInvoice", "Invoice")
+                        .WithMany()
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Finance.Payment", "Payment")
+                        .WithMany("Details")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.SaleInvoice", b =>
+                {
+                    b.HasOne("cod.domain.Data.Correlative", "Correlative")
+                        .WithMany()
+                        .HasForeignKey("CorrelativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Correlative");
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.SaleInvoiceDetail", b =>
+                {
+                    b.HasOne("cod.domain.Operation.Sale", "Sale")
+                        .WithMany()
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Finance.SaleInvoice", "SaleInvoice")
+                        .WithMany("Details")
+                        .HasForeignKey("SaleInvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sale");
+
+                    b.Navigation("SaleInvoice");
                 });
 
             modelBuilder.Entity("cod.domain.General.Configuration", b =>
@@ -3255,6 +4099,34 @@ namespace cod.persistence.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("cod.domain.Operation.DispatchControl", b =>
+                {
+                    b.HasOne("cod.domain.Data.Route", "Route")
+                        .WithMany()
+                        .HasForeignKey("RouteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.Truck", "Truck")
+                        .WithMany()
+                        .HasForeignKey("TruckId");
+
+                    b.Navigation("Route");
+
+                    b.Navigation("Truck");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.DispatchControlDetail", b =>
+                {
+                    b.HasOne("cod.domain.Operation.DispatchControl", "DispatchControl")
+                        .WithMany("DispatchControlDetails")
+                        .HasForeignKey("DispatchControlId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DispatchControl");
+                });
+
             modelBuilder.Entity("cod.domain.Operation.Expense", b =>
                 {
                     b.HasOne("cod.domain.Data.Category", "Category")
@@ -3263,9 +4135,9 @@ namespace cod.persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cod.domain.Operation.Invoice", "Invoice")
-                        .WithMany()
-                        .HasForeignKey("InvoiceId");
+                    b.HasOne("cod.domain.Operation.ExpenseInvoice", "Invoice")
+                        .WithOne("Expense")
+                        .HasForeignKey("cod.domain.Operation.Expense", "InvoiceId");
 
                     b.HasOne("cod.domain.Data.Route", "Routes")
                         .WithMany()
@@ -3279,6 +4151,10 @@ namespace cod.persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("cod.domain.Data.Truck", "Truck")
+                        .WithMany()
+                        .HasForeignKey("TruckId");
+
                     b.HasOne("cod.domain.Data.Vendor", "Vendors")
                         .WithMany()
                         .HasForeignKey("VendorId");
@@ -3291,43 +4167,52 @@ namespace cod.persistence.Migrations
 
                     b.Navigation("SubCateogy");
 
+                    b.Navigation("Truck");
+
                     b.Navigation("Vendors");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Invoice", b =>
+            modelBuilder.Entity("cod.domain.Operation.ExpenseInvoice", b =>
                 {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
+                    b.HasOne("cod.domain.Finance.Payment", "Payment")
                         .WithMany()
-                        .HasForeignKey("CafeteriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PaymentId");
 
-                    b.HasOne("cod.domain.Data.Type", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.Operation.PurchaseOrder", "PurchaseOrder")
-                        .WithMany("Invoices")
-                        .HasForeignKey("PurchaseOrderId");
-
-                    b.HasOne("cod.domain.Data.Vendor", "Vendor")
-                        .WithMany()
-                        .HasForeignKey("VendorId");
-
-                    b.Navigation("Cafeteria");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("PurchaseOrder");
-
-                    b.Navigation("Vendor");
+                    b.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Payment", b =>
+            modelBuilder.Entity("cod.domain.Operation.InventoryKardex", b =>
                 {
-                    b.HasOne("cod.domain.Operation.Invoice", "Invoice")
+                    b.HasOne("cod.domain.Operation.DispatchControl", "DispatchControl")
+                        .WithMany()
+                        .HasForeignKey("DispatchControlId");
+
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Operation.ProductionOrder", "ProductionOrder")
+                        .WithMany()
+                        .HasForeignKey("ProductionOrderId");
+
+                    b.HasOne("cod.domain.Data.Product", "SourceProduct")
+                        .WithMany()
+                        .HasForeignKey("SourceProductId");
+
+                    b.Navigation("DispatchControl");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductionOrder");
+
+                    b.Navigation("SourceProduct");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.InvoicePayment", b =>
+                {
+                    b.HasOne("cod.domain.Operation.ExpenseInvoice", "Invoice")
                         .WithMany("Payments")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -3336,21 +4221,109 @@ namespace cod.persistence.Migrations
                     b.Navigation("Invoice");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.PurchaseOrder", b =>
+            modelBuilder.Entity("cod.domain.Operation.PriceApproval", b =>
                 {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
+                    b.HasOne("cod.domain.Operation.PurchaseOrder", "PurchaseOrder")
                         .WithMany()
-                        .HasForeignKey("CafeteriaId")
+                        .HasForeignKey("PurchaseOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("PurchaseOrder");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.PriceApprovalDetail", b =>
+                {
+                    b.HasOne("cod.domain.Operation.PriceApproval", "PriceApproval")
+                        .WithMany("PriceApprovalDetails")
+                        .HasForeignKey("PriceApprovalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.ProductVendor", "ProductVendor")
+                        .WithMany()
+                        .HasForeignKey("ProductVendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PriceApproval");
+
+                    b.Navigation("ProductVendor");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductMovement", b =>
+                {
+                    b.HasOne("cod.domain.Operation.DispatchControlDetail", "DispatchControlDetail")
+                        .WithMany("ProductMovements")
+                        .HasForeignKey("DispatchControlDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DispatchControlDetail");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductStock", b =>
+                {
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductionOrder", b =>
+                {
+                    b.HasOne("cod.domain.Data.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Operation.ProductionShift", "ProductionShift")
+                        .WithMany("Lines")
+                        .HasForeignKey("ProductionShiftId");
+
+                    b.HasOne("cod.domain.Data.Type", "ShiftType")
+                        .WithMany()
+                        .HasForeignKey("ShiftTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductionShift");
+
+                    b.Navigation("ShiftType");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductionShift", b =>
+                {
+                    b.HasOne("cod.domain.Data.Type", "ShiftType")
+                        .WithMany()
+                        .HasForeignKey("ShiftTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ShiftType");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.PurchaseOrder", b =>
+                {
                     b.HasOne("cod.domain.Data.Vendor", "Vendor")
                         .WithMany()
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cafeteria");
 
                     b.Navigation("Vendor");
                 });
@@ -3359,9 +4332,11 @@ namespace cod.persistence.Migrations
                 {
                     b.HasOne("cod.domain.Data.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("cod.domain.Data.ProductVendor", "ProductVendor")
+                        .WithMany()
+                        .HasForeignKey("ProductVendorId");
 
                     b.HasOne("cod.domain.Operation.PurchaseOrder", "PurchaseOrder")
                         .WithMany("PurchaseOrderDetails")
@@ -3371,18 +4346,32 @@ namespace cod.persistence.Migrations
 
                     b.Navigation("Product");
 
+                    b.Navigation("ProductVendor");
+
                     b.Navigation("PurchaseOrder");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Sale", b =>
                 {
+                    b.HasOne("cod.domain.Data.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("cod.domain.Data.Route", "Route")
                         .WithMany()
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("cod.domain.Finance.SaleInvoice", "SaleInvoice")
+                        .WithMany()
+                        .HasForeignKey("SaleInvoiceId");
+
+                    b.Navigation("Customer");
+
                     b.Navigation("Route");
+
+                    b.Navigation("SaleInvoice");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.SaleDetail", b =>
@@ -3402,118 +4391,6 @@ namespace cod.persistence.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Sale");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.Employee", b =>
-                {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
-                        .WithMany()
-                        .HasForeignKey("CafeteriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.Data.Type", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.Data.Type", "UniformSize")
-                        .WithMany()
-                        .HasForeignKey("UniformSizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cafeteria");
-
-                    b.Navigation("Position");
-
-                    b.Navigation("UniformSize");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.EmployeeChildren", b =>
-                {
-                    b.HasOne("cod.domain.Rrhh.Employee", "Employee")
-                        .WithMany("EmployeeChildrens")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.EmployeeContractBeneficiary", b =>
-                {
-                    b.HasOne("cod.domain.Rrhh.Employee", "Employee")
-                        .WithMany("EmployeeContractBeneficiaries")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.EmployeePersonalReference", b =>
-                {
-                    b.HasOne("cod.domain.Rrhh.Employee", "Employee")
-                        .WithMany("EmployeePersonalReferences")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.VacationPeriod", b =>
-                {
-                    b.HasOne("cod.domain.Rrhh.Employee", "Employee")
-                        .WithMany("VacationPeriods")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.VacationRequested", b =>
-                {
-                    b.HasOne("cod.domain.Rrhh.Employee", "Employee")
-                        .WithMany("VacationRequested")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.WorkExperience", b =>
-                {
-                    b.HasOne("cod.domain.Rrhh.Employee", "Employee")
-                        .WithMany("WorkExperience")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("cod.domain.SalePoint.DishCafeteria", b =>
-                {
-                    b.HasOne("cod.domain.Data.Cafeteria", "Cafeteria")
-                        .WithMany()
-                        .HasForeignKey("CafeteriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cod.domain.SalePoint.Dish", "Dish")
-                        .WithMany()
-                        .HasForeignKey("DishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cafeteria");
-
-                    b.Navigation("Dish");
                 });
 
             modelBuilder.Entity("cod.domain.Alerts.AlertConfiguration", b =>
@@ -3560,9 +4437,26 @@ namespace cod.persistence.Migrations
                     b.Navigation("CustomerCafeterias");
                 });
 
+            modelBuilder.Entity("cod.domain.Data.Distributor", b =>
+                {
+                    b.Navigation("ProductDistributorPrices");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.Product", b =>
+                {
+                    b.Navigation("ProductVendors");
+                });
+
+            modelBuilder.Entity("cod.domain.Data.ProductRecipe", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("cod.domain.Data.Route", b =>
                 {
                     b.Navigation("ProductRoutePrices");
+
+                    b.Navigation("Truck");
                 });
 
             modelBuilder.Entity("cod.domain.Data.TypeGroup", b =>
@@ -3570,36 +4464,51 @@ namespace cod.persistence.Migrations
                     b.Navigation("Types");
                 });
 
-            modelBuilder.Entity("cod.domain.Operation.Invoice", b =>
+            modelBuilder.Entity("cod.domain.Finance.Payment", b =>
                 {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.SaleInvoice", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.DispatchControl", b =>
+                {
+                    b.Navigation("DispatchControlDetails");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.DispatchControlDetail", b =>
+                {
+                    b.Navigation("ProductMovements");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ExpenseInvoice", b =>
+                {
+                    b.Navigation("Expense");
+
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.PriceApproval", b =>
+                {
+                    b.Navigation("PriceApprovalDetails");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.ProductionShift", b =>
+                {
+                    b.Navigation("Lines");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.PurchaseOrder", b =>
                 {
-                    b.Navigation("Invoices");
-
                     b.Navigation("PurchaseOrderDetails");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Sale", b =>
                 {
                     b.Navigation("SaleDetails");
-                });
-
-            modelBuilder.Entity("cod.domain.Rrhh.Employee", b =>
-                {
-                    b.Navigation("EmployeeChildrens");
-
-                    b.Navigation("EmployeeContractBeneficiaries");
-
-                    b.Navigation("EmployeePersonalReferences");
-
-                    b.Navigation("VacationPeriods");
-
-                    b.Navigation("VacationRequested");
-
-                    b.Navigation("WorkExperience");
                 });
 #pragma warning restore 612, 618
         }

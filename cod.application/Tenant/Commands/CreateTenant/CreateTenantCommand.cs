@@ -41,6 +41,8 @@ namespace cod.application.Tenant.Commands.CreateTenant
             ApplicationTenant tenant = new ApplicationTenant
             {
                 Name = createTenantModel.Name,
+                CompanyName = createTenantModel.CompanyName,
+                Rtn = createTenantModel.Rtn,
                 Address = createTenantModel.Address,
                 Email = createTenantModel.Email,
                 PhoneNumber = createTenantModel.PhoneNumber,

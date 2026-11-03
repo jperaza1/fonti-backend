@@ -21,25 +21,21 @@ namespace cod.application.Invoice.Queries.GetInvoice
 
         public async Task<InvoiceModel> Execute(int id)
         {
-            var baseQuery = _repository.Query<domain.Operation.Invoice>()
+            var baseQuery = _repository.Query<domain.Operation.ExpenseInvoice>()
                 .Where(f => f.Id == id)
                 .Select(f => new
                 {
                     f.Id,
                     f.InvoiceDate,
                     f.InvoiceNumber,
-                    f.InvoiceType,
                     f.PaymentStatus,
                     f.PaymentType,
-                    f.PurchaseOrderId,
-                    f.CategoryId,
-                    Category = f.Category.Name,
-                    PurchaseOrder = f.PurchaseOrderId.HasValue ? f.PurchaseOrder.Reference : string.Empty,
-                    Vendor = f.VendorId.HasValue ? f.Vendor.Name : string.Empty,
-                    f.VendorId,
-                    f.Description,
-                    Cafeteria = f.Cafeteria.Name,
-                    f.CafeteriaId,
+                    f.Expense.CategoryId,
+                    Category = f.Expense.Category.Name,
+                    Vendor = f.Expense.VendorId.HasValue ? f.Expense.Vendors.Name : string.Empty,
+                    TruckName = f.Expense.TruckId.HasValue ? f.Expense.Truck.Plate : string.Empty,
+                    f.Expense.TruckId,
+                    f.Expense.VendorId,
                     f.TaxableAmount,
                     f.ExemptAmount,
                     f.Discount,
@@ -51,10 +47,12 @@ namespace cod.application.Invoice.Queries.GetInvoice
                     f.PaidAt,
                     f.PaidUser,
                     f.Balance,
-                    f.HasFile,
                     f.FileUploadedAt,
                     f.FileUploadedUser,
                     f.DocumentId,
+                    f.Expense.RouteId,
+                    f.IsRefund,
+                    RouteName = f.Expense.Routes.Name,
                     RemainingDays = f.Balance == 0 ? 0 : f.DueDate.HasValue ? (f.DueDate.Value.Date - Clock.Now.Date).TotalDays : 0,
                     Payments = f.Payments.Select(x => new
                     {
@@ -68,11 +66,8 @@ namespace cod.application.Invoice.Queries.GetInvoice
             return await baseQuery.Select(f => new InvoiceModel
             {
                 Id = f.Id,
-                PurchaseOrderId = f.PurchaseOrderId,
-                PurchaseOrder = f.PurchaseOrder,
-                Vendor = f.Vendor,
+                VendorName = f.Vendor,
                 InvoiceNumber = f.InvoiceNumber,
-                Description = f.Description,
                 InvoiceDate = f.InvoiceDate,
                 TaxableAmount = f.TaxableAmount,
                 ExemptAmount = f.ExemptAmount,
@@ -89,19 +84,19 @@ namespace cod.application.Invoice.Queries.GetInvoice
                 PaidUser = f.PaidUser,
                 PaymentType = f.PaymentType,
                 PaymentTypeName = f.PaymentType.GetEnumDescription(),
-                InvoiceType = f.InvoiceType,
-                InvoiceTypeName = f.InvoiceType.GetEnumDescription(),
                 PaymentStatus = f.PaymentStatus,
                 PaymentStatusName = f.PaymentStatus.GetEnumDescription(),
                 RemainingDays = f.RemainingDays,
-                Cafeteria = f.Cafeteria,
-                CafeteriaId = f.CafeteriaId,
                 VendorId = f.VendorId,
-                HasFile = f.HasFile,
                 DocumentId = f.DocumentId,
                 FileUploadedUser = f.FileUploadedUser,
                 FileUploadedAt = f.FileUploadedAt,
-                Payments = f.Payments.Select(x => new PaymentModel
+                Route = f.RouteName,
+                RouteId = f.RouteId,
+                IsRefund = f.IsRefund,
+                TruckName = f.TruckName,
+                TruckId = f.TruckId,
+                Payments = f.Payments.Select(x => new InvoicePaymentModel
                 {
                     InvoiceId = x.Id,
                     PaymentMethod = x.PaymentMethod,

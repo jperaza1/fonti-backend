@@ -18,11 +18,16 @@ namespace cod.application.Route.Queries.GetRoutes
 
         public async Task<List<RouteModel>> Execute()
         {
-            return await _repository.Query<domain.Data.Route>().Select(f => new RouteModel
+            return await _repository.Query<domain.Data.Route>()
+                .OrderBy(f => f.Order)
+                .Select(f => new RouteModel
             {
                 Id = f.Id,
                 Name = f.Name,
                 IsActive = f.IsActive,
+                DeliversRegalia = f.DeliversRegalia,
+                TruckId = f.Truck != null ? f.Truck.Id : null,
+                Truck = f.Truck != null ? f.Truck.Plate : string.Empty
             }).ToListAsync();
         }
     }

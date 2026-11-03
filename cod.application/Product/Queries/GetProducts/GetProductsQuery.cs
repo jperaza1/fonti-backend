@@ -30,6 +30,10 @@ namespace cod.application.Product.Queries.GetProducts
                 f.Id,
                 f.Name,
                 f.ProductType,
+                f.Tax,
+                f.Cost,
+                f.UnitOfMeasureId,
+                UnitOfMeasureName = f.UnitOfMeasure.Name,
                 f.IsActive
             });
 
@@ -39,6 +43,10 @@ namespace cod.application.Product.Queries.GetProducts
                 Name = f.Name,
                 ProductType = f.ProductType,
                 ProductTypeName = f.ProductType.GetEnumDescription(),
+                Tax = f.Tax,
+                Cost = f.Cost,
+                UnitOfMeasureId = f.UnitOfMeasureId,
+                UnitOfMeasureName = f.UnitOfMeasureName,
                 IsActive = f.IsActive
             }).ToListAsync();
         }

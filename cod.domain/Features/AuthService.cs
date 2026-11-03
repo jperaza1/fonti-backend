@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace cod.domain.Features
 {
@@ -11,6 +12,7 @@ namespace cod.domain.Features
         public int? CompanyId => _httpContextAccessor.HttpContext?.Request?.GetCompany();
         public string User => _httpContextAccessor?.HttpContext?.User.Identity.Name;
         public string ClientTimezone => _httpContextAccessor.HttpContext?.Request?.GetTimeZone();
+        public List<int> Routes => _httpContextAccessor.HttpContext?.Request?.GetRoutes();
 
 
         public AuthService(

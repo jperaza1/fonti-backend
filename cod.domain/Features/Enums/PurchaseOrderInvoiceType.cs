@@ -9,14 +9,6 @@ namespace cod.domain.Features.Enums
 {
     public partial class DomainEnums
     {
-        public enum InvoiceType
-        {
-            [Description("Gasto")]
-            Expense = 1,
-            [Description("Ingreso")]
-            Income,
-        }
-
         public enum PaymentType
         {
             [Description("Contado")]

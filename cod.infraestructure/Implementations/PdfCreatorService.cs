@@ -100,14 +100,14 @@ namespace cod.infraestructure.Implementations
                 ColorMode = DinkToPdf.ColorMode.Color,
                 Orientation = orientation,
                 PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 2 },
+                Margins = new MarginSettings { Top = 2, Bottom = 6, Left = 10, Right = 10 },
                 DocumentTitle = name
             };
             var objectSettings = new ObjectSettings
             {
                 PagesCount = true,
                 HtmlContent = htmlContent,
-                WebSettings = { DefaultEncoding = "utf-8" }
+                WebSettings = { DefaultEncoding = "utf-8", EnableIntelligentShrinking = false }
             };
             var htmlDocument = new HtmlToPdfDocument
             {

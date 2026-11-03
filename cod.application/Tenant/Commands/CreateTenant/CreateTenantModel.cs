@@ -5,6 +5,8 @@ namespace cod.application.Tenant.Commands.CreateTenant
     public class CreateTenantModel
     {
         public string Name { get; set; }
+        public string CompanyName { get; set; }
+        public string Rtn { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string FaxNumber { get; set; }

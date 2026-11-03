@@ -6,6 +6,8 @@ using cod.application.Route.Commands.UpdateRoute;
 using cod.application.Route.Common;
 using cod.application.Route.Queries.GetProductRoutePrices;
 using cod.application.Route.Queries.GetRoute;
+using cod.application.Route.Queries.GetActiveRoutes;
+using cod.application.Route.Queries.GetRouteAvalible;
 using cod.application.Route.Queries.GetRoutes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,8 @@ namespace cod.data.Controllers
     {
         private readonly IGetRoutesQuery _getRoutesQuery;
         private readonly IGetRouteQuery _getRouteQuery;
+        private readonly IGetActiveRoutesQuery _getActiveRoutesQuery;
+        private readonly IGetRouteAvalibleQuery _getRouteAvalibleQuery;
         private readonly IGetProductRoutePricesQuery _getProductRoutePricesQuery;
         private readonly ICreateRouteCommand _createRouteCommand;
         private readonly IUpdateRouteCommand _updateRouteCommand;
@@ -30,6 +34,8 @@ namespace cod.data.Controllers
         public RouteController(
             IGetRoutesQuery getRoutesQuery,
             IGetRouteQuery getRouteQuery,
+            IGetActiveRoutesQuery getActiveRoutesQuery,
+            IGetRouteAvalibleQuery getRouteAvalibleQuery,
             IGetProductRoutePricesQuery getProductRoutePricesQuery,
             ICreateRouteCommand createRouteCommand,
             IUpdateRouteCommand updateRouteCommand,
@@ -38,7 +44,9 @@ namespace cod.data.Controllers
         {
             _getRoutesQuery = getRoutesQuery;
             _getRouteQuery = getRouteQuery;
+            _getActiveRoutesQuery = getActiveRoutesQuery;
             _getProductRoutePricesQuery = getProductRoutePricesQuery;
+            _getRouteAvalibleQuery = getRouteAvalibleQuery;
             _createRouteCommand = createRouteCommand;
             _updateRouteCommand = updateRouteCommand;
             _enableRouteCommand = enableRouteCommand;
@@ -54,8 +62,13 @@ namespace cod.data.Controllers
         [HttpGet]
         public async Task<List<RouteModel>> GetAllActive()
         {
-            var response = await _getRoutesQuery.Execute();
-            return response.Where(f => f.IsActive).ToList();
+            return await _getActiveRoutesQuery.Execute();
+        }
+
+        [HttpGet]
+        public async Task<List<RouteModel>> GetAvalible()
+        {
+            return await _getRouteAvalibleQuery.Execute();
         }
 
         [HttpGet]

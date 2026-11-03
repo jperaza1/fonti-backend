@@ -2,10 +2,14 @@ using cod.application.Expense.Commands.CreateExpense;
 using cod.application.Expense.Commands.DisableExpense;
 using cod.application.Expense.Commands.EnableExpense;
 using cod.application.Expense.Commands.UpdateExpense;
+using cod.application.Expense.Commands.UpdateExpenseDocumentId;
 using cod.application.Expense.Common;
 using cod.application.Expense.Queries.GetExpense;
 using cod.application.Expense.Queries.GetExpenses;
 using cod.application.Features.Models;
+using cod.application.Invoice.Commands.UpdateDocumentId;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,6 +26,7 @@ namespace cod.data.Controllers
         private readonly IUpdateExpenseCommand _updateExpenseCommand;
         private readonly IEnableExpenseCommand _enableExpenseCommand;
         private readonly IDisableExpenseCommand _disableExpenseCommand;
+        private readonly IUpdateExpenseDocumentIdCommand _updateExpenseDocumentIdCommand;
 
         public ExpenseController(
             IGetExpensesQuery getExpensesQuery,
@@ -29,7 +34,8 @@ namespace cod.data.Controllers
             ICreateExpenseCommand createExpenseCommand,
             IUpdateExpenseCommand updateExpenseCommand,
             IEnableExpenseCommand enableExpenseCommand,
-            IDisableExpenseCommand disableExpenseCommand)
+            IDisableExpenseCommand disableExpenseCommand,
+            IUpdateExpenseDocumentIdCommand updateExpenseDocumentIdCommand)
         {
             _getExpensesQuery = getExpensesQuery;
             _getExpenseQuery = getExpenseQuery;
@@ -37,6 +43,7 @@ namespace cod.data.Controllers
             _updateExpenseCommand = updateExpenseCommand;
             _enableExpenseCommand = enableExpenseCommand;
             _disableExpenseCommand = disableExpenseCommand;
+            _updateExpenseDocumentIdCommand = updateExpenseDocumentIdCommand;
         }
 
         [HttpPost]
@@ -52,11 +59,12 @@ namespace cod.data.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ExpenseModel model)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm] ExpenseModel model, IFormFile invoiceFile)
         {
             try
             {
-                await _createExpenseCommand.Execute(model);
+                await _createExpenseCommand.Execute(model, invoiceFile);
                 return Ok(new ResponseModel { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
             }
             catch (Exception exception)
@@ -105,6 +113,22 @@ namespace cod.data.Controllers
             {
                 return Ok(ProcessException(exception));
             }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateDocumentId([FromBody] UpdateDocumentIdModel model)
+        {
+            try
+            {
+                await _updateExpenseDocumentIdCommand.Execute(model);
+                return Ok(new ResponseModel<int> { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
+            }
+            catch (Exception exception)
+            {
+                return Ok(ProcessException(exception));
+            }
+
         }
     }
 }

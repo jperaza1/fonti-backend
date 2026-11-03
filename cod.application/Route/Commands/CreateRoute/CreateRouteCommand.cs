@@ -32,6 +32,8 @@ namespace cod.application.Route.Commands.CreateRoute
             var newRoute = new domain.Data.Route
             {
                 Name = model.Name,
+                Order = model.Order,
+                DeliversRegalia = model.DeliversRegalia,
                 ProductRoutePrices = GenerateDetails(model)
             };
 
@@ -63,6 +65,8 @@ namespace cod.application.Route.Commands.CreateRoute
             if (model.Name.NullOrEmpty())
                 this._exceptionFactory.Add("name", this._exceptionFactory.GetMessage("Nombre", ExceptionEnums.ExceptionCode.Required));
 
+            ValidatePrices(model);
+
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "RUTA", this._exceptionFactory.Exceptions);
 
@@ -74,6 +78,22 @@ namespace cod.application.Route.Commands.CreateRoute
 
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "RUTA", this._exceptionFactory.Exceptions);
+        }
+
+        private void ValidatePrices(RouteModel model)
+        {
+            if (model.ProductRoutePrices == null)
+                return;
+
+            var invalidPrice = model.ProductRoutePrices.Any(item =>
+                item.Price < 0 || (!model.DeliversRegalia && item.Price <= 0));
+
+            if (!invalidPrice)
+                return;
+
+            this._exceptionFactory.Add("price", model.DeliversRegalia
+                ? "El precio no puede ser negativo"
+                : "El precio debe ser mayor a 0");
         }
     }
 }

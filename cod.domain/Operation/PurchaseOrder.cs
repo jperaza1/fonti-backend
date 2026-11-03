@@ -18,9 +18,6 @@ namespace cod.domain.Operation
         public int VendorId { get; set; }
         [ForeignKey("VendorId")]
         public virtual Vendor Vendor { get; set; }
-        public int CafeteriaId { get; set; }
-        [ForeignKey("CafeteriaId")]
-        public virtual Cafeteria Cafeteria { get; set; }
         public double  Total { get; set; }
         public PurchaseOrderStatus OrderStatus { get; set; }
         public string ApprovedUser { get; set; }
@@ -39,6 +36,5 @@ namespace cod.domain.Operation
         public string CanceledUser { get; set; }
         public DateTime? CanceledAt { get; set; }
         public virtual ICollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
-        public virtual ICollection<Invoice> Invoices { get; set; }
     }
 }

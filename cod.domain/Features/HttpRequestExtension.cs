@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 
@@ -56,6 +57,15 @@ namespace cod.domain.Features
             string timeZone = httpRequest.Headers["Timezone"].ToString() ?? "America/Tegucigalpa";
 
             return timeZone;
+        }
+
+        public static List<int> GetRoutes(this HttpRequest httpRequest)
+        {
+            string routes = httpRequest.Headers["App.Routes"].ToString() ?? "";
+
+            return string.IsNullOrEmpty(routes)
+                ? new List<int>()
+                : routes.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(value => int.Parse(value.Trim())).ToList();
         }
     }
 }

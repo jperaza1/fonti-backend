@@ -1,5 +1,6 @@
 ﻿using cod.domain.Common;
 using cod.domain.Data;
+using cod.domain.Finance;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,10 +17,15 @@ namespace cod.domain.Operation
         public int RouteId { get; set; }
         [ForeignKey("RouteId")]
         public virtual Route Route { get; set; }
+        public int? CustomerId { get; set; }
+        [ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }
         public SaleType SaleType { get; set; }
         public DateTime SaleDate { get; set; }
         public double Amount { get; set; }
-
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        public int? SaleInvoiceId { get; set; }
+        [ForeignKey("SaleInvoiceId")]
+        public virtual SaleInvoice SaleInvoice { get; set; }
     }
 }

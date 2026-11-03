@@ -30,10 +30,6 @@ namespace cod.application.Factory.UserAlertData
             {
                 case DomainEnums.UserAlertOption.PendingInvoice:
                     return new PendingInvoiceDataQuery(_repository);
-                case DomainEnums.UserAlertOption.BirthdaysOfTheWeek:
-                    return new BirthdaysOfTheWeekDataQuery(_repository);
-                case DomainEnums.UserAlertOption.ContractsDueToExpire:
-                    return new ContractsDueToExpireDataQuery(_repository);
             }
             return null;
         }

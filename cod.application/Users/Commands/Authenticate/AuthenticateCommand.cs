@@ -107,6 +107,7 @@ namespace cod.application.Users.Commands.Authenticate
                     TenantId = userTenant.Id,
                     Expiration = userTenant.DemoTerminationDate,
                     UserType = userProfile.IsNull() ? DomainEnums.UserType.General : userProfile.UserType,
+                    Routes = userProfile.IsNull() ? new List<int>() : UserRoutes.Parse(userProfile.Routes),
                 },
             };
 
