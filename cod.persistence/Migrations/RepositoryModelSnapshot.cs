@@ -2188,6 +2188,113 @@ namespace cod.persistence.Migrations
                     b.ToTable("PaymentDetails", "finance");
                 });
 
+            modelBuilder.Entity("cod.domain.Finance.PaymentSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentSchedule", "finance");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.PaymentScheduleDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<double>("AccumulatedAmount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PaymentScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("ProjectedAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RealAmount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Vendor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentScheduleId");
+
+                    b.ToTable("PaymentScheduleDetails", "finance");
+                });
+
             modelBuilder.Entity("cod.domain.Finance.SaleInvoice", b =>
                 {
                     b.Property<int>("Id")
@@ -4034,6 +4141,17 @@ namespace cod.persistence.Migrations
                     b.Navigation("Payment");
                 });
 
+            modelBuilder.Entity("cod.domain.Finance.PaymentScheduleDetail", b =>
+                {
+                    b.HasOne("cod.domain.Finance.PaymentSchedule", "PaymentSchedule")
+                        .WithMany("Details")
+                        .HasForeignKey("PaymentScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaymentSchedule");
+                });
+
             modelBuilder.Entity("cod.domain.Finance.SaleInvoice", b =>
                 {
                     b.HasOne("cod.domain.Data.Correlative", "Correlative")
@@ -4465,6 +4583,11 @@ namespace cod.persistence.Migrations
                 });
 
             modelBuilder.Entity("cod.domain.Finance.Payment", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("cod.domain.Finance.PaymentSchedule", b =>
                 {
                     b.Navigation("Details");
                 });

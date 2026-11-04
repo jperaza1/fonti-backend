@@ -15,5 +15,7 @@ namespace cod.persistence.Implementations
         public DbSet<SaleInvoiceDetail> SaleInvoiceDetails { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
+        public DbSet<PaymentScheduleDetail> PaymentScheduleDetails { get; set; }
     }
 }

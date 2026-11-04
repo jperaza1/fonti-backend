@@ -269,6 +269,7 @@ Tablas usan schema SQL: `data.*`, `operation.*`, etc.
 - **InventoryKardex** — historial. `MovementType`: Entrada, Salida, Recarga, Retorno, Producción, Mala calidad, Pérdida. Puede apuntar a un despacho (`DispatchControlId`) o a una línea de producción (`ProductionOrderId`)
 - **ProductionShift** — un registro por fecha y tipo de turno. Índice único `(ProductionDate, ShiftTypeId)`. El tipo sale de `data.Types` del grupo `PRODUCTION_SHIFT` (Turno A y Turno B). `IsClosed`: abierto, cerrado o anulado (`IsActive` en falso)
 - **ProductionOrder** — línea de producto dentro del turno (`ProductionShiftId`, producto de venta, cantidad, nota)
+- **PaymentSchedule / PaymentScheduleDetail** — programación semanal de pago a proveedores (`finance.PaymentSchedule`, `finance.PaymentScheduleDetails`). El proveedor es texto. El monto a pagar es el mayor entre acumulado y proyectado. El pendiente de la última programación pasa al acumulado del mismo proveedor al crear la siguiente; una línea pagada no se arrastra. Líneas nuevas y el real solo se editan en la programación más reciente. `Status`: Pendiente = 1, Pago Parcial = 2, Pagado = 3
 - **Invoice / Payment / PurchaseOrder** — facturación y órdenes de compra. La orden es solo proveedor y materia prima: no lleva cafetería, ruta ni envío a Kova. Al pasar a revisión entra el inventario. Si `gen.Configurations` tiene `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, un cambio de costo abre una solicitud y el costo del proveedor no cambia hasta aprobarla en `PriceApproval/Resolve`. Si la clave no existe o vale `false`, el costo se actualiza al recibir. La clave se crea en `false` la primera vez que se evalúa
 - **Inventory / OfficeRequisition / SpecialService** — inventario, requisiciones, servicios especiales
 
@@ -301,14 +302,17 @@ El menú Inventario y Camiones (dentro de Operaciones) piden permiso. El código
 | Unidades de medida | `OPERATION.UNIT_OF_MEASURE` | `CREATE`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Camiones | `DATA.TRUCK` | `CREATE`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Ordenes de compra | `OPERATION.PURCHASE_ORDER` | `CREATE`, `ADD_PRODUCT`, `APPROVE`, `UPDATE_INVOICE_TYPE`, `PROCESS`, `REVIEW`, `CANCEL`, `CLOSE`, `REJECT`, `RECALCULATE`, `APPROVE_PRICE`, `REJECT_PRICE` |
+| Programación de pagos | `OPERATION.PAYMENT_SCHEDULE` | `CREATE` nueva programación y agregar líneas, `VIEW` abrir, `PARTIAL` guardar el real, `FINISH` marcar pagado. El ítem cuelga de Finanzas |
 | Reporte de órdenes de compra | `OPERATION.PURCHASE_ORDER.REPORT` | Solo consulta |
 | Reporte de gastos de compra | `OPERATION.PURCHASE_ORDER.EXPENSE_REPORT` | Solo consulta |
 
 **Ordenes de compra** es un ítem de primer nivel. Los dos reportes cuelgan de **Reportes**. La solicitud de precios no va en el menú: se abre en `/purchase-order/price-approval/:token` y sus botones usan `APPROVE_PRICE` y `REJECT_PRICE`. La referencia de la orden es `OC-#####`. Al pasar a revisión entra el inventario (`cantidad recibida × unidades de la presentación`). Con `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, el costo del proveedor espera la aprobación; si la clave no existe o vale `false`, el costo se actualiza al recibir y la clave se crea en `false` la primera vez.
 
+**Programación de pagos** cuelga de **Finanzas**. El alta (`/payment-schedule/create`) trae los saldos sin pagar de la última programación y deja agregar proveedores antes de guardar. El detalle (`/payment-schedule/view/:id`) registra el real y, si es la última, agrega líneas. El real que se envía es el total pagado de esa línea. API `api/v2/PaymentSchedule`: `GetAll`, `GetById`, `GetCarryForward`, `Create`, `AddDetails`, `RegisterPayment`. `GetAll` y `GetById` incluyen `canAddDetails`, verdadero solo en la más reciente. Los códigos están en `AspNetRoles` y no quedan asignados a un rol. La migración es `20261104171141_adding-schedule-payment`.
+
 La tablet (`fonti-app` en Windows) tiene Inventario, Kardex y Producción; las recetas se editan en el frontend web.
 
-Turnos de producción: `20261027000012_adding-production-kardex`, `20261027002424_adding-Change-production` y `20261027160000_adding-close-production-shift` (`operation.ProductionShifts.IsClosed`, `bit` no nulo, default falso; los turnos que ya estaban activos quedan abiertos). Rutas del vendedor: `20261027045938_adding-route-userprofile` agrega `auth.ApplicationUserProfiles.Routes` (`nvarchar(max)`, nullable).
+Turnos de producción: `20261027000012_adding-production-kardex`, `20261027002424_adding-Change-production` y `20261027160000_adding-close-production-shift` (`operation.ProductionShifts.IsClosed`, `bit` no nulo, default falso; los turnos que ya estaban activos quedan abiertos). Rutas del vendedor: `20261027045938_adding-route-userprofile` agrega `auth.ApplicationUserProfiles.Routes` (`nvarchar(max)`, nullable). Programación de pagos: `20261104171141_adding-schedule-payment` crea `finance.PaymentSchedule` y `finance.PaymentScheduleDetails`.
 
 ### Otros
 
