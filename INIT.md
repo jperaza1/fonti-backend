@@ -262,7 +262,7 @@ Tablas usan schema SQL: `data.*`, `operation.*`, etc.
 
 ### Operaciones (`cod.domain/Operation`)
 
-- **Sale / SaleDetail** — venta de productos en una ruta. `SaleType`: `Cash` o `Credit`
+- **Sale / SaleDetail** — venta de productos en una ruta. `SaleType`: `Cash` o `Credit`. El lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura no se edita
 - **Expense / ExpenseInvoice** — gasto de ruta; puede colgarse de una factura y un `DocumentId` (archivo)
 - **DispatchControl / DispatchControlDetail / ProductMovement** — control de salida de mercadería. Status `Open` / `Close`. Salida y recarga descuentan el producto terminado; el retorno lo suma. No explota la receta. El formulario pide `Product/GetAllActive` con `ProductType.Sale` (1). `GetDispatchControl` devuelve solo movimientos de ese tipo, así que un control ya guardado tampoco muestra materia prima ni compra
 - **ProductStock** — saldo único de la empresa por producto (`operation.ProductStock`)
@@ -302,6 +302,7 @@ El menú Inventario y Camiones (dentro de Operaciones) piden permiso. El código
 | Unidades de medida | `OPERATION.UNIT_OF_MEASURE` | `CREATE`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Camiones | `DATA.TRUCK` | `CREATE`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Ordenes de compra | `OPERATION.PURCHASE_ORDER` | `CREATE`, `ADD_PRODUCT`, `APPROVE`, `UPDATE_INVOICE_TYPE`, `PROCESS`, `REVIEW`, `CANCEL`, `CLOSE`, `REJECT`, `RECALCULATE`, `APPROVE_PRICE`, `REJECT_PRICE` |
+| Ventas | `OPERATION.SALE` | `CREATE` alta, `VIEW` abrir con el lápiz, `UPDATE` habilitar campos y guardar, `DISABLE`, `ENABLE`. Una venta con factura no se edita |
 | Programación de pagos | `OPERATION.PAYMENT_SCHEDULE` | `CREATE` nueva programación y agregar líneas, `VIEW` abrir, `PARTIAL` guardar el real, `FINISH` marcar pagado. El ítem cuelga de Finanzas |
 | Reporte de órdenes de compra | `OPERATION.PURCHASE_ORDER.REPORT` | Solo consulta |
 | Reporte de gastos de compra | `OPERATION.PURCHASE_ORDER.EXPENSE_REPORT` | Solo consulta |
@@ -387,6 +388,8 @@ SaleController.Create
 ```
 
 Listado: `POST /api/v2/Sale/GetAll` con `FilterSaleDto` → `GetSalesQuery` proyecta a `SaleModel`.
+
+Edición: `PUT /api/v2/Sale/Update?id=` con el mismo `SaleModel`. El lápiz del listado exige `OPERATION.SALE.VIEW`. Si la venta ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Si tiene `SaleInvoiceId`, se consulta y no se modifica. Los códigos están en `AspNetRoles` y no quedan asignados a un rol.
 
 ---
 

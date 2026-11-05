@@ -80,7 +80,7 @@ Si falla la copia de DLLs a `bin\Debug` con errores `MSB3027` / archivo en uso, 
 
 ## Dominio funcional (resumen)
 
-Los controladores en `cod.data/Controllers` cubren entre otros: cafeterías, clientes, empleados, productos, rutas y precios por ruta (una ruta con regalía admite precio 0), correlativos, ventas, facturas, pagos, programación de pagos a proveedores, órdenes de compra, proveedores, inventario y kardex, producción (un solo turno abierto; `CloseShift` lo cierra sin revertir stock), control de salidas (solo productos de venta), platos y acompañamientos, alertas, documentación y catálogos vía `EnumDefinitionController`. El detalle de recetas, turnos, regalía, programación de pagos y permisos de Inventario y Camiones está en [INIT.md](INIT.md).
+Los controladores en `cod.data/Controllers` cubren entre otros: cafeterías, clientes, empleados, productos, rutas y precios por ruta (una ruta con regalía admite precio 0), correlativos, ventas, facturas, pagos, programación de pagos a proveedores, órdenes de compra, proveedores, inventario y kardex, producción (un solo turno abierto; `CloseShift` lo cierra sin revertir stock), control de salidas (solo productos de venta), platos y acompañamientos, alertas, documentación y catálogos vía `EnumDefinitionController`. El detalle de recetas, turnos, regalía, programación de pagos, la edición de ventas y permisos de Inventario y Camiones está en [INIT.md](INIT.md).
 
 Usuarios y login viven en `cod.auth`. El tipo `Vendor` (Vendedor) guarda una o más rutas en el perfil y el login las devuelve en `userAuth.routes`.
 

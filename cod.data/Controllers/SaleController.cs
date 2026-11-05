@@ -2,6 +2,7 @@
 using cod.application.Sale.Commands.CreateSale;
 using cod.application.Sale.Commands.DisableSale;
 using cod.application.Sale.Commands.EnableSale;
+using cod.application.Sale.Commands.UpdateSale;
 using cod.application.Sale.Common;
 using cod.application.Sale.Queries.GetDailySalesByCafeteria;
 using cod.application.Sale.Queries.GetPendingBillingReport;
@@ -25,6 +26,7 @@ namespace cod.data.Controllers
         private readonly IGetPendingBillingReportQuery _getPendingBillingReportQuery;
         private readonly IGetDailySalesByCafeteriaQuery _getDailySalesByCafeteriaQuery;
         private readonly ICreateSaleCommand _createSaleCommand;
+        private readonly IUpdateSaleCommand _updateSaleCommand;
         private readonly IEnableSaleCommand _enableSaleCommand;
         private readonly IDisableSaleCommand _disableSaleCommand;
 
@@ -34,6 +36,7 @@ namespace cod.data.Controllers
             IGetPendingBillingReportQuery getPendingBillingReportQuery,
             IGetSaleByMonthQuery getSaleByMonthQuery,
             ICreateSaleCommand createSaleCommand,
+            IUpdateSaleCommand updateSaleCommand,
             IEnableSaleCommand enableSaleCommand,
             IDisableSaleCommand disableSaleCommand,
             IGetDailySalesByCafeteriaQuery getDailySalesByCafeteriaQuery)
@@ -42,6 +45,7 @@ namespace cod.data.Controllers
             _getSalesQuery = getSalesQuery;
             _getSaleByMonthQuery = getSaleByMonthQuery;
             _createSaleCommand = createSaleCommand;
+            _updateSaleCommand = updateSaleCommand;
             _enableSaleCommand = enableSaleCommand;
             _disableSaleCommand = disableSaleCommand;
             _getDailySalesByCafeteriaQuery = getDailySalesByCafeteriaQuery;
@@ -91,6 +95,20 @@ namespace cod.data.Controllers
                 return Ok(ProcessException(exception));
             }
 
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(int id, [FromBody] SaleModel model)
+        {
+            try
+            {
+                await _updateSaleCommand.Execute(model, id);
+                return Ok(new ResponseModel<int> { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
+            }
+            catch (Exception exception)
+            {
+                return Ok(ProcessException(exception));
+            }
         }
 
         [HttpDelete]

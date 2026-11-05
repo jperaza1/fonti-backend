@@ -48,11 +48,14 @@ Menú **Inventario** y **Camiones** (`page-menus.ts`) piden permiso. El mismo c�
 | Unidades de medida | `OPERATION.UNIT_OF_MEASURE` | `CREATE`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Camiones | `DATA.TRUCK` | `CREATE`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Ordenes de compra | `OPERATION.PURCHASE_ORDER` | `CREATE`, `ADD_PRODUCT`, `APPROVE`, `UPDATE_INVOICE_TYPE`, `PROCESS`, `REVIEW`, `CANCEL`, `CLOSE`, `REJECT`, `RECALCULATE`, `APPROVE_PRICE`, `REJECT_PRICE` |
+| Ventas | `OPERATION.SALE` | `CREATE`, `VIEW`, `UPDATE`, `DISABLE`, `ENABLE` |
 | Programación de pagos | `OPERATION.PAYMENT_SCHEDULE` | `CREATE`, `VIEW`, `PARTIAL`, `FINISH` |
 | Reporte de órdenes de compra | `OPERATION.PURCHASE_ORDER.REPORT` | — |
 | Reporte de gastos de compra | `OPERATION.PURCHASE_ORDER.EXPENSE_REPORT` | — |
 
 El turno usa el grupo de tipos `PRODUCTION_SHIFT`. Solo puede haber un turno abierto: se cierra con **Cerrar turno** (el inventario se queda) y después se abre otro. Mientras está abierto, las líneas nuevas se agregan a ese turno (`productionShiftId` en `Production/Create`). Anular revierte el inventario. El listado muestra fecha, turno y estado; la columna de productos no va en la grilla. Abrir un turno ya creado usa `OPERATION.PRODUCTION`.
+
+En Ventas, el lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, ruta, tipo, cliente, fecha y cantidades se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura se puede ver, no editar.
 
 En el usuario, el tipo `Vendor` se muestra como Vendedor. Ese tipo abre un selector múltiple de rutas activas y exige al menos una. Al iniciar sesión, `userAuth.routes` queda en `currentUser.routes` y el interceptor lo manda en `App.Routes`. `Route/GetAllActive` devuelve solo esas rutas si el header trae ids; si viene vacío, devuelve todas las activas. Ventas, gastos, facturas de compra y camiones piden esa lista. El catálogo de rutas sigue en `Route/GetAll`.
 

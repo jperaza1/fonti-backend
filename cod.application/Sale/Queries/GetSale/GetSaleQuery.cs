@@ -32,6 +32,7 @@ namespace cod.application.Sale.Queries.GetSale
                     f.Amount,
                     f.IsActive,
                     f.CustomerId,
+                    f.SaleInvoiceId,
                     CustomerName = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
                     SaleDetails = f.SaleDetails.Select(g => new
                     {
@@ -57,6 +58,7 @@ namespace cod.application.Sale.Queries.GetSale
                 IsActive = f.IsActive,
                 CustomerId = f.CustomerId,
                 CustomerName = f.CustomerName,
+                SaleInvoiceId = f.SaleInvoiceId,
                 SaleDetails = f.SaleDetails.Select(g => new SaleDetailModel
                 {
                     Id = g.Id,
