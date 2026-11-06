@@ -32,6 +32,7 @@ namespace cod.application.Route.Commands.CreateRoute
             var newRoute = new domain.Data.Route
             {
                 Name = model.Name,
+                Vendor = model.Vendor,
                 Order = model.Order,
                 DeliversRegalia = model.DeliversRegalia,
                 ProductRoutePrices = GenerateDetails(model)

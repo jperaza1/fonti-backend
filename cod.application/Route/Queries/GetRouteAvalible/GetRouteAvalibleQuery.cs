@@ -25,6 +25,7 @@ namespace cod.application.Route.Queries.GetRouteAvalible
                 {
                     Id = f.Id,
                     Name = f.Name,
+                    Vendor = f.Vendor,
                     IsActive = f.IsActive,
                     TruckId = f.Truck != null ? f.Truck.Id : null,
                     Truck = f.Truck != null ? f.Truck.Plate : string.Empty

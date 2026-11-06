@@ -118,6 +118,13 @@ namespace cod.application.InvoiceSale.Commands.GenerateInvoiceSale
                 });
             }
 
+            await _repository.UpdateAsync<domain.Data.Correlative>(
+                    type => type.Id == correlative.Id,
+                    type => new domain.Data.Correlative
+                    {
+                        Current = correlative.Current + 1,
+                    });
+
             await _repository.CommitAsync();
         }
 

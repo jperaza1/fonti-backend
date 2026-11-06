@@ -33,6 +33,7 @@ namespace cod.application.Sale.Commands.CreateSale
             var newSale = new domain.Operation.Sale
             {
                 RouteId = model.RouteId,
+                Vendor = string.IsNullOrWhiteSpace(model.Vendor) ? string.Empty : model.Vendor.Trim(),
                 Amount = model.Amount,
                 SaleDate = model.SaleDate,
                 SaleType = model.SaleType,

@@ -249,7 +249,7 @@ Tablas usan schema SQL: `data.*`, `operation.*`, etc.
 
 ### Catálogos (`cod.domain/Data`, API en `cod.data`)
 
-- **Route** — eje operativo; tiene `ProductRoutePrice` (precio del producto en esa ruta). `DeliversRegalia` indica si entrega regalía. Con el campo en verdadero, el precio de un producto puede ser 0; en falso, el precio tiene que ser mayor a 0. En pantalla es el switch **Entrega regalía** y el listado muestra la columna Regalía (Sí / No). Columna `data.Routes.DeliversRegalia` (`bit` no nulo, default falso); la migración la genera quien mantiene la base
+- **Route** — eje operativo; tiene `ProductRoutePrice` (precio del producto en esa ruta). `DeliversRegalia` indica si entrega regalía. Con el campo en verdadero, el precio de un producto puede ser 0; en falso, el precio tiene que ser mayor a 0. En pantalla es el switch **Entrega regalía** y el listado muestra la columna Regalía (Sí / No). Columna `data.Routes.DeliversRegalia` (`bit` no nulo, default falso). `Vendor` es el nombre del vendedor de la ruta (`nvarchar(max)`, nullable); no es obligatorio. `GetAll`, `GetById`, `GetAllActive` y `GetAvalible` lo devuelven
 - **Product** — nombre, `ProductType` (`Sale` = 1, `Purchase` = 2, `RawMaterial` = 3), `Tax`. Materia prima exige `UnitOfMeasureId` y al menos un `ProductVendor` activo (proveedor, unidad, unidades por medida, costo, costo unitario y descuento). `Product.Cost` guarda el costo unitario del primer proveedor activo y es el que usan inventario, producción y kardex. Venta y compra no guardan proveedores ni costo
 - **UnitOfMeasure** — unidad de la materia prima (`data.UnitOfMeasures`)
 - **ProductRecipe / ProductRecipeDetail** — receta del producto de venta. Cabecera: `UnitsPerPackage`. Línea: materia prima, `Quantity`, `ProducedUnits`, `PerPackage`
@@ -262,15 +262,15 @@ Tablas usan schema SQL: `data.*`, `operation.*`, etc.
 
 ### Operaciones (`cod.domain/Operation`)
 
-- **Sale / SaleDetail** — venta de productos en una ruta. `SaleType`: `Cash` o `Credit`. El lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura no se edita
+- **Sale / SaleDetail** — venta de productos en una ruta. `SaleType`: `Cash` o `Credit`. `Vendor` guarda el nombre que tenía la ruta al crear o editar la venta. Cambiar después el vendedor de la ruta no reescribe las ventas ya guardadas. `GetAll` filtra por `routeId` cuando viene mayor a 0 y devuelve el `Vendor` de la venta. Al abrir una venta, el detalle es el que quedó guardado. El lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura no se edita
 - **Expense / ExpenseInvoice** — gasto de ruta; puede colgarse de una factura y un `DocumentId` (archivo)
-- **DispatchControl / DispatchControlDetail / ProductMovement** — control de salida de mercadería. Status `Open` / `Close`. Salida y recarga descuentan el producto terminado; el retorno lo suma. No explota la receta. El formulario pide `Product/GetAllActive` con `ProductType.Sale` (1). `GetDispatchControl` devuelve solo movimientos de ese tipo, así que un control ya guardado tampoco muestra materia prima ni compra
+- **DispatchControl / DispatchControlDetail / ProductMovement** — control de salida de mercadería. Status `Open` / `Close`. Salida y recarga descuentan el producto terminado; el retorno lo suma. No explota la receta. El formulario pide `Product/GetAllActive` con `ProductType.Sale` (1). `GetDispatchControl` devuelve solo movimientos de ese tipo, así que un control ya guardado tampoco muestra materia prima ni compra. En el retorno, los botes faltantes pueden ser 0; solo se rechaza un negativo. El alta persiste `CrateQuantity`. El vendedor del control sale de la ruta y el formulario no lo deja editar
 - **ProductStock** — saldo único de la empresa por producto (`operation.ProductStock`)
 - **InventoryKardex** — historial. `MovementType`: Entrada, Salida, Recarga, Retorno, Producción, Mala calidad, Pérdida. Puede apuntar a un despacho (`DispatchControlId`) o a una línea de producción (`ProductionOrderId`)
 - **ProductionShift** — un registro por fecha y tipo de turno. Índice único `(ProductionDate, ShiftTypeId)`. El tipo sale de `data.Types` del grupo `PRODUCTION_SHIFT` (Turno A y Turno B). `IsClosed`: abierto, cerrado o anulado (`IsActive` en falso)
 - **ProductionOrder** — línea de producto dentro del turno (`ProductionShiftId`, producto de venta, cantidad, nota)
 - **PaymentSchedule / PaymentScheduleDetail** — programación semanal de pago a proveedores (`finance.PaymentSchedule`, `finance.PaymentScheduleDetails`). El proveedor es texto. El monto a pagar es el mayor entre acumulado y proyectado. El pendiente de la última programación pasa al acumulado del mismo proveedor al crear la siguiente; una línea pagada no se arrastra. Líneas nuevas y el real solo se editan en la programación más reciente. `Status`: Pendiente = 1, Pago Parcial = 2, Pagado = 3
-- **Invoice / Payment / PurchaseOrder** — facturación y órdenes de compra. La orden es solo proveedor y materia prima: no lleva cafetería, ruta ni envío a Kova. Al pasar a revisión entra el inventario. Si `gen.Configurations` tiene `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, un cambio de costo abre una solicitud y el costo del proveedor no cambia hasta aprobarla en `PriceApproval/Resolve`. Si la clave no existe o vale `false`, el costo se actualiza al recibir. La clave se crea en `false` la primera vez que se evalúa
+- **Invoice / Payment / PurchaseOrder** — facturación y órdenes de compra. Al generar la factura de ventas, el correlativo usado sube `Current` en 1. La orden es solo proveedor y materia prima: no lleva cafetería, ruta ni envío a Kova. Al pasar a revisión entra el inventario. Si `gen.Configurations` tiene `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, un cambio de costo abre una solicitud y el costo del proveedor no cambia hasta aprobarla en `PriceApproval/Resolve`. Si la clave no existe o vale `false`, el costo se actualiza al recibir. La clave se crea en `false` la primera vez que se evalúa
 - **Inventory / OfficeRequisition / SpecialService** — inventario, requisiciones, servicios especiales
 
 ### Inventario y producción
@@ -306,14 +306,28 @@ El menú Inventario y Camiones (dentro de Operaciones) piden permiso. El código
 | Programación de pagos | `OPERATION.PAYMENT_SCHEDULE` | `CREATE` nueva programación y agregar líneas, `VIEW` abrir, `PARTIAL` guardar el real, `FINISH` marcar pagado. El ítem cuelga de Finanzas |
 | Reporte de órdenes de compra | `OPERATION.PURCHASE_ORDER.REPORT` | Solo consulta |
 | Reporte de gastos de compra | `OPERATION.PURCHASE_ORDER.EXPENSE_REPORT` | Solo consulta |
+| Ranking de vendedores | `OPERATION.SALE.VENDOR_REPORT` | Solo consulta |
+| Productos vendidos | `OPERATION.SALE.PRODUCT_REPORT` | Solo consulta |
+| Contado y crédito | `OPERATION.SALE.PAYMENT_TYPE_REPORT` | Solo consulta |
 
-**Ordenes de compra** es un ítem de primer nivel. Los dos reportes cuelgan de **Reportes**. La solicitud de precios no va en el menú: se abre en `/purchase-order/price-approval/:token` y sus botones usan `APPROVE_PRICE` y `REJECT_PRICE`. La referencia de la orden es `OC-#####`. Al pasar a revisión entra el inventario (`cantidad recibida × unidades de la presentación`). Con `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, el costo del proveedor espera la aprobación; si la clave no existe o vale `false`, el costo se actualiza al recibir y la clave se crea en `false` la primera vez.
+**Reportes de ventas** también cuelgan de **Reportes**. `POST Sale/GetChartReport` recibe `dateFrom`, `dateTo`, `report` y, en el detalle por precio, `product`. Las fechas pasan por `DateService.GetCLientLocalTime`. Solo entran ventas activas del rango.
+
+| `report` | Qué devuelve |
+|----------|----------------|
+| `vendor` | Agrupa por `Sale.Vendor`. Deja fuera la ruta llamada Planta y el vendedor vacío. El monto es la suma y la cantidad es el número de ventas |
+| `product` | Precio mayor a 0 es la serie Venta (monto y unidades). Precio 0 es Regalía (solo unidades) |
+| `product-price` | Mismo nombre de producto, agrupado por precio. La etiqueta `0` es regalía |
+| `payment` | Contado, Crédito y Pendiente de cobro. El pendiente suma el crédito sin factura y el `Balance` de cada factura una sola vez |
+
+Esos tres permisos están en `AspNetRoles` y no quedan asignados a un rol. El dashboard de inicio (`OPERATION.CHART.PREVIEW`, ventas del año por ruta) sigue aparte y no está en Reportes. Migración del vendedor: `20261106032600_adding-vendor-route-sale` agrega `data.Routes.Vendor` y `operation.Sales.Vendor` (`nvarchar(max)`, nullable).
+
+**Ordenes de compra** es un ítem de primer nivel. Los dos reportes de compra cuelgan de **Reportes**. La solicitud de precios no va en el menú: se abre en `/purchase-order/price-approval/:token` y sus botones usan `APPROVE_PRICE` y `REJECT_PRICE`. La referencia de la orden es `OC-#####`. Al pasar a revisión entra el inventario (`cantidad recibida × unidades de la presentación`). Con `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, el costo del proveedor espera la aprobación; si la clave no existe o vale `false`, el costo se actualiza al recibir y la clave se crea en `false` la primera vez.
 
 **Programación de pagos** cuelga de **Finanzas**. El alta (`/payment-schedule/create`) trae los saldos sin pagar de la última programación y deja agregar proveedores antes de guardar. El detalle (`/payment-schedule/view/:id`) registra el real y, si es la última, agrega líneas. El real que se envía es el total pagado de esa línea. API `api/v2/PaymentSchedule`: `GetAll`, `GetById`, `GetCarryForward`, `Create`, `AddDetails`, `RegisterPayment`. `GetAll` y `GetById` incluyen `canAddDetails`, verdadero solo en la más reciente. Los códigos están en `AspNetRoles` y no quedan asignados a un rol. La migración es `20261104171141_adding-schedule-payment`.
 
 La tablet (`fonti-app` en Windows) tiene Inventario, Kardex y Producción; las recetas se editan en el frontend web.
 
-Turnos de producción: `20261027000012_adding-production-kardex`, `20261027002424_adding-Change-production` y `20261027160000_adding-close-production-shift` (`operation.ProductionShifts.IsClosed`, `bit` no nulo, default falso; los turnos que ya estaban activos quedan abiertos). Rutas del vendedor: `20261027045938_adding-route-userprofile` agrega `auth.ApplicationUserProfiles.Routes` (`nvarchar(max)`, nullable). Programación de pagos: `20261104171141_adding-schedule-payment` crea `finance.PaymentSchedule` y `finance.PaymentScheduleDetails`.
+Turnos de producción: `20261027000012_adding-production-kardex`, `20261027002424_adding-Change-production` y `20261027160000_adding-close-production-shift` (`operation.ProductionShifts.IsClosed`, `bit` no nulo, default falso; los turnos que ya estaban activos quedan abiertos). Rutas del usuario vendedor: `20261027045938_adding-route-userprofile` agrega `auth.ApplicationUserProfiles.Routes` (`nvarchar(max)`, nullable). Nombre del vendedor en la ruta y en la venta: `20261106032600_adding-vendor-route-sale`. Programación de pagos: `20261104171141_adding-schedule-payment` crea `finance.PaymentSchedule` y `finance.PaymentScheduleDetails`.
 
 ### Otros
 
@@ -375,7 +389,7 @@ POST /api/v2/Sale/Create
 Authorization: Bearer …
 App.TenantId: 1
 Timezone: America/Tegucigalpa
-Body: SaleModel { routeId, saleType, saleDate, amount, customerId?, saleDetails[] }
+Body: SaleModel { routeId, vendor, saleType, saleDate, amount, customerId?, saleDetails[] }
 
 SaleController.Create
   → CreateSaleCommand.Execute

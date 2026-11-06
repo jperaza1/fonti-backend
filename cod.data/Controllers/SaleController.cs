@@ -8,6 +8,7 @@ using cod.application.Sale.Queries.GetDailySalesByCafeteria;
 using cod.application.Sale.Queries.GetPendingBillingReport;
 using cod.application.Sale.Queries.GetSale;
 using cod.application.Sale.Queries.GetSales;
+using cod.application.Sale.Queries.GetSaleChartReport;
 using cod.application.Sale.Queries.GetSalesByMonth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace cod.data.Controllers
         private readonly IGetSalesQuery _getSalesQuery;
         private readonly IGetSaleByMonthQuery _getSaleByMonthQuery;
         private readonly IGetPendingBillingReportQuery _getPendingBillingReportQuery;
+        private readonly IGetSaleChartReportQuery _getSaleChartReportQuery;
         private readonly IGetDailySalesByCafeteriaQuery _getDailySalesByCafeteriaQuery;
         private readonly ICreateSaleCommand _createSaleCommand;
         private readonly IUpdateSaleCommand _updateSaleCommand;
@@ -39,7 +41,8 @@ namespace cod.data.Controllers
             IUpdateSaleCommand updateSaleCommand,
             IEnableSaleCommand enableSaleCommand,
             IDisableSaleCommand disableSaleCommand,
-            IGetDailySalesByCafeteriaQuery getDailySalesByCafeteriaQuery)
+            IGetDailySalesByCafeteriaQuery getDailySalesByCafeteriaQuery,
+            IGetSaleChartReportQuery getSaleChartReportQuery)
         {
             _getSaleQuery = getSaleQuery;
             _getSalesQuery = getSalesQuery;
@@ -50,6 +53,13 @@ namespace cod.data.Controllers
             _disableSaleCommand = disableSaleCommand;
             _getDailySalesByCafeteriaQuery = getDailySalesByCafeteriaQuery;
             _getPendingBillingReportQuery = getPendingBillingReportQuery;
+            _getSaleChartReportQuery = getSaleChartReportQuery;
+        }
+
+        [HttpPost]
+        public async Task<List<SaleChartPointModel>> GetChartReport([FromBody] SaleChartFilterModel filter)
+        {
+            return await _getSaleChartReportQuery.Execute(filter);
         }
 
         [HttpPost]

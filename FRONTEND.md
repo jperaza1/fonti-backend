@@ -52,10 +52,17 @@ Menú **Inventario** y **Camiones** (`page-menus.ts`) piden permiso. El mismo c�
 | Programación de pagos | `OPERATION.PAYMENT_SCHEDULE` | `CREATE`, `VIEW`, `PARTIAL`, `FINISH` |
 | Reporte de órdenes de compra | `OPERATION.PURCHASE_ORDER.REPORT` | — |
 | Reporte de gastos de compra | `OPERATION.PURCHASE_ORDER.EXPENSE_REPORT` | — |
+| Ranking de vendedores | `OPERATION.SALE.VENDOR_REPORT` | — |
+| Productos vendidos | `OPERATION.SALE.PRODUCT_REPORT` | — |
+| Contado y crédito | `OPERATION.SALE.PAYMENT_TYPE_REPORT` | — |
 
 El turno usa el grupo de tipos `PRODUCTION_SHIFT`. Solo puede haber un turno abierto: se cierra con **Cerrar turno** (el inventario se queda) y después se abre otro. Mientras está abierto, las líneas nuevas se agregan a ese turno (`productionShiftId` en `Production/Create`). Anular revierte el inventario. El listado muestra fecha, turno y estado; la columna de productos no va en la grilla. Abrir un turno ya creado usa `OPERATION.PRODUCTION`.
 
-En Ventas, el lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, ruta, tipo, cliente, fecha y cantidades se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura se puede ver, no editar.
+En Ventas, el lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, ruta, tipo, cliente, fecha y cantidades se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura se puede ver, no editar. Al abrirla se muestran las líneas guardadas; un precio 0 se lee **Regalía**. El vendedor es un campo bloqueado: al elegir la ruta se copia `vendor` y se guarda en la venta. El listado tiene la columna Vendedor.
+
+En Rutas, el formulario y el listado tienen **Vendedor** (`vendor`), un texto libre.
+
+En Reportes, además de facturas pendientes y los reportes de compra, están Ranking de vendedores (`sale/vendor-report`), Productos vendidos (`sale/product-report`) y Contado y crédito (`sale/payment-type-report`). En productos, un clic abre la cantidad por precio. El servicio llama a `Sale/GetChartReport`.
 
 En el usuario, el tipo `Vendor` se muestra como Vendedor. Ese tipo abre un selector múltiple de rutas activas y exige al menos una. Al iniciar sesión, `userAuth.routes` queda en `currentUser.routes` y el interceptor lo manda en `App.Routes`. `Route/GetAllActive` devuelve solo esas rutas si el header trae ids; si viene vacío, devuelve todas las activas. Ventas, gastos, facturas de compra y camiones piden esa lista. El catálogo de rutas sigue en `Route/GetAll`.
 
@@ -67,7 +74,7 @@ La orden de compra no pide cafetería ni ruta. El menú **Ordenes de Compra** ab
 
 **Programación de pagos** está en Finanzas (`operation/payment-schedule`). El listado es `/payment-schedule`, el alta `/payment-schedule/create` y el detalle `/payment-schedule/view/:id`. El alta trae los saldos sin pagar y deja agregar proveedores. En la programación más reciente se agregan líneas y se guarda el real; **Pagado** lo deja en el monto a pagar. Cada línea tiene descripción. El detalle también tiene la pestaña Documentos (`PAYMENT_SCHEDULE`). Quien tenga `CREATE`, `VIEW`, `PARTIAL` o `FINISH` también necesita `OPERATION.PAYMENT_SCHEDULE` para ver el menú.
 
-El control de salida (`operation/dispatch-control`) arma salida, recarga y retorno con `Product/GetAllActive?productType=1`. Solo productos de venta. Al abrir un control ya guardado, los movimientos que vuelven son de ese mismo tipo.
+El control de salida (`operation/dispatch-control`) arma salida, recarga y retorno con `Product/GetAllActive?productType=1`. Solo productos de venta. Al abrir un control ya guardado, los movimientos que vuelven son de ese mismo tipo. Al elegir la ruta, el camión y el vendedor se llenan solos y se muestran en el mismo recuadro de solo lectura. En el retorno, los botes faltantes pueden quedar en 0.
 
 Pantallas y menú: `src/app/config/page-menus.ts`.  
 Línea gráfica: `docs/design-line.md` en el front.

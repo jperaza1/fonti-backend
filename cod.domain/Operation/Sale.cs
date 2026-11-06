@@ -17,6 +17,7 @@ namespace cod.domain.Operation
         public int RouteId { get; set; }
         [ForeignKey("RouteId")]
         public virtual Route Route { get; set; }
+        public string Vendor { get; set; }
         public int? CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }

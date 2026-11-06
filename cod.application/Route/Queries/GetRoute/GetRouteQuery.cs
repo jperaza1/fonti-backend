@@ -25,6 +25,7 @@ namespace cod.application.Route.Queries.GetRoute
                 {
                     Id = f.Id,
                     Name = f.Name,
+                    Vendor = f.Vendor,
                     IsActive = f.IsActive,
                     Order = f.Order,
                     DeliversRegalia = f.DeliversRegalia,

@@ -40,6 +40,7 @@ namespace cod.application.Route.Commands.UpdateRoute
             if (route == null) throw new ApplicationException("Ruta no existe", "RUTA", this._exceptionFactory.Exceptions);
 
             route.Name = model.Name;
+            route.Vendor = model.Vendor;
             route.Order = model.Order;
             route.DeliversRegalia = model.DeliversRegalia;
 

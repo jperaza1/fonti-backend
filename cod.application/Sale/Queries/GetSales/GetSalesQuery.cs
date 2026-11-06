@@ -34,24 +34,27 @@ namespace cod.application.Sale.Queries.GetSales
 
             Expression<Func<domain.Operation.Sale, bool>> GetSaleBySaleDateFilter = GetSaleBySaleDate(filterSale, timezone);
             Expression<Func<domain.Operation.Sale, bool>> GetSaleBySaleTypeFilter = GetSaleBySaleType(filterSale);
-            
+            Expression<Func<domain.Operation.Sale, bool>> GetSaleByRouteFilter = GetSaleByRoute(filterSale);
+
             var baseQuery = _repository.Query<domain.Operation.Sale>()
+                .Where(GetSaleByRouteFilter)
                 .Where(GetSaleBySaleDateFilter)
                 .Where(GetSaleBySaleTypeFilter)
                 .Select(f => new
-            {
-                f.Id,
-                f.RouteId,
-                Route = f.Route.Name,
-                f.SaleDate,
-                f.SaleType,
-                SaleTypeName = f.SaleType.GetEnumDescription(),
-                f.CustomerId,
-                CustomerName = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
-                f.Amount,
-                f.IsActive,
-                InvoiceNumber = f.SaleInvoiceId.HasValue ? f.SaleInvoice.InvoiceNumber : string.Empty,
-                f.SaleInvoiceId
+                {
+                    f.Id,
+                    f.RouteId,
+                    Route = f.Route.Name,
+                    f.Vendor,
+                    f.SaleDate,
+                    f.SaleType,
+                    SaleTypeName = f.SaleType.GetEnumDescription(),
+                    f.CustomerId,
+                    CustomerName = f.CustomerId.HasValue ? f.Customer.Name : string.Empty,
+                    f.Amount,
+                    f.IsActive,
+                    InvoiceNumber = f.SaleInvoiceId.HasValue ? f.SaleInvoice.InvoiceNumber : string.Empty,
+                    f.SaleInvoiceId
                 });
 
             return await baseQuery.Select(f => new SaleModel
@@ -60,6 +63,7 @@ namespace cod.application.Sale.Queries.GetSales
                 Amount = f.Amount,
                 Route = f.Route,
                 RouteId = f.RouteId,
+                Vendor = f.Vendor,
                 SaleDate = f.SaleDate.Date,
                 SaleType = f.SaleType,
                 SaleTypeName = f.SaleTypeName,

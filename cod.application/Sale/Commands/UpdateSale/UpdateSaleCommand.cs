@@ -77,6 +77,7 @@ namespace cod.application.Sale.Commands.UpdateSale
             }
 
             sale.RouteId = model.RouteId;
+            sale.Vendor = model.Vendor;
             sale.Amount = model.Amount;
             sale.SaleDate = model.SaleDate;
             sale.SaleType = model.SaleType;

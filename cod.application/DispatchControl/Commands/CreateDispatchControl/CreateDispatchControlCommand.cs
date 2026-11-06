@@ -58,6 +58,7 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
                 detail.BottleQuantity = item.BottleQuantity;
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
+                detail.CrateQuantity = item.CrateQuantity;
                 detail.IsActive = true;
                 detail.CreationTime = Clock.Now;
                 detail.CreatorUser = authService.User;
@@ -115,8 +116,8 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
 
                 if(item.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.Return)
                 {
-                    if (item.MissingBottleQuantity <= 0)
-                        this._exceptionFactory.Add("missingBottleQuantity", this._exceptionFactory.GetMessage("Botes Faltante", ExceptionEnums.ExceptionCode.Required));
+                    if (item.MissingBottleQuantity < 0)
+                        this._exceptionFactory.Add("missingBottleQuantity", this._exceptionFactory.GetMessage("Los botes faltantes no pueden ser negativos", ExceptionEnums.ExceptionCode.Default));
                 }
 
             }

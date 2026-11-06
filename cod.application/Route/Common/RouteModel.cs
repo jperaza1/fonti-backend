@@ -11,6 +11,7 @@ namespace cod.application.Route.Common
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Vendor { get; set; }
         public bool IsActive { get; set; }
         public int? TruckId { get; set; }
         public string Truck { get; set; }

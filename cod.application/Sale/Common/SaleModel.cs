@@ -15,6 +15,7 @@ namespace cod.application.Sale.Common
         public int Id { get; set; }
         public int RouteId { get; set; }
         public string Route { get; set; }
+        public string Vendor { get; set; }
         public int? CustomerId { get; set; }
         public int? SaleInvoiceId { get; set; }
         public string InvoiceNumber { get; set; }

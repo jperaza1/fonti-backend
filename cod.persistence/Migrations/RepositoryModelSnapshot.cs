@@ -1651,6 +1651,9 @@ namespace cod.persistence.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
+                    b.Property<string>("Vendor")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Routes", "data");
@@ -3636,6 +3639,9 @@ namespace cod.persistence.Migrations
 
                     b.Property<int>("SaleType")
                         .HasColumnType("int");
+
+                    b.Property<string>("Vendor")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
