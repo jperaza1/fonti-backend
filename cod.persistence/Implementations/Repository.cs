@@ -95,6 +95,9 @@ namespace cod.persistence.Implementations
             modelBuilder.Entity<Route>()
                 .Property(r => r.DeliversRegalia)
                 .HasDefaultValue(false);
+            modelBuilder.Entity<Route>()
+                .Property(r => r.GivesCredit)
+                .HasDefaultValue(false);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

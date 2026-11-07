@@ -17,6 +17,7 @@ namespace cod.application.Route.Common
         public string Truck { get; set; }
         public int Order { get; set; }
         public bool DeliversRegalia { get; set; }
+        public bool GivesCredit { get; set; }
         public List<ProductRoutePricesModel> ProductRoutePrices { get; set; }
     }
 

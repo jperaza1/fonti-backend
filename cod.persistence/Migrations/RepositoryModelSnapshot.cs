@@ -1636,6 +1636,11 @@ namespace cod.persistence.Migrations
                     b.Property<string>("EnableUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("GivesCredit")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 

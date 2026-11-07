@@ -33,6 +33,7 @@ namespace cod.application.Route.Queries.GetActiveRoutes
                     Id = route.Id,
                     Name = route.Name,
                     Vendor = route.Vendor,
+                    GivesCredit = route.GivesCredit,
                     IsActive = route.IsActive,
                     TruckId = route.Truck != null ? route.Truck.Id : null,
                     Truck = route.Truck != null ? route.Truck.Plate : string.Empty

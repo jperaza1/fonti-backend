@@ -249,7 +249,7 @@ Tablas usan schema SQL: `data.*`, `operation.*`, etc.
 
 ### Catálogos (`cod.domain/Data`, API en `cod.data`)
 
-- **Route** — eje operativo; tiene `ProductRoutePrice` (precio del producto en esa ruta). `DeliversRegalia` indica si entrega regalía. Con el campo en verdadero, el precio de un producto puede ser 0; en falso, el precio tiene que ser mayor a 0. En pantalla es el switch **Entrega regalía** y el listado muestra la columna Regalía (Sí / No). Columna `data.Routes.DeliversRegalia` (`bit` no nulo, default falso). `Vendor` es el nombre del vendedor de la ruta (`nvarchar(max)`, nullable); no es obligatorio. `GetAll`, `GetById`, `GetAllActive` y `GetAvalible` lo devuelven
+- **Route** — eje operativo; tiene `ProductRoutePrice` (precio del producto en esa ruta). `DeliversRegalia` indica si entrega regalía. Con el campo en verdadero, el precio de un producto puede ser 0; en falso, el precio tiene que ser mayor a 0. En pantalla es el switch **Entrega regalía** y el listado muestra la columna Regalía (Sí / No). Columna `data.Routes.DeliversRegalia` (`bit` no nulo, default falso). `GivesCredit` indica si la ruta da crédito. En pantalla es el switch **Da crédito** y el listado muestra la columna Crédito (Sí / No). Se guarda en el alta y en la edición. `GetAll`, `GetById` y `GetAllActive` lo devuelven. Columna `data.Routes.GivesCredit` (`bit` no nulo, default falso). La migración de esa columna todavía no está generada. `Vendor` es el nombre del vendedor de la ruta (`nvarchar(max)`, nullable); no es obligatorio. `GetAll`, `GetById`, `GetAllActive` y `GetAvalible` lo devuelven
 - **Product** — nombre, `ProductType` (`Sale` = 1, `Purchase` = 2, `RawMaterial` = 3), `Tax`. Materia prima exige `UnitOfMeasureId` y al menos un `ProductVendor` activo (proveedor, unidad, unidades por medida, costo, costo unitario y descuento). `Product.Cost` guarda el costo unitario del primer proveedor activo y es el que usan inventario, producción y kardex. Venta y compra no guardan proveedores ni costo
 - **UnitOfMeasure** — unidad de la materia prima (`data.UnitOfMeasures`)
 - **ProductRecipe / ProductRecipeDetail** — receta del producto de venta. Cabecera: `UnitsPerPackage`. Línea: materia prima, `Quantity`, `ProducedUnits`, `PerPackage`
@@ -262,7 +262,7 @@ Tablas usan schema SQL: `data.*`, `operation.*`, etc.
 
 ### Operaciones (`cod.domain/Operation`)
 
-- **Sale / SaleDetail** — venta de productos en una ruta. `SaleType`: `Cash` o `Credit`. `Vendor` guarda el nombre que tenía la ruta al crear o editar la venta. Cambiar después el vendedor de la ruta no reescribe las ventas ya guardadas. `GetAll` filtra por `routeId` cuando viene mayor a 0 y devuelve el `Vendor` de la venta. Al abrir una venta, el detalle es el que quedó guardado. El lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura no se edita
+- **Sale / SaleDetail** — venta de productos en una ruta. `SaleType`: `Cash` o `Credit`. `Vendor` guarda el nombre que tenía la ruta al crear o editar la venta. Cambiar después el vendedor de la ruta no reescribe las ventas ya guardadas. `GetAll` filtra por `routeId` cuando viene mayor a 0 y devuelve el `Vendor` de la venta. Al abrir una venta, el detalle es el que quedó guardado. `GetById` busca el control de salida activo de la misma ruta y la misma fecha y devuelve `dispatchSummary`: botellones y el resto de productos vendidos, con la misma cuenta (salida + recargas − retorno). Si no hay control, `hasDispatchControl` va en falso. El lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura no se edita
 - **Expense / ExpenseInvoice** — gasto de ruta; puede colgarse de una factura y un `DocumentId` (archivo)
 - **DispatchControl / DispatchControlDetail / ProductMovement** — control de salida de mercadería. Status `Open` / `Close`. Salida y recarga descuentan el producto terminado; el retorno lo suma. No explota la receta. El formulario pide `Product/GetAllActive` con `ProductType.Sale` (1). `GetDispatchControl` devuelve solo movimientos de ese tipo, así que un control ya guardado tampoco muestra materia prima ni compra. En el retorno, los botes faltantes pueden ser 0; solo se rechaza un negativo. El alta persiste `CrateQuantity`. El vendedor del control sale de la ruta y el formulario no lo deja editar
 - **ProductStock** — saldo único de la empresa por producto (`operation.ProductStock`)
@@ -319,7 +319,7 @@ El menú Inventario y Camiones (dentro de Operaciones) piden permiso. El código
 | `product-price` | Mismo nombre de producto, agrupado por precio. La etiqueta `0` es regalía |
 | `payment` | Contado, Crédito y Pendiente de cobro. El pendiente suma el crédito sin factura y el `Balance` de cada factura una sola vez |
 
-Esos tres permisos están en `AspNetRoles` y no quedan asignados a un rol. El dashboard de inicio (`OPERATION.CHART.PREVIEW`, ventas del año por ruta) sigue aparte y no está en Reportes. Migración del vendedor: `20261106032600_adding-vendor-route-sale` agrega `data.Routes.Vendor` y `operation.Sales.Vendor` (`nvarchar(max)`, nullable).
+Esos tres permisos están en `AspNetRoles` y no quedan asignados a un rol. El dashboard de inicio (`OPERATION.CHART.PREVIEW`, ventas del año por ruta) sigue aparte y no está en Reportes. Migración del vendedor: `20261106032600_adding-vendor-route-sale` agrega `data.Routes.Vendor` y `operation.Sales.Vendor` (`nvarchar(max)`, nullable). Crédito de la ruta: `data.Routes.GivesCredit` (`bit` no nulo, default falso); la migración la genera quien mantiene la base.
 
 **Ordenes de compra** es un ítem de primer nivel. Los dos reportes de compra cuelgan de **Reportes**. La solicitud de precios no va en el menú: se abre en `/purchase-order/price-approval/:token` y sus botones usan `APPROVE_PRICE` y `REJECT_PRICE`. La referencia de la orden es `OC-#####`. Al pasar a revisión entra el inventario (`cantidad recibida × unidades de la presentación`). Con `PURCHASE_ORDER_PRICE_APPROVAL` en `true`, el costo del proveedor espera la aprobación; si la clave no existe o vale `false`, el costo se actualiza al recibir y la clave se crea en `false` la primera vez.
 
@@ -327,7 +327,7 @@ Esos tres permisos están en `AspNetRoles` y no quedan asignados a un rol. El da
 
 La tablet (`fonti-app` en Windows) tiene Inventario, Kardex y Producción; las recetas se editan en el frontend web.
 
-Turnos de producción: `20261027000012_adding-production-kardex`, `20261027002424_adding-Change-production` y `20261027160000_adding-close-production-shift` (`operation.ProductionShifts.IsClosed`, `bit` no nulo, default falso; los turnos que ya estaban activos quedan abiertos). Rutas del usuario vendedor: `20261027045938_adding-route-userprofile` agrega `auth.ApplicationUserProfiles.Routes` (`nvarchar(max)`, nullable). Nombre del vendedor en la ruta y en la venta: `20261106032600_adding-vendor-route-sale`. Programación de pagos: `20261104171141_adding-schedule-payment` crea `finance.PaymentSchedule` y `finance.PaymentScheduleDetails`.
+Turnos de producción: `20261027000012_adding-production-kardex`, `20261027002424_adding-Change-production` y `20261027160000_adding-close-production-shift` (`operation.ProductionShifts.IsClosed`, `bit` no nulo, default falso; los turnos que ya estaban activos quedan abiertos). Rutas del usuario vendedor: `20261027045938_adding-route-userprofile` agrega `auth.ApplicationUserProfiles.Routes` (`nvarchar(max)`, nullable). Nombre del vendedor en la ruta y en la venta: `20261106032600_adding-vendor-route-sale`. Crédito de la ruta: `data.Routes.GivesCredit` (`bit` no nulo, default falso); la migración todavía no está generada. Programación de pagos: `20261104171141_adding-schedule-payment` crea `finance.PaymentSchedule` y `finance.PaymentScheduleDetails`.
 
 ### Otros
 
@@ -402,6 +402,8 @@ SaleController.Create
 ```
 
 Listado: `POST /api/v2/Sale/GetAll` con `FilterSaleDto` → `GetSalesQuery` proyecta a `SaleModel`.
+
+Consulta: `GET /api/v2/Sale/GetById?id=` devuelve el detalle guardado y, además, `hasDispatchControl` y `dispatchSummary`. Busca el control de salida activo de la misma ruta y la misma fecha (`SaleDate` contra `DispatchControlDate`, el más reciente si hay más de uno). Cada producto del control, botellones incluidos, sale con la cantidad vendida: salida + recargas − retorno. Si no hay control, `hasDispatchControl` es falso y `dispatchSummary` va vacío. En pantalla ese bloque se llama **Según control de salida**.
 
 Edición: `PUT /api/v2/Sale/Update?id=` con el mismo `SaleModel`. El lápiz del listado exige `OPERATION.SALE.VIEW`. Si la venta ya existe, los campos y Guardar se habilitan solo con `OPERATION.SALE.UPDATE`. Si tiene `SaleInvoiceId`, se consulta y no se modifica. Los códigos están en `AspNetRoles` y no quedan asignados a un rol.
 

@@ -58,7 +58,7 @@ Menú **Inventario** y **Camiones** (`page-menus.ts`) piden permiso. El mismo c�
 
 El turno usa el grupo de tipos `PRODUCTION_SHIFT`. Solo puede haber un turno abierto: se cierra con **Cerrar turno** (el inventario se queda) y después se abre otro. Mientras está abierto, las líneas nuevas se agregan a ese turno (`productionShiftId` en `Production/Create`). Anular revierte el inventario. El listado muestra fecha, turno y estado; la columna de productos no va en la grilla. Abrir un turno ya creado usa `OPERATION.PRODUCTION`.
 
-En Ventas, el lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, ruta, tipo, cliente, fecha y cantidades se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura se puede ver, no editar. Al abrirla se muestran las líneas guardadas; un precio 0 se lee **Regalía**. El vendedor es un campo bloqueado: al elegir la ruta se copia `vendor` y se guarda en la venta. El listado tiene la columna Vendedor.
+En Ventas, el lápiz usa `OPERATION.SALE.VIEW` y abre la venta. Si ya existe, ruta, tipo, cliente, fecha y cantidades se habilitan solo con `OPERATION.SALE.UPDATE`. Una venta con factura se puede ver, no editar. Al abrirla se muestran las líneas guardadas; un precio 0 se lee **Regalía**. Debajo del detalle, **Según control de salida** lista los botellones y los demás productos vendidos de ese control (salida + recargas − retorno). Si no hay control de esa ruta en la fecha, se avisa. El vendedor es un campo bloqueado: al elegir la ruta se copia `vendor` y se guarda en la venta. El listado tiene la columna Vendedor.
 
 En Rutas, el formulario y el listado tienen **Vendedor** (`vendor`), un texto libre.
 
@@ -66,7 +66,7 @@ En Reportes, además de facturas pendientes y los reportes de compra, están Ran
 
 En el usuario, el tipo `Vendor` se muestra como Vendedor. Ese tipo abre un selector múltiple de rutas activas y exige al menos una. Al iniciar sesión, `userAuth.routes` queda en `currentUser.routes` y el interceptor lo manda en `App.Routes`. `Route/GetAllActive` devuelve solo esas rutas si el header trae ids; si viene vacío, devuelve todas las activas. Ventas, gastos, facturas de compra y camiones piden esa lista. El catálogo de rutas sigue en `Route/GetAll`.
 
-En Rutas (`data/route`), el formulario tiene el switch **Entrega regalía** (`deliversRegalia`). Encendido, un producto del talonario puede quedar en precio 0. Apagado, el precio tiene que ser mayor a 0. El listado muestra la columna Regalía (Sí / No).
+En Rutas (`data/route`), el formulario tiene el switch **Entrega regalía** (`deliversRegalia`). Encendido, un producto del talonario puede quedar en precio 0. Apagado, el precio tiene que ser mayor a 0. El listado muestra la columna Regalía (Sí / No). También tiene el switch **Da crédito** (`givesCredit`): se envía al crear y al editar, y `Route/GetById` lo regresa para dejar el switch como quedó guardado. El listado muestra la columna Crédito (Sí / No).
 
 En Productos, el bloque de proveedores y costo solo se muestra cuando el tipo es Materia prima. Cada línea pide proveedor, unidad, unidades por medida, costo, costo unitario y descuento. El listado muestra el costo unitario que usa el inventario.
 

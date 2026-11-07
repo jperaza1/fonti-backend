@@ -15,6 +15,7 @@ namespace cod.domain.Data
         public string Vendor { get; set; }
         public int Order { get; set; }
         public bool DeliversRegalia { get; set; }
+        public bool GivesCredit { get; set; }
         public virtual ICollection<ProductRoutePrice> ProductRoutePrices { get; set; }
         public virtual Truck Truck { get; set; }
     }

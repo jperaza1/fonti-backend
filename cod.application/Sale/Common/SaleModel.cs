@@ -25,7 +25,15 @@ namespace cod.application.Sale.Common
         public DateTime SaleDate { get; set; }
         public double Amount { get; set; }
         public bool IsActive { get; set; }
+        public bool HasDispatchControl { get; set; }
         public List<SaleDetailModel> SaleDetails { get; set; }
+        public List<SaleDispatchProductModel> DispatchSummary { get; set; }
+    }
+
+    public class SaleDispatchProductModel
+    {
+        public string Product { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class SaleDetailModel

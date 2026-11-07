@@ -43,6 +43,7 @@ namespace cod.application.Route.Commands.UpdateRoute
             route.Vendor = model.Vendor;
             route.Order = model.Order;
             route.DeliversRegalia = model.DeliversRegalia;
+            route.GivesCredit = model.GivesCredit;
 
             _repository.UpdateSync(route);
 

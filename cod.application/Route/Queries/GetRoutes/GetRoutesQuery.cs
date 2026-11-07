@@ -27,6 +27,7 @@ namespace cod.application.Route.Queries.GetRoutes
                 Vendor = f.Vendor,
                 IsActive = f.IsActive,
                 DeliversRegalia = f.DeliversRegalia,
+                GivesCredit = f.GivesCredit,
                 TruckId = f.Truck != null ? f.Truck.Id : null,
                 Truck = f.Truck != null ? f.Truck.Plate : string.Empty
             }).ToListAsync();

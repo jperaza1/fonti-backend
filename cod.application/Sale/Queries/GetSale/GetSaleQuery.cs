@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using static cod.domain.Features.Enums.DomainEnums;
 
 namespace cod.application.Sale.Queries.GetSale
 {
@@ -47,7 +47,7 @@ namespace cod.application.Sale.Queries.GetSale
                     })
                 });
 
-            return await baseQuery.Select(f => new SaleModel
+            var sale = await baseQuery.Select(f => new SaleModel
             {
                 Id = f.Id,
                 Amount = f.Amount,
@@ -72,6 +72,75 @@ namespace cod.application.Sale.Queries.GetSale
                     SaleId = g.SaleId,
                 }).ToList()
             }).FirstOrDefaultAsync();
+
+            if (sale == null)
+                return null;
+
+            sale.DispatchSummary = await SoldByDispatch(sale.RouteId, sale.SaleDate);
+            sale.HasDispatchControl = sale.DispatchSummary != null;
+            if (sale.DispatchSummary == null)
+                sale.DispatchSummary = new List<SaleDispatchProductModel>();
+
+            return sale;
+        }
+
+        private async Task<List<SaleDispatchProductModel>> SoldByDispatch(int routeId, DateTime saleDate)
+        {
+            var details = await _repository.QueryActive<domain.Operation.DispatchControl>()
+                .Where(control => control.RouteId == routeId && control.DispatchControlDate.Date == saleDate.Date)
+                .OrderByDescending(control => control.Id)
+                .Select(control => control.DispatchControlDetails
+                    .Where(detail => detail.IsActive)
+                    .Select(detail => new
+                    {
+                        detail.Id,
+                        detail.DispatchControlType,
+                        Movements = detail.ProductMovements
+                            .Where(movement => movement.IsActive)
+                            .Select(movement => new
+                            {
+                                movement.ProductId,
+                                Name = movement.Product.Name,
+                                movement.Quantity
+                            })
+                            .ToList()
+                    })
+                    .ToList())
+                .FirstOrDefaultAsync();
+
+            if (details == null)
+                return null;
+
+            details = details
+                .OrderBy(detail => detail.DispatchControlType)
+                .ThenBy(detail => detail.Id)
+                .ToList();
+
+            var order = new List<int>();
+            var names = new Dictionary<int, string>();
+            var sold = new Dictionary<int, int>();
+
+            foreach (var detail in details)
+            {
+                var sign = detail.DispatchControlType == DispatchControlType.Return ? -1 : 1;
+                foreach (var movement in detail.Movements)
+                {
+                    if (!names.ContainsKey(movement.ProductId))
+                    {
+                        names[movement.ProductId] = movement.Name;
+                        order.Add(movement.ProductId);
+                        sold[movement.ProductId] = 0;
+                    }
+
+                    sold[movement.ProductId] += sign * movement.Quantity;
+                }
+            }
+
+            return order.Select(productId => new SaleDispatchProductModel
+            {
+                Product = names[productId],
+                Quantity = sold[productId]
+            }).ToList();
         }
     }
 }

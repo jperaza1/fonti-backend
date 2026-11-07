@@ -35,6 +35,7 @@ namespace cod.application.Route.Commands.CreateRoute
                 Vendor = model.Vendor,
                 Order = model.Order,
                 DeliversRegalia = model.DeliversRegalia,
+                GivesCredit = model.GivesCredit,
                 ProductRoutePrices = GenerateDetails(model)
             };
 

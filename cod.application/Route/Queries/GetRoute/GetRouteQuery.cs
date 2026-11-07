@@ -29,6 +29,7 @@ namespace cod.application.Route.Queries.GetRoute
                     IsActive = f.IsActive,
                     Order = f.Order,
                     DeliversRegalia = f.DeliversRegalia,
+                    GivesCredit = f.GivesCredit,
                     ProductRoutePrices = f.ProductRoutePrices.Select(g => new ProductRoutePricesModel
                     {
                         Id = g.Id,
