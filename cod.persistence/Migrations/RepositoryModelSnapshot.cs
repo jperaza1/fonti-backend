@@ -2904,6 +2904,9 @@ namespace cod.persistence.Migrations
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
 
@@ -2970,6 +2973,9 @@ namespace cod.persistence.Migrations
                     b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PurchaseOrderId")
+                        .HasColumnType("int");
+
                     b.Property<double>("SubTotal")
                         .HasColumnType("float");
 
@@ -2985,6 +2991,8 @@ namespace cod.persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PaymentId");
+
+                    b.HasIndex("PurchaseOrderId");
 
                     b.ToTable("ExpenseInvoices", "operation");
                 });
@@ -4405,7 +4413,13 @@ namespace cod.persistence.Migrations
                         .WithMany()
                         .HasForeignKey("PaymentId");
 
+                    b.HasOne("cod.domain.Operation.PurchaseOrder", "PurchaseOrder")
+                        .WithMany()
+                        .HasForeignKey("PurchaseOrderId");
+
                     b.Navigation("Payment");
+
+                    b.Navigation("PurchaseOrder");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.InventoryKardex", b =>

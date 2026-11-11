@@ -7,10 +7,13 @@ using cod.application.Invoice.Common;
 using cod.domain.Common;
 using cod.domain.Features;
 using cod.domain.Operation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using static cod.domain.Features.Enums.DomainEnums;
 using ApplicationException = cod.application.Features.Exception.ApplicationException;
@@ -20,20 +23,23 @@ namespace cod.application.Invoice.Commands.CreateInvoice
     public class CreateInvoiceCommand : BaseCommand, ICreateInvoiceCommand
     {
         private readonly AuthService _authService;
+        private readonly IConfigurationService _configurationService;
 
         public CreateInvoiceCommand(
             IRepository repository,
             IExceptionFactory exceptionFactory,
-            AuthService authService) : base(repository, exceptionFactory)
+            AuthService authService,
+            IConfigurationService configurationService) : base(repository, exceptionFactory)
         {
             _authService = authService;
+            _configurationService = configurationService;
         }
 
-        public async Task Execute(InvoiceModel model)
+        public async Task Execute(InvoiceModel model, IFormFile invoiceFile)
         {
             var timeZone = _authService.ClientTimezone;
             model.InvoiceDate = DateService.GetCLientLocalTime(model.InvoiceDate, timeZone);
-            await ValidateModel(model);
+            await ValidateModel(model, invoiceFile);
 
             var purchaseOrder = await _repository.Query<domain.Operation.PurchaseOrder>()
                 .Where(f => f.Id == model.PurchaseOrderId)
@@ -55,6 +61,30 @@ namespace cod.application.Invoice.Commands.CreateInvoice
                 this._exceptionFactory.Add("invoiceNumber", this._exceptionFactory.GetMessage("Numero de Factura", ExceptionEnums.ExceptionCode.Duplicate));
                 throw new ApplicationException("CANCELED", "FACTURAS", this._exceptionFactory.Exceptions);
             }
+
+            var plantRouteId = await _repository.QueryActive<cod.domain.Data.Route>()
+                .Where(route => route.Name.ToLower() == "planta")
+                .Select(route => route.Id)
+                .FirstOrDefaultAsync();
+
+            if (plantRouteId <= 0)
+                throw new ApplicationException("CANCELED", "No existe la ruta Planta", this._exceptionFactory.Exceptions);
+
+            var categoryId = await _repository.QueryActive<cod.domain.Data.Category>()
+                .Where(category => category.Name.ToLower() == "produccion")
+                .Select(category => category.Id)
+                .FirstOrDefaultAsync();
+
+            var subCategoryId = categoryId <= 0
+                ? 0
+                : await _repository.QueryActive<cod.domain.Data.SubCategory>()
+                    .Where(subCategory => subCategory.CategoryId == categoryId
+                        && subCategory.Name.ToLower() == "compra de suministros")
+                    .Select(subCategory => subCategory.Id)
+                    .FirstOrDefaultAsync();
+
+            if (categoryId <= 0 || subCategoryId <= 0)
+                throw new ApplicationException("CANCELED", "No existe la categoría Producción / Compra de suministros", this._exceptionFactory.Exceptions);
 
             var isCash = model.PaymentType == PaymentType.Cash;
             var total = Math.Round(model.Total, 2);
@@ -95,14 +125,47 @@ namespace cod.application.Invoice.Commands.CreateInvoice
                 };
             }
 
+            var expense = new domain.Operation.Expense
+            {
+                Invoice = invoice,
+                RouteId = plantRouteId,
+                VendorId = purchaseOrder.VendorId,
+                CategoryId = categoryId,
+                SubCategoryId = subCategoryId,
+                Date = model.InvoiceDate.Date.AddHours(12),
+                Total = total,
+                IsInvoice = true,
+                Notes = model.Description
+            };
+
             _repository.InsertAsync(invoice);
+            _repository.InsertAsync(expense);
             await _repository.CommitAsync();
+
+            var documentBaseUrl = await _configurationService.Get<string>("BASE_URL_DOCUMENT");
+            using var httpClient = new HttpClient();
+            var url = $"{documentBaseUrl}Attachment/Upload" +
+                      $"?attachmentType=INVOICE" +
+                      $"&tenantId={_authService.TenantId}" +
+                      $"&key={invoice.Id}" +
+                      $"&entity=INVOICE" +
+                      $"&user={_authService.User}";
+
+            using var content = new MultipartFormDataContent();
+            using var stream = invoiceFile.OpenReadStream();
+            using var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(invoiceFile.ContentType ?? "application/octet-stream");
+            content.Add(fileContent, "file", invoiceFile.FileName);
+            await httpClient.PostAsync(url, content);
         }
 
-        private async Task ValidateModel(InvoiceModel model)
+        private async Task ValidateModel(InvoiceModel model, IFormFile invoiceFile)
         {
             if (!model.PurchaseOrderId.HasValue || model.PurchaseOrderId.Value <= 0)
                 this._exceptionFactory.Add("purchaseOrder", this._exceptionFactory.GetMessage("Orden de Compra", ExceptionEnums.ExceptionCode.Required));
+
+            if (invoiceFile == null || invoiceFile.Length == 0)
+                this._exceptionFactory.Add("invoiceFile", this._exceptionFactory.GetMessage("Archivo", ExceptionEnums.ExceptionCode.Required));
 
             if (string.IsNullOrWhiteSpace(model.InvoiceNumber))
                 this._exceptionFactory.Add("invoiceNumber", this._exceptionFactory.GetMessage("Numero de Factura", ExceptionEnums.ExceptionCode.Required));

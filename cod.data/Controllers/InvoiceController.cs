@@ -11,6 +11,7 @@ using cod.application.Invoice.Queries.GetInvoices;
 using cod.application.Invoice.Queries.GetInvoicesByPurchaseOrder;
 using cod.application.Invoice.Queries.GetPendingInvoices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -95,11 +96,11 @@ namespace cod.data.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddInvoice([FromBody] InvoiceModel model)
+        public async Task<IActionResult> AddInvoice([FromForm] InvoiceModel model, IFormFile invoiceFile)
         {
             try
             {
-                await _createInvoiceCommand.Execute(model);
+                await _createInvoiceCommand.Execute(model, invoiceFile);
                 return Ok(new ResponseModel<int> { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
             }
             catch (Exception exception)
