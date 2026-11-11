@@ -49,6 +49,9 @@ namespace cod.application.DispatchControl.Commands.UpdateDispatchControl
 
             foreach(var item in addDetail)
             {
+                if (DispatchQuantity.IsTransfer(item.DispatchControlType))
+                    continue;
+
                 var detail = new DispatchControlDetail();
                 detail.DispatchControlId = id;
                 detail.DispatchControlType = item.DispatchControlType;
@@ -70,6 +73,9 @@ namespace cod.application.DispatchControl.Commands.UpdateDispatchControl
 
             foreach(var item in updateDetail)
             {
+                if (DispatchQuantity.IsTransfer(item.DispatchControlType))
+                    continue;
+
                 var detail = await _repository.Query<domain.Operation.DispatchControlDetail>()
                     .Where(f => f.Id == item.Id)
                     .FirstOrDefaultAsync();

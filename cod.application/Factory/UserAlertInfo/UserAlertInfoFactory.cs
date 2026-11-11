@@ -16,6 +16,7 @@ namespace cod.application.Factory.UserAlertInfo
             alertInfoDictionary = new Dictionary<DomainEnums.UserAlertOption, UserAlertInfoModel>()
             {
                 [DomainEnums.UserAlertOption.PendingInvoice] = new UserAlertInfoModel() { Color = "#DC3545", TextColor = "white", Icon = "fas fa-file-invoice", Label = "Facturas Pendientes", UserAlert = DomainEnums.UserAlertOption.PendingInvoice },
+                [DomainEnums.UserAlertOption.CorrelativeExpiring] = new UserAlertInfoModel() { Color = "#D97706", TextColor = "white", Icon = "fas fa-receipt", Label = "Correlativos por vencer", UserAlert = DomainEnums.UserAlertOption.CorrelativeExpiring },
                 
                 
             };

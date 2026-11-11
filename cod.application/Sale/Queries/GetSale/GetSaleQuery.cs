@@ -1,4 +1,5 @@
 ﻿using cod.application.Common.Extensions;
+using cod.application.DispatchControl.Commom;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.application.Sale.Common;
@@ -122,7 +123,10 @@ namespace cod.application.Sale.Queries.GetSale
 
             foreach (var detail in details)
             {
-                var sign = detail.DispatchControlType == DispatchControlType.Return ? -1 : 1;
+                var sign = DispatchQuantity.Sign(detail.DispatchControlType);
+                if (sign == 0)
+                    continue;
+
                 foreach (var movement in detail.Movements)
                 {
                     if (!names.ContainsKey(movement.ProductId))

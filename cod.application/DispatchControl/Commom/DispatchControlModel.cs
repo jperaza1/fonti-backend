@@ -33,7 +33,23 @@ namespace cod.application.DispatchControl.Commom
         public int BottleQuantity { get; set; }
         public int CrateQuantity { get; set; }
         public int MissingBottleQuantity { get; set; }
+        public int? DispatchTransferId { get; set; }
+        public int? CounterpartRouteId { get; set; }
+        public string CounterpartRoute { get; set; }
         public List<ProductMovementModel> ProductMovements { get; set; }
+    }
+
+    public class DispatchTransferModel
+    {
+        public int FromDispatchControlId { get; set; }
+        public int ToRouteId { get; set; }
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class DispatchTransferSettingModel
+    {
+        public bool Enabled { get; set; }
     }
 
     public class ProductMovementModel

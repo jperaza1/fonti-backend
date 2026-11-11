@@ -1,4 +1,5 @@
-﻿using cod.application.Correlative.Commands.GenerateCorrelative;
+﻿using cod.application.Common.Clases;
+using cod.application.Correlative.Commands.GenerateCorrelative;
 using cod.application.Features.Base;
 using cod.application.Features.Exception;
 using cod.application.Interfaces;
@@ -46,8 +47,26 @@ namespace cod.application.InvoiceSale.Commands.GenerateInvoiceSale
 
         public async Task GenerateCashInvoice(GeneratePendingBillingModel model, IGenerateCorrelativeCommand _generateCorrelativeCommand)
         {
-            var customer = await _repository.Query<domain.Data.Customer>()
-                .Where(f => f.Name == "CONSUMIDOR FINAL").FirstOrDefaultAsync();
+            var saleIdsForCustomer = model.SaleIds ?? new List<int>();
+            var saleCustomers = await _repository.Query<domain.Operation.Sale>()
+                .Where(sale => saleIdsForCustomer.Contains(sale.Id))
+                .Select(sale => sale.CustomerId)
+                .ToListAsync();
+            var distinctCustomers = saleCustomers.Where(id => id.HasValue).Select(id => id.Value).Distinct().ToList();
+
+            domain.Data.Customer customer = null;
+            if (saleCustomers.Any() && saleCustomers.All(id => id.HasValue) && distinctCustomers.Count == 1)
+            {
+                customer = await _repository.Query<domain.Data.Customer>()
+                    .Where(item => item.Id == distinctCustomers[0])
+                    .FirstOrDefaultAsync();
+            }
+
+            if (customer == null)
+            {
+                customer = await _repository.Query<domain.Data.Customer>()
+                    .Where(f => f.Name == "CONSUMIDOR FINAL").FirstOrDefaultAsync();
+            }
 
             if(customer == null)
                 throw new ApplicationException("CANCELED", "SE REQUIERE CONFIGURAR CONSUMIDOR FINAL PARA FACTURAS AL CONTADO", this._exceptionFactory.Exceptions);
@@ -71,6 +90,9 @@ namespace cod.application.InvoiceSale.Commands.GenerateInvoiceSale
             var taxAmount = Math.Round(subTotalTax * 0.15, 2);
 
             var total = subTotal + taxAmount;
+
+            var timeZone = _authService.ClientTimezone;
+            model.InvoiceDate = DateService.GetCLientLocalTime(model.InvoiceDate.Value, timeZone);
 
             var invoice = new SaleInvoice
             {
@@ -165,6 +187,9 @@ namespace cod.application.InvoiceSale.Commands.GenerateInvoiceSale
                 var taxAmount = Math.Round(subTotalTax * 0.15, 2);
 
                 var total = subTotal + taxAmount;
+
+                var timeZone = _authService.ClientTimezone;
+                item.InvoiceDate = DateService.GetCLientLocalTime(item.InvoiceDate, timeZone);
 
                 var invoice = new SaleInvoice
                 {

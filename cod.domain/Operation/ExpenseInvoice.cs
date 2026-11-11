@@ -14,6 +14,7 @@ namespace cod.domain.Operation
     public class ExpenseInvoice : Entity
     {
         public string InvoiceNumber { get; set; }
+        public string Description { get; set; }
         public DateTime InvoiceDate { get; set; }
         public double TaxableAmount { get; set; }
         public double ExemptAmount { get; set; }
@@ -36,6 +37,9 @@ namespace cod.domain.Operation
         public int? PaymentId { get; set; }
         [ForeignKey("PaymentId")]
         public virtual Payment Payment { get; set; }
+        public int? PurchaseOrderId { get; set; }
+        [ForeignKey("PurchaseOrderId")]
+        public virtual PurchaseOrder PurchaseOrder { get; set; }
         public virtual ICollection<InvoicePayment> Payments { get; set; }
     }
 }

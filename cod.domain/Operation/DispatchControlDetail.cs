@@ -1,4 +1,5 @@
 ﻿using cod.domain.Common;
+using cod.domain.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +20,12 @@ namespace cod.domain.Operation
         public int BottleQuantity { get; set; }
         public int CrateQuantity { get; set; }
         public int MissingBottleQuantity { get; set; }
+        public int? DispatchTransferId { get; set; }
+        [ForeignKey("DispatchTransferId")]
+        public virtual DispatchTransfer DispatchTransfer { get; set; }
+        public int? CounterpartRouteId { get; set; }
+        [ForeignKey("CounterpartRouteId")]
+        public virtual Route CounterpartRoute { get; set; }
         public virtual ICollection<ProductMovement> ProductMovements { get; set; }
     }
 

@@ -11,6 +11,7 @@ namespace cod.application.Invoice.Common
     public class InvoiceModel
     {
         public int Id { get; set; }
+        public int? PurchaseOrderId { get; set; }
         public int ExpenseId { get; set; }
         public int RouteId { get; set; }
         public string Route { get; set; }
@@ -20,6 +21,7 @@ namespace cod.application.Invoice.Common
         public int? DocumentId { get; set; }
         public double RemainingDays { get; set; }
         public string VendorName { get; set; }
+        public string PurchaseOrder { get; set; }
         public string InvoiceNumber { get; set; }
         public string Description { get; set; }
         public DateTime InvoiceDate { get; set; }

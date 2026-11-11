@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace cod.domain.Features.Enums
 {
@@ -8,7 +6,10 @@ namespace cod.domain.Features.Enums
     {
         public enum UserAlertOption
         {
+            [Description("Facturas Pendientes")]
             PendingInvoice = 1,
+            [Description("Correlativos por vencer")]
+            CorrelativeExpiring = 2,
         }
     }
 }

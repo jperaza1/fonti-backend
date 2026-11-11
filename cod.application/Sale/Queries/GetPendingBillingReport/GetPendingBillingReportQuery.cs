@@ -33,7 +33,7 @@ namespace cod.application.Sale.Queries.GetPendingBillingReport
             var baseQuery = _repository.Query<domain.Operation.Sale>()
                 .Where(GetSaleBySaleDateFilter)
                 .Where(GetSaleBySaleTypeFilter)
-                .Where(f => !f.SaleInvoiceId.HasValue)
+                .Where(f => f.IsActive && !f.SaleInvoiceId.HasValue)
                 .Select(f => new
                 {
                     f.Id,

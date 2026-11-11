@@ -1,6 +1,7 @@
 ﻿using cod.application.Common.Clases;
 using cod.application.Common.Extensions;
 using cod.application.DispatchControl.Commom;
+using cod.application.DispatchControl.Services;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.domain.Data;
@@ -23,10 +24,14 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
     public class GenerateReportDispatchControlQuery : BaseQuery, IGenerateReportDispatchControlQuery
     {
         private readonly AuthService _authService;
+        private readonly IDispatchTransferSettings _transferSettings;
         public GenerateReportDispatchControlQuery(
-            IRepository repository, AuthService authService) : base(repository)
+            IRepository repository,
+            AuthService authService,
+            IDispatchTransferSettings transferSettings) : base(repository)
         {
             _authService = authService;
+            _transferSettings = transferSettings;
         }
 
         public async Task<byte[]> Execute(DispatchControlFilterModel filterModel)
@@ -55,9 +60,11 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
                         g.DispatchControlId,
                         g.BottleQuantity,
                         g.CrateQuantity,
+                        g.IsActive,
                         g.DispatchControlType,
                         DispatchControlTypeName = g.DispatchControlType.GetEnumDescription(),
                         g.MissingBottleQuantity,
+                        CounterpartRoute = g.CounterpartRoute.Name,
                         ProductMovements = g.ProductMovements.Select(x => new
                         {
                             x.Id,
@@ -120,6 +127,15 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
 
                     int returnEndColumn =
                         returnStartColumn + columnsPerReload - 2;
+
+                    var showTransfers = await _transferSettings.IsEnabled();
+                    int transferColumn = returnEndColumn + 2;
+                    if (showTransfers)
+                    {
+                        worksheet.Cells[2, transferColumn].Value = "Traspasos";
+                        worksheet.Cells[2, transferColumn].Style.Font.Bold = true;
+                        worksheet.Cells[3, transferColumn].Value = "Detalle";
+                    }
 
                     CreateGroupHeader(
                         worksheet,
@@ -206,6 +222,26 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
 
                             worksheet.Cells[row, column1].Value = returnDetail.MissingBottleQuantity;
                             column1++;
+                        }
+
+                        if (showTransfers)
+                        {
+                            var transferNotes = new List<string>();
+                            foreach (var transfer in dispatch.DispatchControlDetails.Where(d =>
+                                d.IsActive
+                                && (d.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.TransferOut
+                                    || d.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.TransferIn)))
+                            {
+                                foreach (var product in transfer.ProductMovements)
+                                {
+                                    var routeName = transfer.CounterpartRoute ?? string.Empty;
+                                    transferNotes.Add(transfer.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.TransferOut
+                                        ? "Entregó " + product.Quantity + " " + product.ProductName + " a " + routeName
+                                        : "Recibió " + product.Quantity + " " + product.ProductName + " de " + routeName);
+                                }
+                            }
+
+                            worksheet.Cells[row, transferColumn].Value = string.Join("; ", transferNotes);
                         }
                         row++;
                     }

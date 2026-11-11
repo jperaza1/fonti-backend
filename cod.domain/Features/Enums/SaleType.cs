@@ -24,7 +24,11 @@ namespace cod.domain.Features.Enums
             [Description("Contado")]
             Reload,
             [Description("Contado")]
-            Return
+            Return,
+            [Description("Traspaso salida")]
+            TransferOut = 4,
+            [Description("Traspaso entrada")]
+            TransferIn = 5
         }
 
         public enum DispatchControlStatus

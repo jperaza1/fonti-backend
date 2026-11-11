@@ -1,5 +1,6 @@
 ﻿using cod.application.Features.Models;
 using cod.application.Invoice.Commands.ChangePaymentType;
+using cod.application.Invoice.Commands.CreateInvoice;
 using cod.application.Invoice.Commands.DeleteInvoice;
 using cod.application.Invoice.Commands.UpdateDocumentId;
 using cod.application.Invoice.Commands.UpdateInvoice;
@@ -7,9 +8,9 @@ using cod.application.Invoice.Commands.UpdateInvoiceFile;
 using cod.application.Invoice.Common;
 using cod.application.Invoice.Queries.GetInvoice;
 using cod.application.Invoice.Queries.GetInvoices;
+using cod.application.Invoice.Queries.GetInvoicesByPurchaseOrder;
 using cod.application.Invoice.Queries.GetPendingInvoices;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,10 @@ namespace cod.data.Controllers
     public class InvoiceController : BaseController
     {
         private readonly IGetInvoiceQuery _getInvoiceQuery;
+        private readonly IGetInvoicesByPurchaseOrderQuery _getInvoicesByPurchaseOrderQuery;
         private readonly IGetInvoicesQuery _getInvoicesQuery;
         private readonly IGetPendingInvoicesQuery _getPendingInvoicesQuery;
+        private readonly ICreateInvoiceCommand _createInvoiceCommand;
         private readonly IUpdateDocumentIdCommand _updateDocumentIdCommand;
         private readonly IUpdateInvoiceFileCommand _updateInvoiceFileCommand;
         private readonly IUpdateInvoiceCommand _updateInvoiceCommand;
@@ -30,8 +33,10 @@ namespace cod.data.Controllers
         private readonly IDeleteInvoiceCommand _deleteInvoiceCommand;
         public InvoiceController(
             IGetInvoiceQuery invoiceQuery,
+            IGetInvoicesByPurchaseOrderQuery getInvoicesByPurchaseOrderQuery,
             IGetInvoicesQuery getInvoicesQuery,
             IGetPendingInvoicesQuery getPendingInvoicesQuery,
+            ICreateInvoiceCommand createInvoiceCommand,
             IUpdateDocumentIdCommand updateDocumentIdCommand,
             IUpdateInvoiceFileCommand updateInvoiceFileCommand,
             IUpdateInvoiceCommand updateInvoiceCommand,
@@ -39,8 +44,10 @@ namespace cod.data.Controllers
             IDeleteInvoiceCommand deleteInvoiceCommand)
         {
             _getInvoiceQuery = invoiceQuery;
+            _getInvoicesByPurchaseOrderQuery = getInvoicesByPurchaseOrderQuery;
             _getInvoicesQuery = getInvoicesQuery;
             _getPendingInvoicesQuery = getPendingInvoicesQuery;
+            _createInvoiceCommand = createInvoiceCommand;
             _updateDocumentIdCommand = updateDocumentIdCommand;
             _updateInvoiceFileCommand = updateInvoiceFileCommand;
             _updateInvoiceCommand = updateInvoiceCommand;
@@ -79,6 +86,26 @@ namespace cod.data.Controllers
         public async Task<InvoiceModel> GetById(int id)
         {
             return await _getInvoiceQuery.Execute(id);
+        }
+
+        [HttpGet]
+        public async Task<List<InvoiceModel>> GetByPurchaseOrder(int id)
+        {
+            return await _getInvoicesByPurchaseOrderQuery.Execute(id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddInvoice([FromBody] InvoiceModel model)
+        {
+            try
+            {
+                await _createInvoiceCommand.Execute(model);
+                return Ok(new ResponseModel<int> { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
+            }
+            catch (Exception exception)
+            {
+                return Ok(ProcessException(exception));
+            }
         }
 
         [HttpPost]

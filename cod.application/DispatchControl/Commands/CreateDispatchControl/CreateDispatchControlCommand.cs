@@ -53,6 +53,9 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
 
             foreach(var item in model.DispatchControlDetails)
             {
+                if (DispatchQuantity.IsTransfer(item.DispatchControlType))
+                    continue;
+
                 var detail = new DispatchControlDetail();
                 detail.DispatchControlType = item.DispatchControlType;
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
@@ -105,6 +108,9 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
 
             foreach(var item in model.DispatchControlDetails)
             {
+                if (DispatchQuantity.IsTransfer(item.DispatchControlType))
+                    continue;
+
                 if(item.DispatchControlType != domain.Features.Enums.DomainEnums.DispatchControlType.Return)
                 {
                     if(item.CrateQuantity <= 0)

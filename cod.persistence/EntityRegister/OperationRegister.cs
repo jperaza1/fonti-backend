@@ -21,6 +21,7 @@ namespace cod.persistence.Implementations
         public DbSet<ExpenseInvoice> ExpenseInvoices { get; set; }
         public DbSet<DispatchControl> DispatchControl { get; set; }
         public DbSet<DispatchControlDetail> DispatchControlDetail { get; set; }
+        public DbSet<DispatchTransfer> DispatchTransfers { get; set; }
         public DbSet<ProductMovement> ProductMovements { get; set; }
         public DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<InventoryKardex> InventoryKardex { get; set; }

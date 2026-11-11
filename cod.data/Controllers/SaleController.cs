@@ -1,14 +1,17 @@
 ﻿using cod.application.Features.Models;
+using cod.application.Sale.Commands.ConsolidateSale;
 using cod.application.Sale.Commands.CreateSale;
 using cod.application.Sale.Commands.DisableSale;
 using cod.application.Sale.Commands.EnableSale;
 using cod.application.Sale.Commands.UpdateSale;
 using cod.application.Sale.Common;
+using cod.application.Sale.Queries.GetConsolidateAvailability;
 using cod.application.Sale.Queries.GetDailySalesByCafeteria;
 using cod.application.Sale.Queries.GetPendingBillingReport;
 using cod.application.Sale.Queries.GetSale;
 using cod.application.Sale.Queries.GetSales;
 using cod.application.Sale.Queries.GetSaleChartReport;
+using cod.application.Sale.Queries.GetSaleRouteQuantityReport;
 using cod.application.Sale.Queries.GetSalesByMonth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,11 +29,14 @@ namespace cod.data.Controllers
         private readonly IGetSaleByMonthQuery _getSaleByMonthQuery;
         private readonly IGetPendingBillingReportQuery _getPendingBillingReportQuery;
         private readonly IGetSaleChartReportQuery _getSaleChartReportQuery;
+        private readonly IGetSaleRouteQuantityReportQuery _getSaleRouteQuantityReportQuery;
         private readonly IGetDailySalesByCafeteriaQuery _getDailySalesByCafeteriaQuery;
         private readonly ICreateSaleCommand _createSaleCommand;
         private readonly IUpdateSaleCommand _updateSaleCommand;
         private readonly IEnableSaleCommand _enableSaleCommand;
         private readonly IDisableSaleCommand _disableSaleCommand;
+        private readonly IConsolidateSaleCommand _consolidateSaleCommand;
+        private readonly IGetConsolidateAvailabilityQuery _getConsolidateAvailabilityQuery;
 
         public SaleController(
             IGetSaleQuery getSaleQuery, 
@@ -41,8 +47,11 @@ namespace cod.data.Controllers
             IUpdateSaleCommand updateSaleCommand,
             IEnableSaleCommand enableSaleCommand,
             IDisableSaleCommand disableSaleCommand,
+            IConsolidateSaleCommand consolidateSaleCommand,
+            IGetConsolidateAvailabilityQuery getConsolidateAvailabilityQuery,
             IGetDailySalesByCafeteriaQuery getDailySalesByCafeteriaQuery,
-            IGetSaleChartReportQuery getSaleChartReportQuery)
+            IGetSaleChartReportQuery getSaleChartReportQuery,
+            IGetSaleRouteQuantityReportQuery getSaleRouteQuantityReportQuery)
         {
             _getSaleQuery = getSaleQuery;
             _getSalesQuery = getSalesQuery;
@@ -51,15 +60,24 @@ namespace cod.data.Controllers
             _updateSaleCommand = updateSaleCommand;
             _enableSaleCommand = enableSaleCommand;
             _disableSaleCommand = disableSaleCommand;
+            _consolidateSaleCommand = consolidateSaleCommand;
+            _getConsolidateAvailabilityQuery = getConsolidateAvailabilityQuery;
             _getDailySalesByCafeteriaQuery = getDailySalesByCafeteriaQuery;
             _getPendingBillingReportQuery = getPendingBillingReportQuery;
             _getSaleChartReportQuery = getSaleChartReportQuery;
+            _getSaleRouteQuantityReportQuery = getSaleRouteQuantityReportQuery;
         }
 
         [HttpPost]
         public async Task<List<SaleChartPointModel>> GetChartReport([FromBody] SaleChartFilterModel filter)
         {
             return await _getSaleChartReportQuery.Execute(filter);
+        }
+
+        [HttpPost]
+        public async Task<SaleRouteQuantityReportModel> GetRouteQuantityReport([FromBody] SaleRouteQuantityFilterModel filter)
+        {
+            return await _getSaleRouteQuantityReportQuery.Execute(filter);
         }
 
         [HttpPost]
@@ -113,6 +131,26 @@ namespace cod.data.Controllers
             try
             {
                 await _updateSaleCommand.Execute(model, id);
+                return Ok(new ResponseModel<int> { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
+            }
+            catch (Exception exception)
+            {
+                return Ok(ProcessException(exception));
+            }
+        }
+
+        [HttpPost]
+        public async Task<List<ConsolidateAvailabilityLine>> GetConsolidateAvailability([FromBody] ConsolidateSaleModel model)
+        {
+            return await _getConsolidateAvailabilityQuery.Execute(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Consolidate([FromBody] ConsolidateSaleModel model)
+        {
+            try
+            {
+                await _consolidateSaleCommand.Execute(model);
                 return Ok(new ResponseModel<int> { Success = true, MessageResponse = "SUCCESS", Title = ControllerName });
             }
             catch (Exception exception)

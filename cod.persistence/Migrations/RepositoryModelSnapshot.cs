@@ -2685,6 +2685,9 @@ namespace cod.persistence.Migrations
                     b.Property<int>("BottleQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CounterpartRouteId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CrateQuantity")
                         .HasColumnType("int");
 
@@ -2704,6 +2707,9 @@ namespace cod.persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("DispatchControlType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DispatchTransferId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("EnableDateTime")
@@ -2726,9 +2732,68 @@ namespace cod.persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CounterpartRouteId");
+
                     b.HasIndex("DispatchControlId");
 
+                    b.HasIndex("DispatchTransferId");
+
                     b.ToTable("DispatchControlDetail", "operation");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.DispatchTransfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DisableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EnableDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnableUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FromDispatchControlId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToDispatchControlId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromDispatchControlId");
+
+                    b.HasIndex("ToDispatchControlId");
+
+                    b.ToTable("DispatchTransfer", "operation");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Expense", b =>
@@ -4247,13 +4312,46 @@ namespace cod.persistence.Migrations
 
             modelBuilder.Entity("cod.domain.Operation.DispatchControlDetail", b =>
                 {
+                    b.HasOne("cod.domain.Data.Route", "CounterpartRoute")
+                        .WithMany()
+                        .HasForeignKey("CounterpartRouteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("cod.domain.Operation.DispatchControl", "DispatchControl")
                         .WithMany("DispatchControlDetails")
                         .HasForeignKey("DispatchControlId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("cod.domain.Operation.DispatchTransfer", "DispatchTransfer")
+                        .WithMany()
+                        .HasForeignKey("DispatchTransferId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CounterpartRoute");
+
                     b.Navigation("DispatchControl");
+
+                    b.Navigation("DispatchTransfer");
+                });
+
+            modelBuilder.Entity("cod.domain.Operation.DispatchTransfer", b =>
+                {
+                    b.HasOne("cod.domain.Operation.DispatchControl", "FromDispatchControl")
+                        .WithMany()
+                        .HasForeignKey("FromDispatchControlId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("cod.domain.Operation.DispatchControl", "ToDispatchControl")
+                        .WithMany()
+                        .HasForeignKey("ToDispatchControlId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FromDispatchControl");
+
+                    b.Navigation("ToDispatchControl");
                 });
 
             modelBuilder.Entity("cod.domain.Operation.Expense", b =>

@@ -30,6 +30,8 @@ namespace cod.application.Factory.UserAlertData
             {
                 case DomainEnums.UserAlertOption.PendingInvoice:
                     return new PendingInvoiceDataQuery(_repository);
+                case DomainEnums.UserAlertOption.CorrelativeExpiring:
+                    return new CorrelativeExpiringDataQuery(_repository);
             }
             return null;
         }

@@ -40,7 +40,9 @@ namespace cod.application.DispatchControl.Queries.GetDispatchControl
                     f.Status,
                     f.TruckId,
                     Truck = f.TruckId.HasValue ? f.Truck.Plate : string.Empty,
-                    DispatchControlDetails = f.DispatchControlDetails.Select(g => new
+                    DispatchControlDetails = f.DispatchControlDetails
+                    .Where(g => g.IsActive)
+                    .Select(g => new
                     {
                         g.Id,
                         g.DispatchControlId,
@@ -49,8 +51,11 @@ namespace cod.application.DispatchControl.Queries.GetDispatchControl
                         g.DispatchControlType,
                         DispatchControlTypeName = g.DispatchControlType.GetEnumDescription(),
                         g.MissingBottleQuantity,
+                        g.DispatchTransferId,
+                        g.CounterpartRouteId,
+                        CounterpartRoute = g.CounterpartRoute.Name,
                         ProductMovements = g.ProductMovements
-                        .Where(x => x.Product.ProductType == ProductType.Sale)
+                        .Where(x => x.IsActive && x.Product.ProductType == ProductType.Sale)
                         .Select(x => new
                         {
                             x.Id,
@@ -90,6 +95,9 @@ namespace cod.application.DispatchControl.Queries.GetDispatchControl
                     DispatchControlType = g.DispatchControlType,
                     DispatchControlTypeName = g.DispatchControlType.GetEnumDescription(),
                     MissingBottleQuantity = g.MissingBottleQuantity,
+                    DispatchTransferId = g.DispatchTransferId,
+                    CounterpartRouteId = g.CounterpartRouteId,
+                    CounterpartRoute = g.CounterpartRoute,
                     ProductMovements = g.ProductMovements.Select(x => new ProductMovementModel
                     {
                         Id = x.Id,

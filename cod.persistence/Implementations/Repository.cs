@@ -98,6 +98,27 @@ namespace cod.persistence.Implementations
             modelBuilder.Entity<Route>()
                 .Property(r => r.GivesCredit)
                 .HasDefaultValue(false);
+
+            modelBuilder.Entity<DispatchTransfer>()
+                .HasOne(t => t.FromDispatchControl)
+                .WithMany()
+                .HasForeignKey(t => t.FromDispatchControlId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<DispatchTransfer>()
+                .HasOne(t => t.ToDispatchControl)
+                .WithMany()
+                .HasForeignKey(t => t.ToDispatchControlId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<DispatchControlDetail>()
+                .HasOne(d => d.DispatchTransfer)
+                .WithMany()
+                .HasForeignKey(d => d.DispatchTransferId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<DispatchControlDetail>()
+                .HasOne(d => d.CounterpartRoute)
+                .WithMany()
+                .HasForeignKey(d => d.CounterpartRouteId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
