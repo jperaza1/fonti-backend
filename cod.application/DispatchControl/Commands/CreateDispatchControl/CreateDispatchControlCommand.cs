@@ -61,7 +61,7 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
                 detail.BottleQuantity = item.BottleQuantity;
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
-                detail.CrateQuantity = item.CrateQuantity;
+                detail.CrateQuantity = item.CrateQuantity ?? 0;
                 detail.IsActive = true;
                 detail.CreationTime = Clock.Now;
                 detail.CreatorUser = authService.User;
@@ -111,9 +111,12 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
                 if (DispatchQuantity.IsTransfer(item.DispatchControlType))
                     continue;
 
+                var crates = item.CrateQuantity ?? 0;
+                item.CrateQuantity = crates;
+
                 if(item.DispatchControlType != domain.Features.Enums.DomainEnums.DispatchControlType.Return)
                 {
-                    if(item.CrateQuantity <= 0)
+                    if(crates <= 0)
                         this._exceptionFactory.Add("crateQuantity", this._exceptionFactory.GetMessage("Cestas", ExceptionEnums.ExceptionCode.Required));
 
                     if(item.BottleQuantity <= 0)
@@ -124,6 +127,9 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
                 {
                     if (item.MissingBottleQuantity < 0)
                         this._exceptionFactory.Add("missingBottleQuantity", this._exceptionFactory.GetMessage("Los botes faltantes no pueden ser negativos", ExceptionEnums.ExceptionCode.Default));
+
+                    if (crates < 0)
+                        this._exceptionFactory.Add("crateQuantity", this._exceptionFactory.GetMessage("Las cestas no pueden ser negativas", ExceptionEnums.ExceptionCode.Default));
                 }
 
             }

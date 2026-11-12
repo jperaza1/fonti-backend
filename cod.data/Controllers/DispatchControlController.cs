@@ -62,7 +62,8 @@ namespace cod.data.Controllers
         [HttpPost]
         public async Task<List<DispatchControlModel>> GetAll([FromBody] DispatchControlFilterModel filter)
         {
-            return await _getAllDispatchControlQuery.Execute(filter);
+            var result = await _getAllDispatchControlQuery.Execute(filter);
+            return result.Items;
         }
 
         [HttpPost]

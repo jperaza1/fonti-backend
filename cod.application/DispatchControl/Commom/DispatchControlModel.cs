@@ -22,6 +22,7 @@ namespace cod.application.DispatchControl.Commom
         public DateTime CreationTime { get; set; }
         public string CreatorUser { get; set; }
         public List<DispatchControlDetailModel> DispatchControlDetails { get; set; }
+        public List<DispatchProductTotalModel> ProductTotals { get; set; }
     }
 
     public class DispatchControlDetailModel
@@ -31,7 +32,7 @@ namespace cod.application.DispatchControl.Commom
         public DispatchControlType DispatchControlType { get; set; }
         public string DispatchControlTypeName { get; set; }
         public int BottleQuantity { get; set; }
-        public int CrateQuantity { get; set; }
+        public int? CrateQuantity { get; set; }
         public int MissingBottleQuantity { get; set; }
         public int? DispatchTransferId { get; set; }
         public int? CounterpartRouteId { get; set; }
@@ -65,5 +66,20 @@ namespace cod.application.DispatchControl.Commom
     {
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
+        public int? RouteId { get; set; }
+    }
+
+    public class DispatchControlListModel
+    {
+        public List<DispatchControlModel> Items { get; set; }
+    }
+
+    public class DispatchProductTotalModel
+    {
+        public int ProductId { get; set; }
+        public string Product { get; set; }
+        public int Dispatched { get; set; }
+        public int Returned { get; set; }
+        public int? Sold { get; set; }
     }
 }

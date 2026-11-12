@@ -1,6 +1,7 @@
 ﻿using cod.application.Common.Clases;
 using cod.application.Common.Extensions;
 using cod.application.DispatchControl.Commom;
+using cod.application.DispatchControl.Queries.GetAllDispatchControl;
 using cod.application.DispatchControl.Services;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
@@ -42,6 +43,7 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
 
             var baseQuery = await _repository.Query<domain.Operation.DispatchControl>()
                 .Where(byDate)
+                .Where(GetAllDispatchControlQuery.GetDispatchControlByRoute(filterModel))
                 .Select(f => new
                 {
                     f.Id,
@@ -126,7 +128,7 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
                         reloadStartColumn + (maxReload * columnsPerReload);
 
                     int returnEndColumn =
-                        returnStartColumn + columnsPerReload - 2;
+                        returnStartColumn + columnsPerReload - 1;
 
                     var showTransfers = await _transferSettings.IsEnabled();
                     int transferColumn = returnEndColumn + 2;
@@ -171,6 +173,8 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
                         if(group == (1 + maxReload))
                         {
                             worksheet.Cells[3, column].Value = "Botes Faltantes";
+                            column++;
+                            worksheet.Cells[3, column].Value = "CESTAS";
                         }
 
                     }
@@ -188,20 +192,26 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
 
                         var exit = dispatch.DispatchControlDetails.FirstOrDefault(f => f.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.Exit);
 
-                        foreach(var product in exit.ProductMovements)
+                        if (exit?.ProductMovements != null)
                         {
-                            worksheet.Cells[row, column1].Value = product.Quantity;
-                            column1++;
+                            foreach(var product in exit.ProductMovements)
+                            {
+                                worksheet.Cells[row, column1].Value = product.Quantity;
+                                column1++;
+                            }
                         }
 
                         var reload = dispatch.DispatchControlDetails.Where(f => f.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.Reload).ToList();
 
                         foreach (var detail in reload) 
                         {
-                            foreach(var product in detail.ProductMovements)
+                            if (detail.ProductMovements != null)
                             {
-                                worksheet.Cells[row, column1].Value = product.Quantity;
-                                column1++;
+                                foreach(var product in detail.ProductMovements)
+                                {
+                                    worksheet.Cells[row, column1].Value = product.Quantity;
+                                    column1++;
+                                }
                             }
                             worksheet.Cells[row, column1].Value = detail.BottleQuantity;
                             column1++;
@@ -214,14 +224,18 @@ namespace cod.application.DispatchControl.Queries.GenerateReportDispatchControl
                         if(returnDetail != null)
                         {
                             column1 = returnStartColumn;
-                            foreach (var product in returnDetail.ProductMovements)
+                            if (returnDetail.ProductMovements != null)
                             {
-                                worksheet.Cells[row, column1].Value = product.Quantity;
-                                column1++;
+                                foreach (var product in returnDetail.ProductMovements)
+                                {
+                                    worksheet.Cells[row, column1].Value = product.Quantity;
+                                    column1++;
+                                }
                             }
 
                             worksheet.Cells[row, column1].Value = returnDetail.MissingBottleQuantity;
                             column1++;
+                            worksheet.Cells[row, column1].Value = returnDetail.CrateQuantity;
                         }
 
                         if (showTransfers)

@@ -58,7 +58,7 @@ namespace cod.application.DispatchControl.Commands.UpdateDispatchControl
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
                 detail.BottleQuantity = item.BottleQuantity;
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
-                detail.CrateQuantity = item.CrateQuantity;
+                detail.CrateQuantity = item.CrateQuantity ?? 0;
                 detail.ProductMovements = CreateProductMovement(item, _authService);
 
                 if(item.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.Return)
@@ -82,7 +82,7 @@ namespace cod.application.DispatchControl.Commands.UpdateDispatchControl
 
                 detail.MissingBottleQuantity = item.MissingBottleQuantity;
                 detail.BottleQuantity = item.BottleQuantity;
-                detail.CrateQuantity = item.CrateQuantity;
+                detail.CrateQuantity = item.CrateQuantity ?? 0;
 
                 var productMovements = await _repository.Query<domain.Operation.ProductMovement>()
                     .Where(f => f.DispatchControlDetailId == item.Id)
@@ -138,20 +138,20 @@ namespace cod.application.DispatchControl.Commands.UpdateDispatchControl
 
             foreach (var item in model.DispatchControlDetails)
             {
-                /*if (item.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.Reload)
-                {
-                    if (item.CrateQuantity <= 0)
-                        this._exceptionFactory.Add("crateQuantity", this._exceptionFactory.GetMessage("Cestas", ExceptionEnums.ExceptionCode.Required));
-
-                    if (item.BottleQuantity <= 0)
-                        this._exceptionFactory.Add("bottleQuantity", this._exceptionFactory.GetMessage("Botes", ExceptionEnums.ExceptionCode.Required));
-                }
+                if (DispatchQuantity.IsTransfer(item.DispatchControlType))
+                    continue;
 
                 if (item.DispatchControlType == domain.Features.Enums.DomainEnums.DispatchControlType.Return)
                 {
-                    
-                }*/
+                    var crates = item.CrateQuantity ?? 0;
+                    item.CrateQuantity = crates;
 
+                    if (item.MissingBottleQuantity < 0)
+                        this._exceptionFactory.Add("missingBottleQuantity", this._exceptionFactory.GetMessage("Los botes faltantes no pueden ser negativos", ExceptionEnums.ExceptionCode.Default));
+
+                    if (crates < 0)
+                        this._exceptionFactory.Add("crateQuantity", this._exceptionFactory.GetMessage("Las cestas no pueden ser negativas", ExceptionEnums.ExceptionCode.Default));
+                }
             }
 
             if (!this._exceptionFactory.IsValid())
