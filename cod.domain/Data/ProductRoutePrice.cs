@@ -19,5 +19,6 @@ namespace cod.domain.Data
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }
         public double Price { get; set; }
+        public double? CreditPrice { get; set; }
     }
 }

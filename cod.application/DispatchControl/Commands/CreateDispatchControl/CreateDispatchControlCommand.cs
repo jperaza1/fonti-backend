@@ -106,6 +106,13 @@ namespace cod.application.DispatchControl.Commands.CreateDispatchControl
             if (!this._exceptionFactory.IsValid())
                 throw new ApplicationException("CANCELED", "Control de Salida", this._exceptionFactory.Exceptions);
 
+            var day = model.DispatchControlDate.Date;
+            var duplicated = await _repository.AnyActive<domain.Operation.DispatchControl>(
+                control => control.RouteId == model.RouteId && control.DispatchControlDate.Date == day);
+
+            if (duplicated)
+                this._exceptionFactory.Add("dispatchControlDate", "Ya existe un control de salida para esta ruta en esa fecha.");
+
             foreach(var item in model.DispatchControlDetails)
             {
                 if (DispatchQuantity.IsTransfer(item.DispatchControlType))

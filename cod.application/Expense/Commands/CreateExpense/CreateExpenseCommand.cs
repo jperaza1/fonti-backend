@@ -101,7 +101,7 @@ namespace cod.application.Expense.Commands.CreateExpense
             var invoice = new domain.Operation.ExpenseInvoice
             {
                 InvoiceNumber = model.ExpenseInvoice.InvoiceNumber,
-                InvoiceDate = model.ExpenseInvoice.InvoiceDate,
+                InvoiceDate = model.Date,
                 TaxableAmount = Math.Round(model.ExpenseInvoice.TaxableAmount, 2),
                 TaxAmount = Math.Round(model.ExpenseInvoice.TaxAmount, 2),
                 ExemptAmount = Math.Round(model.ExpenseInvoice.ExemptAmount, 2),

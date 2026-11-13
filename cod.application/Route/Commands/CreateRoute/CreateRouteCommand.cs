@@ -53,6 +53,7 @@ namespace cod.application.Route.Commands.CreateRoute
                 {
                     ProductId = item.ProductId,
                     Price = item.Price,
+                    CreditPrice = PositiveCreditPrice(item.CreditPrice),
                     IsActive = true,
                     CreationTime = Clock.Now,
                     CreatorUser = _authService.User,
@@ -90,12 +91,23 @@ namespace cod.application.Route.Commands.CreateRoute
             var invalidPrice = model.ProductRoutePrices.Any(item =>
                 item.Price < 0 || (!model.DeliversRegalia && item.Price <= 0));
 
-            if (!invalidPrice)
-                return;
+            if (invalidPrice)
+            {
+                this._exceptionFactory.Add("price", model.DeliversRegalia
+                    ? "El precio no puede ser negativo"
+                    : "El precio debe ser mayor a 0");
+            }
 
-            this._exceptionFactory.Add("price", model.DeliversRegalia
-                ? "El precio no puede ser negativo"
-                : "El precio debe ser mayor a 0");
+            if (model.ProductRoutePrices.Any(item => item.CreditPrice.HasValue && item.CreditPrice.Value <= 0))
+                this._exceptionFactory.Add("creditPrice", "El precio de crédito tiene que ser mayor a 0");
+        }
+
+        private static double? PositiveCreditPrice(double? creditPrice)
+        {
+            if (!creditPrice.HasValue || creditPrice.Value <= 0)
+                return null;
+
+            return creditPrice;
         }
     }
 }

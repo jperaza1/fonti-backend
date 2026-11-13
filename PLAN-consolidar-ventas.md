@@ -1,6 +1,6 @@
-# Sacar botes de varias ventas para facturar
+# Facturar al contado con botes de varias ventas
 
-Implementado en `Sale/GetConsolidateAvailability`, `Sale/Consolidate` y el botón **Sacar botes** del listado. El permiso `OPERATION.SALE.CONSOLIDATE` está en `AspNetRoles` y no queda asignado a un rol.
+Implementado en `Sale/GetConsolidateAvailability`, `Sale/Consolidate` y el botón **Facturar al Contado** del listado. El permiso `OPERATION.SALE.CONSOLIDATE` está en `AspNetRoles` y no queda asignado a un rol.
 
 De una ruta se eligen ventas al contado, activas y sin factura. Se indica cuántos botes se quieren de cada producto con precio mayor a 0 (por ejemplo 120 a 27 y 90 a 25). Esa cantidad se reparte entre las ventas marcadas, se les resta, se recalcula el total y se crea una venta nueva con esos botes. En el mismo paso se pide cliente y fecha, se genera la factura de contado y se le asigna esa venta.
 
@@ -8,7 +8,7 @@ La regalía (precio 0) no se toca. El control de salida no se mueve.
 
 ## Cómo se usa
 
-En Ventas, el botón **Sacar botes**:
+En Ventas, el botón **Facturar al Contado**:
 
 1. Toma la ruta y el rango que ya están en el filtro. Se pueden cambiar y volver a buscar.
 2. Lista solo ventas activas, al contado y sin factura. Vienen marcadas; se puede quitar alguna.
@@ -38,6 +38,6 @@ Al facturar al contado por el flujo que ya existía, si todas las ventas del lot
 
 ## Frontend
 
-En el listado de ventas, **Sacar botes** abre el modal y llama a esos dos endpoints.
+En el listado de ventas, **Facturar al Contado** abre el modal y llama a esos dos endpoints.
 
 Permiso de la acción: `OPERATION.SALE.CONSOLIDATE`, en el menú de Ventas, en el botón, y en `AspNetRoles`. No se asigna a un rol.

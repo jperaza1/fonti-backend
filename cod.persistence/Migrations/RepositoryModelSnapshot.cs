@@ -1451,6 +1451,9 @@ namespace cod.persistence.Migrations
                     b.Property<string>("CreatorUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double?>("CreditPrice")
+                        .HasColumnType("float");
+
                     b.Property<DateTime?>("DisableDateTime")
                         .HasColumnType("datetime2");
 

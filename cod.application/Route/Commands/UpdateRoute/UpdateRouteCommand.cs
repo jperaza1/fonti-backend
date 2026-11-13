@@ -63,6 +63,28 @@ namespace cod.application.Route.Commands.UpdateRoute
                 _repository.DeleteSync(item);
             }
 
+            var detailsToUpdate = model.ProductRoutePrices.Where(dd => dd.Id > 0).ToList();
+
+            foreach (var item in detailsToUpdate)
+            {
+                if (!item.CreditPrice.HasValue || item.CreditPrice.Value <= 0)
+                    continue;
+
+                var existing = details.FirstOrDefault(detail => detail.Id == item.Id);
+                if (existing == null || existing.CreditPrice == item.CreditPrice)
+                    continue;
+
+                _repository.InsertAsync(new domain.General.DataChangeLog
+                {
+                    Date = Clock.Now,
+                    Entity = "ROUTE",
+                    EntityId = id,
+                    Log = $"(Precio de crédito) => {item.ProductName}: {existing.CreditPrice} -> {item.CreditPrice}"
+                });
+                existing.CreditPrice = item.CreditPrice;
+                _repository.UpdateSync(existing);
+            }
+
             var detailToAdd = model.ProductRoutePrices.Where(dd => dd.Id <= 0).ToList();
 
             foreach (var item in detailToAdd)
@@ -78,7 +100,10 @@ namespace cod.application.Route.Commands.UpdateRoute
                 {
                     ProductId = item.ProductId,
                     RouteId = id,
-                    Price = item.Price
+                    Price = item.Price,
+                    CreditPrice = item.CreditPrice.HasValue && item.CreditPrice.Value > 0
+                        ? item.CreditPrice
+                        : null
                 });
             }
             await _repository.CommitAsync();
@@ -95,6 +120,12 @@ namespace cod.application.Route.Commands.UpdateRoute
                 this._exceptionFactory.Add("price", model.DeliversRegalia
                     ? "El precio no puede ser negativo"
                     : "El precio debe ser mayor a 0");
+            }
+
+            if (model.ProductRoutePrices != null &&
+                model.ProductRoutePrices.Any(item => item.CreditPrice.HasValue && item.CreditPrice.Value <= 0))
+            {
+                this._exceptionFactory.Add("creditPrice", "El precio de crédito tiene que ser mayor a 0");
             }
 
             if (!this._exceptionFactory.IsValid())
