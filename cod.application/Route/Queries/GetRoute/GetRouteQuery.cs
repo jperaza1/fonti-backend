@@ -35,6 +35,7 @@ namespace cod.application.Route.Queries.GetRoute
                         Id = g.Id,
                         Price = g.Price,
                         CreditPrice = g.CreditPrice,
+                        ShowCreditPrice = g.ShowCreditPrice,
                         ProductId = g.ProductId,
                         ProductName = g.Product.Name
                     }).ToList()

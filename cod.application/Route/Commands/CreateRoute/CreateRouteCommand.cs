@@ -49,11 +49,13 @@ namespace cod.application.Route.Commands.CreateRoute
             var lst = new List<domain.Data.ProductRoutePrice>();
             foreach (var item in model.ProductRoutePrices)
             {
+                var showCreditPrice = ShowsCreditPrice(item);
                 var detail = new domain.Data.ProductRoutePrice
                 {
                     ProductId = item.ProductId,
                     Price = item.Price,
-                    CreditPrice = PositiveCreditPrice(item.CreditPrice),
+                    CreditPrice = showCreditPrice ? item.Price : PositiveCreditPrice(item.CreditPrice),
+                    ShowCreditPrice = showCreditPrice || PositiveCreditPrice(item.CreditPrice).HasValue,
                     IsActive = true,
                     CreationTime = Clock.Now,
                     CreatorUser = _authService.User,
@@ -100,6 +102,14 @@ namespace cod.application.Route.Commands.CreateRoute
 
             if (model.ProductRoutePrices.Any(item => item.CreditPrice.HasValue && item.CreditPrice.Value <= 0))
                 this._exceptionFactory.Add("creditPrice", "El precio de crédito tiene que ser mayor a 0");
+
+            if (model.ProductRoutePrices.Any(item => item.ShowCreditPrice == true && item.Price <= 0))
+                this._exceptionFactory.Add("showCreditPrice", "El precio que se muestra al crédito tiene que ser mayor a 0");
+        }
+
+        private static bool ShowsCreditPrice(ProductRoutePricesModel item)
+        {
+            return item.ShowCreditPrice == true && item.Price > 0;
         }
 
         private static double? PositiveCreditPrice(double? creditPrice)

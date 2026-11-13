@@ -28,6 +28,7 @@ namespace cod.application.Route.Queries.GetProductRoutePrices
                 ProductName = g.Product.Name,
                 Price = g.Price,
                 CreditPrice = g.CreditPrice,
+                ShowCreditPrice = g.ShowCreditPrice,
             })
                 .OrderBy(f => f.ProductName)
                 .OrderByDescending(f => f.Price)

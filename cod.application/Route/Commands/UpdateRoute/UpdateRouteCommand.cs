@@ -67,11 +67,34 @@ namespace cod.application.Route.Commands.UpdateRoute
 
             foreach (var item in detailsToUpdate)
             {
+                var existing = details.FirstOrDefault(detail => detail.Id == item.Id);
+                if (existing == null)
+                    continue;
+
+                if (item.ShowCreditPrice.HasValue)
+                {
+                    var show = item.ShowCreditPrice.Value && existing.Price > 0;
+                    double? nextCredit = show ? existing.Price : null;
+                    if (existing.ShowCreditPrice == show && existing.CreditPrice == nextCredit)
+                        continue;
+
+                    _repository.InsertAsync(new domain.General.DataChangeLog
+                    {
+                        Date = Clock.Now,
+                        Entity = "ROUTE",
+                        EntityId = id,
+                        Log = $"(Mostrar precio al crédito) => {item.ProductName}: {(show ? existing.Price.ToString() : "no")}"
+                    });
+                    existing.ShowCreditPrice = show;
+                    existing.CreditPrice = nextCredit;
+                    _repository.UpdateSync(existing);
+                    continue;
+                }
+
                 if (!item.CreditPrice.HasValue || item.CreditPrice.Value <= 0)
                     continue;
 
-                var existing = details.FirstOrDefault(detail => detail.Id == item.Id);
-                if (existing == null || existing.CreditPrice == item.CreditPrice)
+                if (existing.CreditPrice == item.CreditPrice && existing.ShowCreditPrice)
                     continue;
 
                 _repository.InsertAsync(new domain.General.DataChangeLog
@@ -81,6 +104,7 @@ namespace cod.application.Route.Commands.UpdateRoute
                     EntityId = id,
                     Log = $"(Precio de crédito) => {item.ProductName}: {existing.CreditPrice} -> {item.CreditPrice}"
                 });
+                existing.ShowCreditPrice = true;
                 existing.CreditPrice = item.CreditPrice;
                 _repository.UpdateSync(existing);
             }
@@ -101,9 +125,12 @@ namespace cod.application.Route.Commands.UpdateRoute
                     ProductId = item.ProductId,
                     RouteId = id,
                     Price = item.Price,
-                    CreditPrice = item.CreditPrice.HasValue && item.CreditPrice.Value > 0
-                        ? item.CreditPrice
-                        : null
+                    ShowCreditPrice = item.ShowCreditPrice == true && item.Price > 0,
+                    CreditPrice = item.ShowCreditPrice == true && item.Price > 0
+                        ? item.Price
+                        : item.CreditPrice.HasValue && item.CreditPrice.Value > 0
+                            ? item.CreditPrice
+                            : null
                 });
             }
             await _repository.CommitAsync();
@@ -126,6 +153,12 @@ namespace cod.application.Route.Commands.UpdateRoute
                 model.ProductRoutePrices.Any(item => item.CreditPrice.HasValue && item.CreditPrice.Value <= 0))
             {
                 this._exceptionFactory.Add("creditPrice", "El precio de crédito tiene que ser mayor a 0");
+            }
+
+            if (model.ProductRoutePrices != null &&
+                model.ProductRoutePrices.Any(item => item.ShowCreditPrice == true && item.Price <= 0))
+            {
+                this._exceptionFactory.Add("showCreditPrice", "El precio que se muestra al crédito tiene que ser mayor a 0");
             }
 
             if (!this._exceptionFactory.IsValid())

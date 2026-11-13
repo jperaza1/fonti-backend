@@ -1484,6 +1484,9 @@ namespace cod.persistence.Migrations
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("ShowCreditPrice")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");

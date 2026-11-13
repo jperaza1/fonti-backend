@@ -29,5 +29,9 @@ namespace cod.application.Route.Common
         public string ProductName { get; set; }
         public double Price { get; set; }
         public double? CreditPrice { get; set; }
+        /// <summary>
+        /// Nulo si el cliente no mandó el flag. En verdadero, el precio de la fila se muestra al crédito.
+        /// </summary>
+        public bool? ShowCreditPrice { get; set; }
     }
 }
