@@ -17,6 +17,10 @@ namespace cod.domain.Features.Enums
         [Description("Mala calidad")]
         QualityExit = 6,
         [Description("Pérdida")]
-        Loss = 7
+        Loss = 7,
+        [Description("Transferencia salida")]
+        TransferOut = 8,
+        [Description("Transferencia entrada")]
+        TransferIn = 9
     }
 }

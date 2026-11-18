@@ -6,6 +6,6 @@ namespace cod.application.Kardex.Queries.GetProductStocks
 {
     public interface IGetProductStocksQuery
     {
-        Task<List<ProductStockModel>> Execute();
+        Task<List<ProductStockModel>> Execute(int? warehouseId);
     }
 }

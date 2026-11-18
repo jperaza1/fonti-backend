@@ -71,8 +71,37 @@ namespace cod.persistence.Implementations
                 .Property(p => p.Quantity)
                 .HasColumnType("decimal(18,6)");
             modelBuilder.Entity<ProductStock>()
-                .HasIndex(p => p.ProductId)
+                .HasIndex(p => new { p.ProductId, p.WarehouseId })
                 .IsUnique();
+
+            modelBuilder.Entity<Warehouse>()
+                .HasIndex(w => w.Kind)
+                .IsUnique();
+
+            modelBuilder.Entity<WarehouseTransferDetail>()
+                .Property(p => p.Quantity)
+                .HasColumnType("decimal(18,6)");
+
+            modelBuilder.Entity<WarehouseTransfer>()
+                .HasOne(t => t.FromWarehouse)
+                .WithMany()
+                .HasForeignKey(t => t.FromWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<WarehouseTransfer>()
+                .HasOne(t => t.ToWarehouse)
+                .WithMany()
+                .HasForeignKey(t => t.ToWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProductStock>()
+                .HasOne(s => s.Warehouse)
+                .WithMany()
+                .HasForeignKey(s => s.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<InventoryKardex>()
+                .HasOne(k => k.Warehouse)
+                .WithMany()
+                .HasForeignKey(k => k.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<InventoryKardex>()
                 .Property(p => p.Quantity)

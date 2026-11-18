@@ -20,16 +20,23 @@ namespace cod.application.Inventory.Services
     {
         private readonly IRepository _repository;
         private readonly IExceptionFactory _exceptionFactory;
+        private readonly IWarehouseDirectory _warehouses;
         private const string DispatchApplyStockKey = "DISPATCH_APPLY_STOCK";
 
-        private readonly Dictionary<int, cod.domain.Operation.ProductStock> _stocks = new Dictionary<int, cod.domain.Operation.ProductStock>();
+        private readonly Dictionary<(int WarehouseId, int ProductId), cod.domain.Operation.ProductStock> _stocks = new Dictionary<(int, int), cod.domain.Operation.ProductStock>();
         private readonly Dictionary<int, (string Name, decimal? Cost)> _products = new Dictionary<int, (string Name, decimal? Cost)>();
         private bool? _dispatchAffectsStock;
+        private int? _finishedWarehouseId;
+        private int? _productionWarehouseId;
 
-        public InventoryMovementService(IRepository repository, IExceptionFactory exceptionFactory)
+        public InventoryMovementService(
+            IRepository repository,
+            IExceptionFactory exceptionFactory,
+            IWarehouseDirectory warehouses)
         {
             _repository = repository;
             _exceptionFactory = exceptionFactory;
+            _warehouses = warehouses;
         }
 
         public async Task ApplyDispatch(cod.domain.Operation.DispatchControl dispatch)
@@ -59,11 +66,13 @@ namespace cod.application.Inventory.Services
                 ? Clock.Now
                 : dispatch.DispatchControlDate;
             var typeName = movementType.GetEnumDescription();
+            var warehouseId = await FinishedWarehouse();
 
             foreach (var movement in detail.ProductMovements.Where(p => p.Quantity > 0))
             {
                 var product = await GetProduct(movement.ProductId);
                 await ApplyLine(
+                    warehouseId,
                     movement.ProductId,
                     movement.Quantity,
                     inbound,
@@ -77,19 +86,29 @@ namespace cod.application.Inventory.Services
             }
         }
 
-        public Task ApplyEntry(int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
+        public Task ApplyEntry(int warehouseId, int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
         {
-            return ApplyLine(productId, quantity, true, KardexMovementType.Entry, movementDate, note, null, null, unitCost, null);
+            return ApplyLine(warehouseId, productId, quantity, true, KardexMovementType.Entry, movementDate, note, null, null, unitCost, null);
         }
 
-        public Task ApplyExit(int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
+        public Task ApplyExit(int warehouseId, int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
         {
-            return ApplyLine(productId, quantity, false, KardexMovementType.Exit, movementDate, note, null, null, unitCost, null);
+            return ApplyLine(warehouseId, productId, quantity, false, KardexMovementType.Exit, movementDate, note, null, null, unitCost, null);
         }
 
-        public Task ApplyQualityExit(int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
+        public Task ApplyQualityExit(int warehouseId, int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
         {
-            return ApplyLine(productId, quantity, false, KardexMovementType.QualityExit, movementDate, note, null, null, unitCost, null);
+            return ApplyLine(warehouseId, productId, quantity, false, KardexMovementType.QualityExit, movementDate, note, null, null, unitCost, null);
+        }
+
+        public Task ApplyTransferOut(int warehouseId, int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
+        {
+            return ApplyLine(warehouseId, productId, quantity, false, KardexMovementType.TransferOut, movementDate, note, null, null, unitCost, null);
+        }
+
+        public Task ApplyTransferIn(int warehouseId, int productId, decimal quantity, DateTime movementDate, string note, decimal? unitCost)
+        {
+            return ApplyLine(warehouseId, productId, quantity, true, KardexMovementType.TransferIn, movementDate, note, null, null, unitCost, null);
         }
 
         public async Task<List<ProductionConsumptionModel>> GetConsumption(int productId, decimal quantity)
@@ -123,6 +142,7 @@ namespace cod.application.Inventory.Services
 
         public async Task ApplyProduction(cod.domain.Operation.ProductionOrder order, string shiftName, List<ProductionLossModel> losses)
         {
+            var warehouseId = await ProductionWarehouse();
             var recipe = await LoadRecipe(order.ProductId);
             var product = await GetProduct(order.ProductId);
             var header = string.IsNullOrWhiteSpace(order.Note)
@@ -140,6 +160,7 @@ namespace cod.application.Inventory.Services
 
                 var rawMaterial = await GetProduct(line.RawMaterialProductId);
                 await ApplyLine(
+                    warehouseId,
                     line.RawMaterialProductId,
                     rawQuantity,
                     false,
@@ -162,6 +183,7 @@ namespace cod.application.Inventory.Services
                         lossNote += ". " + loss.Note.Trim();
 
                     await ApplyLine(
+                        warehouseId,
                         loss.ProductId,
                         loss.Quantity,
                         false,
@@ -176,6 +198,7 @@ namespace cod.application.Inventory.Services
             }
 
             await ApplyLine(
+                warehouseId,
                 order.ProductId,
                 order.Quantity,
                 true,
@@ -195,6 +218,7 @@ namespace cod.application.Inventory.Services
                         && (k.MovementType == KardexMovementType.Production || k.MovementType == KardexMovementType.Loss))
                 .ToListAsync();
 
+            var warehouseId = await ProductionWarehouse();
             var product = await GetProduct(order.ProductId);
             var note = "Anulación de producción de " + product.Name;
             var movementDate = Clock.Now;
@@ -202,6 +226,7 @@ namespace cod.application.Inventory.Services
             foreach (var line in lines.Where(l => l.SourceProductId == null))
             {
                 await ApplyLine(
+                    line.WarehouseId > 0 ? line.WarehouseId : warehouseId,
                     line.ProductId,
                     line.Quantity,
                     false,
@@ -217,6 +242,7 @@ namespace cod.application.Inventory.Services
             foreach (var line in lines.Where(l => l.SourceProductId != null))
             {
                 await ApplyLine(
+                    line.WarehouseId > 0 ? line.WarehouseId : warehouseId,
                     line.ProductId,
                     line.Quantity,
                     true,
@@ -247,7 +273,26 @@ namespace cod.application.Inventory.Services
             return recipe;
         }
 
+        private async Task<int> FinishedWarehouse()
+        {
+            if (_finishedWarehouseId.HasValue)
+                return _finishedWarehouseId.Value;
+
+            _finishedWarehouseId = (await _warehouses.Require(WarehouseKind.Finished)).Id;
+            return _finishedWarehouseId.Value;
+        }
+
+        private async Task<int> ProductionWarehouse()
+        {
+            if (_productionWarehouseId.HasValue)
+                return _productionWarehouseId.Value;
+
+            _productionWarehouseId = (await _warehouses.Require(WarehouseKind.Production)).Id;
+            return _productionWarehouseId.Value;
+        }
+
         private async Task ApplyLine(
+            int warehouseId,
             int productId,
             decimal quantity,
             bool inbound,
@@ -263,7 +308,7 @@ namespace cod.application.Inventory.Services
             if (quantity <= 0)
                 return;
 
-            var stock = await GetStock(productId);
+            var stock = await GetStock(warehouseId, productId);
             var available = InventoryQuantity.Round(stock.Quantity);
 
             if (!inbound && available < quantity)
@@ -285,6 +330,7 @@ namespace cod.application.Inventory.Services
             var kardex = new cod.domain.Operation.InventoryKardex
             {
                 ProductId = productId,
+                WarehouseId = warehouseId,
                 MovementDate = movementDate,
                 MovementType = movementType,
                 Quantity = quantity,
@@ -313,23 +359,26 @@ namespace cod.application.Inventory.Services
             _repository.InsertAsync(kardex);
         }
 
-        private async Task<cod.domain.Operation.ProductStock> GetStock(int productId)
+        private async Task<cod.domain.Operation.ProductStock> GetStock(int warehouseId, int productId)
         {
-            if (_stocks.TryGetValue(productId, out var cached))
+            var key = (warehouseId, productId);
+            if (_stocks.TryGetValue(key, out var cached))
                 return cached;
 
-            var stock = await _repository.WhereAsync<cod.domain.Operation.ProductStock>(s => s.ProductId == productId).FirstOrDefaultAsync();
+            var stock = await _repository.WhereAsync<cod.domain.Operation.ProductStock>(
+                s => s.ProductId == productId && s.WarehouseId == warehouseId).FirstOrDefaultAsync();
             if (stock == null)
             {
                 stock = new cod.domain.Operation.ProductStock
                 {
                     ProductId = productId,
+                    WarehouseId = warehouseId,
                     Quantity = 0
                 };
                 _repository.InsertAsync(stock);
             }
 
-            _stocks[productId] = stock;
+            _stocks[key] = stock;
             return stock;
         }
 

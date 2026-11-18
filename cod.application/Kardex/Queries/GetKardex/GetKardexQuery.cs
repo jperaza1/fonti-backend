@@ -24,6 +24,9 @@ namespace cod.application.Kardex.Queries.GetKardex
                 if (filter.ProductId.HasValue && filter.ProductId > 0)
                     query = query.Where(f => f.ProductId == filter.ProductId);
 
+                if (filter.WarehouseId.HasValue && filter.WarehouseId > 0)
+                    query = query.Where(f => f.WarehouseId == filter.WarehouseId);
+
                 if (filter.DateFrom.HasValue)
                 {
                     var start = filter.DateFrom.Value.Date;
@@ -45,6 +48,8 @@ namespace cod.application.Kardex.Queries.GetKardex
                     f.Id,
                     f.ProductId,
                     Product = f.Product.Name,
+                    f.WarehouseId,
+                    Warehouse = f.Warehouse.Name,
                     UnitOfMeasure = f.Product.UnitOfMeasure.Name,
                     f.MovementDate,
                     f.MovementType,
@@ -63,6 +68,8 @@ namespace cod.application.Kardex.Queries.GetKardex
                 Id = f.Id,
                 ProductId = f.ProductId,
                 Product = f.Product,
+                WarehouseId = f.WarehouseId,
+                Warehouse = f.Warehouse,
                 UnitOfMeasure = f.UnitOfMeasure,
                 MovementDate = f.MovementDate,
                 MovementType = f.MovementType,

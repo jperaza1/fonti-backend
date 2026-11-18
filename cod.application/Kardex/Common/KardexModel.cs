@@ -8,6 +8,8 @@ namespace cod.application.Kardex.Common
         public int Id { get; set; }
         public int ProductId { get; set; }
         public string Product { get; set; }
+        public int WarehouseId { get; set; }
+        public string Warehouse { get; set; }
         public string UnitOfMeasure { get; set; }
         public DateTime MovementDate { get; set; }
         public KardexMovementType MovementType { get; set; }
@@ -24,12 +26,14 @@ namespace cod.application.Kardex.Common
     public class KardexFilterModel
     {
         public int? ProductId { get; set; }
+        public int? WarehouseId { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
     }
 
     public class KardexEntryModel
     {
+        public int WarehouseId { get; set; }
         public int ProductId { get; set; }
         public decimal Quantity { get; set; }
         public DateTime MovementDate { get; set; }
@@ -46,5 +50,7 @@ namespace cod.application.Kardex.Common
         public string UnitOfMeasure { get; set; }
         public decimal? Cost { get; set; }
         public decimal Quantity { get; set; }
+        public int? WarehouseId { get; set; }
+        public string Warehouse { get; set; }
     }
 }

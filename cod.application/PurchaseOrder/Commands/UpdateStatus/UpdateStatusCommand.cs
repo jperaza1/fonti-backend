@@ -20,15 +20,18 @@ namespace cod.application.PurchaseOrder.Commands.UpdateStatus
 
         private readonly AuthService _authService;
         private readonly IInventoryMovementService _inventory;
+        private readonly IWarehouseDirectory _warehouses;
 
         public UpdateStatusCommand(
             IRepository repository,
             IExceptionFactory exceptionFactory,
             AuthService authService,
-            IInventoryMovementService inventory) : base(repository, exceptionFactory)
+            IInventoryMovementService inventory,
+            IWarehouseDirectory warehouses) : base(repository, exceptionFactory)
         {
             _authService = authService;
             _inventory = inventory;
+            _warehouses = warehouses;
         }
 
         public async Task Execute(int id)
@@ -117,6 +120,8 @@ namespace cod.application.PurchaseOrder.Commands.UpdateStatus
                 })
                 .ToListAsync();
 
+            var warehouse = await _warehouses.Require(WarehouseKind.Principal);
+
             foreach (var line in lines)
             {
                 var units = line.Unit <= 0 ? 1 : line.Unit;
@@ -124,6 +129,7 @@ namespace cod.application.PurchaseOrder.Commands.UpdateStatus
                 var packageCost = line.CostRecived > 0 ? line.CostRecived : line.Cost;
                 var unitCost = (decimal)packageCost / units;
                 await _inventory.ApplyEntry(
+                    warehouse.Id,
                     line.ProductId,
                     quantity,
                     Clock.Now,

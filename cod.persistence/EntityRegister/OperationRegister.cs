@@ -25,6 +25,9 @@ namespace cod.persistence.Implementations
         public DbSet<ProductMovement> ProductMovements { get; set; }
         public DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<InventoryKardex> InventoryKardex { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<WarehouseTransfer> WarehouseTransfers { get; set; }
+        public DbSet<WarehouseTransferDetail> WarehouseTransferDetails { get; set; }
         public DbSet<ProductionOrder> ProductionOrders { get; set; }
         public DbSet<ProductionShift> ProductionShifts { get; set; }
     }

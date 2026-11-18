@@ -34,9 +34,9 @@ namespace cod.data.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ProductStockModel>> GetStock()
+        public async Task<List<ProductStockModel>> GetStock(int? warehouseId)
         {
-            return await _getProductStocksQuery.Execute();
+            return await _getProductStocksQuery.Execute(warehouseId);
         }
 
         [HttpPost]

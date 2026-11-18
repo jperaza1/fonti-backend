@@ -4,6 +4,7 @@ using cod.application.Features.Exception;
 using cod.application.Interfaces;
 using cod.application.Inventory.Services;
 using cod.application.Kardex.Common;
+using cod.domain.Features.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -15,13 +16,16 @@ namespace cod.application.Kardex.Commands.CreateKardexEntry
     public class CreateKardexEntryCommand : BaseCommand, ICreateKardexEntryCommand
     {
         private readonly IInventoryMovementService _inventoryMovementService;
+        private readonly IWarehouseDirectory _warehouses;
 
         public CreateKardexEntryCommand(
             IRepository repository,
             IExceptionFactory exceptionFactory,
-            IInventoryMovementService inventoryMovementService) : base(repository, exceptionFactory)
+            IInventoryMovementService inventoryMovementService,
+            IWarehouseDirectory warehouses) : base(repository, exceptionFactory)
         {
             _inventoryMovementService = inventoryMovementService;
+            _warehouses = warehouses;
         }
 
         public async Task Execute(KardexEntryModel model)
@@ -36,6 +40,7 @@ namespace cod.application.Kardex.Commands.CreateKardexEntry
             if (isQualityExit)
             {
                 await _inventoryMovementService.ApplyQualityExit(
+                    model.WarehouseId,
                     model.ProductId,
                     model.Quantity,
                     model.MovementDate,
@@ -45,6 +50,7 @@ namespace cod.application.Kardex.Commands.CreateKardexEntry
             else if (model.IsExit)
             {
                 await _inventoryMovementService.ApplyExit(
+                    model.WarehouseId,
                     model.ProductId,
                     model.Quantity,
                     model.MovementDate,
@@ -54,6 +60,7 @@ namespace cod.application.Kardex.Commands.CreateKardexEntry
             else
             {
                 await _inventoryMovementService.ApplyEntry(
+                    model.WarehouseId,
                     model.ProductId,
                     model.Quantity,
                     model.MovementDate,
@@ -66,6 +73,9 @@ namespace cod.application.Kardex.Commands.CreateKardexEntry
 
         private async Task<domain.Data.Product> ValidateModel(KardexEntryModel model)
         {
+            if (model.WarehouseId <= 0)
+                _exceptionFactory.Add("warehouseId", _exceptionFactory.GetMessage("Bodega", ExceptionEnums.ExceptionCode.Required));
+
             if (model.ProductId <= 0)
                 _exceptionFactory.Add("productId", _exceptionFactory.GetMessage("Producto", ExceptionEnums.ExceptionCode.Required));
 
@@ -85,6 +95,19 @@ namespace cod.application.Kardex.Commands.CreateKardexEntry
             if (product == null)
             {
                 _exceptionFactory.Add("productId", "El producto no existe");
+                throw new ApplicationException("CANCELED", "KARDEX", _exceptionFactory.Exceptions);
+            }
+
+            var warehouse = await _warehouses.Get(model.WarehouseId);
+            if (warehouse == null)
+            {
+                _exceptionFactory.Add("warehouseId", "La bodega no existe");
+                throw new ApplicationException("CANCELED", "KARDEX", _exceptionFactory.Exceptions);
+            }
+
+            if (!_warehouses.Allows(warehouse.Kind, product.ProductType))
+            {
+                _exceptionFactory.Add("productId", "Esa bodega no admite este producto");
                 throw new ApplicationException("CANCELED", "KARDEX", _exceptionFactory.Exceptions);
             }
 

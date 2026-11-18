@@ -10,6 +10,9 @@ namespace cod.domain.Operation
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }
+        public int WarehouseId { get; set; }
+        [ForeignKey("WarehouseId")]
+        public virtual Warehouse Warehouse { get; set; }
         public decimal Quantity { get; set; }
     }
 }
