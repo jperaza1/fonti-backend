@@ -79,7 +79,6 @@ namespace cod.application.PurchaseOrder.Commands.CreatePurchaseOrder
                     item.Cost,
                     item.Discount,
                     item.Unit,
-                    item.Product.Tax,
                     item.Product.ProductType,
                     item.Product.Name
                 })
@@ -97,7 +96,7 @@ namespace cod.application.PurchaseOrder.Commands.CreatePurchaseOrder
                 else if (product.ProductType != ProductType.RawMaterial)
                     _exceptionFactory.Add("details", "La orden de compra solo admite materia prima");
                 else
-                    lines.Add(BuildDetail(item, product.ProductId, product.Cost, product.Discount, product.Tax));
+                    lines.Add(BuildDetail(item, product.ProductId, product.Cost, product.Discount, item.TaxPercentage));
             }
 
             if (!_exceptionFactory.IsValid())
@@ -111,11 +110,10 @@ namespace cod.application.PurchaseOrder.Commands.CreatePurchaseOrder
             int productId,
             decimal cost,
             decimal discountRate,
-            bool tax)
+            double taxPercentage)
         {
             var unitCost = (double)cost;
             var discountPercentage = (double)discountRate;
-            var taxPercentage = tax ? 0.15d : 0d;
             var subTotal = Math.Round(unitCost * item.Quantity, 2, MidpointRounding.AwayFromZero);
             var discount = Math.Round(discountPercentage >= 1 ? item.Quantity * discountPercentage : subTotal * discountPercentage, 2, MidpointRounding.AwayFromZero);
             var taxAmount = Math.Round((subTotal - discount) * taxPercentage, 2, MidpointRounding.AwayFromZero);

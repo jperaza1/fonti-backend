@@ -33,32 +33,7 @@ namespace cod.application.Production.Commands.CreateProduction
         {
             var shiftName = await Validate(model);
             var lines = FilledLines(model);
-            var shift = await FindShift(model);
-
-            if (shift != null && !shift.IsActive)
-            {
-                _exceptionFactory.Add("shiftTypeId", "Ese turno ya fue anulado y no se puede volver a abrir en esta fecha");
-                throw new ApplicationException("CANCELED", "PRODUCCION", _exceptionFactory.Exceptions);
-            }
-
-            if (shift != null && shift.IsClosed)
-            {
-                _exceptionFactory.Add("shiftTypeId", "Ese turno ya está cerrado");
-                throw new ApplicationException("CANCELED", "PRODUCCION", _exceptionFactory.Exceptions);
-            }
-
-            if (shift == null)
-                await EnsureNoOtherOpenShift();
-
-            if (shift == null)
-            {
-                shift = new domain.Operation.ProductionShift
-                {
-                    ProductionDate = model.ProductionDate.Date,
-                    ShiftTypeId = model.ShiftTypeId
-                };
-                _repository.InsertAsync(shift);
-            }
+            var shift = await ResolveShift(model, shiftName);
 
             var day = shift.ProductionDate.Date;
             var shiftTypeId = shift.ShiftTypeId;
@@ -86,32 +61,58 @@ namespace cod.application.Production.Commands.CreateProduction
             await _repository.CommitAsync();
         }
 
-        private async Task<domain.Operation.ProductionShift> FindShift(CreateProductionModel model)
+        private async Task<domain.Operation.ProductionShift> ResolveShift(CreateProductionModel model, string shiftName)
         {
             if (model.ProductionShiftId > 0)
             {
-                return await _repository.WhereAsync<domain.Operation.ProductionShift>(s => s.Id == model.ProductionShiftId)
+                var current = await _repository.WhereAsync<domain.Operation.ProductionShift>(s => s.Id == model.ProductionShiftId)
                     .FirstOrDefaultAsync();
+
+                if (current == null)
+                {
+                    _exceptionFactory.Add("productionShiftId", "El turno no existe");
+                    throw new ApplicationException("CANCELED", "PRODUCCION", _exceptionFactory.Exceptions);
+                }
+
+                if (!current.IsActive)
+                {
+                    _exceptionFactory.Add("shiftTypeId", "Ese turno ya fue anulado y no se puede volver a abrir en esta fecha");
+                    throw new ApplicationException("CANCELED", "PRODUCCION", _exceptionFactory.Exceptions);
+                }
+
+                if (current.IsClosed)
+                {
+                    _exceptionFactory.Add("shiftTypeId", "Ese turno ya está cerrado");
+                    throw new ApplicationException("CANCELED", "PRODUCCION", _exceptionFactory.Exceptions);
+                }
+
+                return current;
             }
 
             var day = model.ProductionDate.Date;
             var nextDay = day.AddDays(1);
-            var sameDay = await _repository.WhereAsync<domain.Operation.ProductionShift>(s =>
+            var existing = await _repository.WhereAsync<domain.Operation.ProductionShift>(s =>
                     s.ShiftTypeId == model.ShiftTypeId
                     && s.ProductionDate >= day
                     && s.ProductionDate < nextDay)
+                .OrderByDescending(s => s.Id)
                 .FirstOrDefaultAsync();
 
-            if (sameDay != null)
-                return sameDay;
+            if (existing != null)
+            {
+                _exceptionFactory.Add("shiftTypeId", "Ya existe el turno " + shiftName + " en esta fecha");
+                throw new ApplicationException("CANCELED", "PRODUCCION", _exceptionFactory.Exceptions);
+            }
 
-            return await _repository.WhereAsync<domain.Operation.ProductionShift>(s =>
-                    s.IsActive
-                    && !s.IsClosed
-                    && s.ShiftTypeId == model.ShiftTypeId)
-                .OrderByDescending(s => s.ProductionDate)
-                .ThenByDescending(s => s.Id)
-                .FirstOrDefaultAsync();
+            await EnsureNoOtherOpenShift();
+
+            var shift = new domain.Operation.ProductionShift
+            {
+                ProductionDate = day,
+                ShiftTypeId = model.ShiftTypeId
+            };
+            _repository.InsertAsync(shift);
+            return shift;
         }
 
         private async Task EnsureNoOtherOpenShift()

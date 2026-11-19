@@ -36,9 +36,9 @@ namespace cod.data.Controllers
         }
 
         [HttpGet]
-        public async Task<List<WarehouseTransferModel>> GetAll()
+        public async Task<List<WarehouseTransferModel>> GetAll(DateTime? dateFrom, DateTime? dateTo)
         {
-            return await _getWarehouseTransfersQuery.Execute();
+            return await _getWarehouseTransfersQuery.Execute(dateFrom, dateTo);
         }
 
         [HttpGet]

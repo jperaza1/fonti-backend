@@ -3,6 +3,7 @@ using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.application.WarehouseTransfer.Common;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +16,23 @@ namespace cod.application.WarehouseTransfer.Queries.GetWarehouseTransfers
         {
         }
 
-        public async Task<List<WarehouseTransferModel>> Execute()
+        public async Task<List<WarehouseTransferModel>> Execute(DateTime? dateFrom, DateTime? dateTo)
         {
-            var rows = await _repository.QueryActive<domain.Operation.WarehouseTransfer>()
+            var query = _repository.QueryActive<domain.Operation.WarehouseTransfer>();
+
+            if (dateFrom.HasValue)
+            {
+                var start = dateFrom.Value.Date;
+                query = query.Where(item => item.Date >= start);
+            }
+
+            if (dateTo.HasValue)
+            {
+                var end = dateTo.Value.Date.AddDays(1);
+                query = query.Where(item => item.Date < end);
+            }
+
+            var rows = await query
                 .OrderByDescending(item => item.Date)
                 .ThenByDescending(item => item.Id)
                 .Select(item => new

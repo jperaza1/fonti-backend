@@ -1,8 +1,11 @@
+using cod.application.Common.Clases;
 using cod.application.Common.Extensions;
 using cod.application.Features.Base;
 using cod.application.Interfaces;
 using cod.application.Kardex.Common;
+using cod.domain.Features;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,13 +14,19 @@ namespace cod.application.Kardex.Queries.GetKardex
 {
     public class GetKardexQuery : BaseQuery, IGetKardexQuery
     {
-        public GetKardexQuery(IRepository repository) : base(repository)
+        private readonly AuthService _authService;
+        public GetKardexQuery(IRepository repository, AuthService authService) : base(repository)
         {
+            _authService = authService;
         }
 
         public async Task<List<KardexModel>> Execute(KardexFilterModel filter)
         {
             var query = _repository.QueryActive<domain.Operation.InventoryKardex>();
+
+            var timezone = _authService.ClientTimezone;
+
+
 
             if (filter != null)
             {
@@ -29,14 +38,14 @@ namespace cod.application.Kardex.Queries.GetKardex
 
                 if (filter.DateFrom.HasValue)
                 {
-                    var start = filter.DateFrom.Value.Date;
-                    query = query.Where(f => f.MovementDate >= start);
+                    var start = DateService.GetCLientLocalTime(filter.DateFrom.Value, timezone);
+                    query = query.Where(f => f.MovementDate.Date >= start.Date);
                 }
 
                 if (filter.DateTo.HasValue)
                 {
-                    var end = filter.DateTo.Value.Date.AddDays(1);
-                    query = query.Where(f => f.MovementDate < end);
+                    var end = DateService.GetCLientLocalTime(filter.DateTo.Value, timezone);
+                    query = query.Where(f => f.MovementDate.Date <= end.Date);
                 }
             }
 
